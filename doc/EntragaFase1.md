@@ -4,7 +4,7 @@
 ![Entrega 2](../assets/fase1-entrega2.jpg)
 ![Entrega 3](../assets/fase1-entrega3.jpg)
 
-## Entregável 1 
+## Entregável 1
 
 - [ ] Documentação do sistema (DDD) utilizando linguagem ubíqua dos fluxos:
   - [ ] Realização do pedido e pagamento
