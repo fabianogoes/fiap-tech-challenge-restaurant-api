@@ -12,8 +12,10 @@ const (
 )
 
 type Delivery struct {
-	ID     int64
-	Order  Order
-	Date   time.Time
-	Status DeliveryStatus
+	ID        int64
+	Order     Order
+	Date      time.Time
+	Status    DeliveryStatus
+	CreatedAt time.Time
+	UpdatedAt time.Time
 }

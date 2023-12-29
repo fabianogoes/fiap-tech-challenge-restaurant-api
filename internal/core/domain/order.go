@@ -22,6 +22,8 @@ type Order struct {
 	PaymentStatus PaymentStatus
 	Amount        float64
 	Items         []*OrderItem
+	CreatedAt     time.Time
+	UpdatedAt     time.Time
 }
 
 type OrderItem struct {
