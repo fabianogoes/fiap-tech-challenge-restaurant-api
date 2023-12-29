@@ -11,3 +11,6 @@ tmp/
 *.log
 *.out
 *.test
+
+# exclude any generated files
+*.jpg:Zone.Identifier
