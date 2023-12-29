@@ -2,6 +2,7 @@
 
 > FIAP pós Software Architecture - Tech Challenge projeto Food
 > - [Documentação DDD Miro](https://miro.com/app/board/uXjVNNl_0q0=/)
+> - [Tech Challenge - Entregáveis fase 1](./doc/EntragaFase1.md)
 
 ## Arquitetura do projeto
 
