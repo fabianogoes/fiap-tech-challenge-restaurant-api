@@ -1,4 +1,19 @@
 package domain
 
+import "time"
+
+type DeliveryStatus int
+
+const (
+	DeliveryStatusPending DeliveryStatus = iota
+	DeliveryStatusSent
+	DeliveryStatusDelivered
+	DeliveryStatusCanceled
+)
+
 type Delivery struct {
+	ID     int64
+	Order  Order
+	Date   time.Time
+	Status DeliveryStatus
 }
