@@ -26,18 +26,28 @@
 - [x] [Hexagonal Architecture][5]
 - [x] [Gin Web Framework][1] - Routes, JSON validation, Error management, Middleware support
 - [x] [PostgreSQL][3] - Database persistence
-- [x] [pgx - PostgreSQL Driver and Toolkit](https://github.com/jackc/pgx)
-- [x] [Squirrel - fluent SQL generator for Go](https://github.com/Masterminds/squirrel/)
+- [ ] [GORM ORM library for Golang][2]
 - [x] [Slog](https://pkg.go.dev/log/slog) - Package slog provides structured logging, in which log records include a message, a severity level, and various other attributes expressed as key-value pairs. 
 - [x] [GoDotEnv](https://github.com/joho/godotenv) - A Go (golang) port of dotenv project (which loads env vars from a .env file).
 - [x] [gin-swagger](https://github.com/swaggo/gin-swagger) - gin middleware to automatically generate RESTful API documentation with Swagger 2.0.
 - [x] [swag](https://github.com/swaggo/swag) - Swag converts Go annotations to Swagger Documentation 2.0
 - [x] [CORS gin's middleware](https://github.com/gin-contrib/cors) - Gin middleware/handler to enable CORS support.
+- [x] [Task offers many installation methods. Check out the available methods below.](https://taskfile.dev/installation/)
 
 ## Para Desenvolver
 
-1. Clonar o repostório
-2. Entrar na pasta e rodar o comando para baixar as dependências
+Dependencias
+
+- [Go Instalation](https://go.dev/doc/install)
+
+> Certifique-se de ter Go 1.21 ou superior 
+
+```shell
+go version
+```
+
+- Clonar o repostório
+- Entrar na pasta e rodar o comando para baixar as dependências
 
 ```shell
 go mod tidy
@@ -46,7 +56,7 @@ go mod tidy
 ## Para Rodar o projeto
 
 ```shell
-go run cmd/web/main.go
+docker-compose up -d && go run cmd/web/main.go
 ```
 
 ---
