@@ -1,0 +1,29 @@
+version: "3.8"
+
+services:
+  postgres:
+    container_name: postgres_gofood
+    image: postgres:12.8
+    restart: always
+    environment:
+      POSTGRES_USER: "${DB_USERNAME}"
+      POSTGRES_PASSWORD: "${DB_PASSWORD}" 
+      POSTGRES_DB: "${DB_DATABASE}"
+    ports:
+      - 5432:5432
+    volumes:
+      - ./postgres/data:/var/lib/postgresql/data 
+    networks:
+      - go-food-network
+
+  adminer:
+    container_name: adminer_gofood
+    image: adminer
+    ports:
+      - 8090:8080
+    networks:
+      - go-food-network
+
+networks: 
+  go-food-network:
+    driver: bridge
