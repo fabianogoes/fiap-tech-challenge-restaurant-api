@@ -27,6 +27,7 @@
 - [x] [Gin Web Framework][1] - Routes, JSON validation, Error management, Middleware support
 - [x] [PostgreSQL][3] - Database persistence
 - [x] [pgx - PostgreSQL Driver and Toolkit](https://github.com/jackc/pgx)
+- [x] [Squirrel - fluent SQL generator for Go](https://github.com/Masterminds/squirrel/)
 - [x] [Slog](https://pkg.go.dev/log/slog) - Package slog provides structured logging, in which log records include a message, a severity level, and various other attributes expressed as key-value pairs. 
 - [x] [GoDotEnv](https://github.com/joho/godotenv) - A Go (golang) port of dotenv project (which loads env vars from a .env file).
 - [x] [gin-swagger](https://github.com/swaggo/gin-swagger) - gin middleware to automatically generate RESTful API documentation with Swagger 2.0.
