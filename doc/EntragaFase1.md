@@ -6,7 +6,7 @@
 
 ## Entregável 1
 
-- [ ] Documentação do sistema (DDD) utilizando linguagem ubíqua dos fluxos:
+- [x] Documentação do sistema (DDD) utilizando linguagem ubíqua dos fluxos:
   - [ ] Realização do pedido e pagamento
   - [ ] Preparação e entrega do pedido
 
@@ -23,8 +23,8 @@ Uma aplicação para todo o sistema de backend (monolito) que deverá ser desenv
   - [ ] Fake checkout, apenas enviar os produtos escolhidos para a fila
   - [ ] Listar os pedidos
 - [ ] A aplicação deverá ser escalável para atender grandes volumes nos horários de pico
-- [ ] Banco de dados a sua escolha
-  - [ ] Inicialmente deveremos trabalhar e organizar a fila dos pedidos apenas em banco de dados 
+- [x] Banco de dados a sua escolha
+  - [ ] Inicialmente deveremos trabalhar e organizar a fila dos pedidos apenas em banco de dados
 
 ## Entregável 3
 
