@@ -6,7 +6,9 @@ import (
 	"log/slog"
 	"os"
 
+	"github.com/fiap/challenge-gofood/internal/adapter/handler"
 	"github.com/fiap/challenge-gofood/internal/adapter/repository"
+	"github.com/fiap/challenge-gofood/internal/core/service"
 	"github.com/joho/godotenv"
 )
 
@@ -52,11 +54,24 @@ func main() {
 	fmt.Println("Starting web server...")
 
 	ctx := context.Background()
+	var err error
 
 	db, err := repository.InitDB(ctx)
 	if err != nil {
 		panic(err)
 	}
+
+	customerRepository := repository.NewCustomerRepository(db)
+	customerUseCase := service.NewCustomerService(customerRepository)
+	customerHandler := handler.NewCustomerHandler(customerUseCase)
+
+	router, err := handler.NewRouter(customerHandler)
+	if err != nil {
+		panic(err)
+	}
+
 	fmt.Println("DB connected")
 	fmt.Println(db)
+
+	router.Run(os.Getenv("HTTP_PORT"))
 }
