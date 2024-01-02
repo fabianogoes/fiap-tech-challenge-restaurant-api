@@ -11,16 +11,7 @@ import (
 	"gorm.io/gorm"
 )
 
-/**
- * DB is a wrapper for PostgreSQL database connection
- * that uses pgxpool as database driver
- */
-type DB struct {
-	*gorm.DB
-}
-
-// NewDB creates a new PostgreSQL database instance
-func InitDB(ctx context.Context) (*DB, error) {
+func InitDB(ctx context.Context) (*gorm.DB, error) {
 	loc, _ := time.LoadLocation("UTC")
 
 	dsn := fmt.Sprintf("user=%s password=%s host=%s port=%s dbname=%s sslmode=disable TimeZone=%s",
@@ -48,7 +39,5 @@ func InitDB(ctx context.Context) (*DB, error) {
 		&Delivery{},
 	)
 
-	return &DB{
-		db,
-	}, nil
+	return db, nil
 }
