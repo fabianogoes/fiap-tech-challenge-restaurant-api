@@ -7,7 +7,7 @@ import (
 
 type Attendant struct {
 	gorm.Model
-	Name string
+	Name string `gorm:"unique"`
 }
 
 type AttendantRepository struct {
