@@ -61,11 +61,18 @@ func main() {
 		panic(err)
 	}
 
+	attendantRepository := repository.NewAttendantRepository(db)
+	attendantUseCase := service.NewAttendantService(attendantRepository)
+	attendantHandler := handler.NewAttendantHandler(attendantUseCase)
+
 	customerRepository := repository.NewCustomerRepository(db)
 	customerUseCase := service.NewCustomerService(customerRepository)
 	customerHandler := handler.NewCustomerHandler(customerUseCase)
 
-	router, err := handler.NewRouter(customerHandler)
+	router, err := handler.NewRouter(
+		customerHandler,
+		attendantHandler,
+	)
 	if err != nil {
 		panic(err)
 	}

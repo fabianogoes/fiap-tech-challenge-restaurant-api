@@ -3,8 +3,14 @@ package domain
 import "time"
 
 type Attendant struct {
-	ID        int64
-	Nome      string
+	ID        uint
+	Name      string
 	CreatedAt time.Time
 	UpdatedAt time.Time
+}
+
+func NewAttendant(name string) (*Attendant, error) {
+	return &Attendant{
+		Name: name,
+	}, nil
 }
