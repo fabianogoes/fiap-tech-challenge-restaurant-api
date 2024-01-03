@@ -32,6 +32,12 @@ func (h *CustomerHandler) GetCustomers(c *gin.Context) {
 		})
 	}
 
+	if len(customers) == 0 {
+		c.JSON(http.StatusNoContent, gin.H{
+			"message": "No customers found",
+		})
+	}
+
 	var response []FindCustomerResponse
 	for _, customer := range customers {
 		response = append(response, FindCustomerResponse{
