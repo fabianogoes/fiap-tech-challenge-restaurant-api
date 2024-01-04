@@ -39,5 +39,10 @@ func InitDB(ctx context.Context) (*gorm.DB, error) {
 		&Delivery{},
 	)
 
+	db.Create(&Category{Name: "Lanche"})
+	db.Create(&Category{Name: "Bebida"})
+	db.Create(&Category{Name: "Combo"})
+	db.Create(&Category{Name: "Sobremesa"})
+
 	return db, nil
 }

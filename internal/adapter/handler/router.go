@@ -9,6 +9,7 @@ type Router struct {
 func NewRouter(
 	customerHandler *CustomerHandler,
 	attendantHandler *AttendantHandler,
+	productHandler *ProductHandler,
 ) (*Router, error) {
 	router := gin.Default()
 
@@ -40,6 +41,15 @@ func NewRouter(
 		attendants.POST("/", attendantHandler.CreateAttendant)
 		attendants.PUT("/:id", attendantHandler.UpdateAttendant)
 		attendants.DELETE("/:id", attendantHandler.DeleteAttendant)
+	}
+
+	products := router.Group("/products")
+	{
+		products.GET("/", productHandler.GetProducts)
+		products.GET("/:id", productHandler.GetProductById)
+		products.POST("/", productHandler.CreateProduct)
+		products.PUT("/:id", productHandler.UpdateProduct)
+		products.DELETE("/:id", productHandler.DeleteProduct)
 	}
 
 	return &Router{

@@ -6,27 +6,18 @@ import (
 
 type ProductType int
 
-const (
-	Snack ProductType = iota
-	Drink
-	Combo
-)
-
 type Product struct {
-	ID         int
-	Nome       string
-	Price      float64
-	Quantity   int64
-	Type       ProductType
-	CategoryID int
-	Category   Category
-	CreatedAt  time.Time
-	UpdatedAt  time.Time
+	ID        uint
+	Name      string
+	Price     float64
+	Quantity  int
+	Category  *Category
+	CreatedAt time.Time
+	UpdatedAt time.Time
 }
 
-// Category is an entity that represents a category of product
 type Category struct {
-	ID        int
+	ID        uint
 	Name      string
 	CreatedAt time.Time
 	UpdatedAt time.Time
