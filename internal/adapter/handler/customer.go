@@ -42,7 +42,7 @@ func (h *CustomerHandler) GetCustomers(c *gin.Context) {
 	for _, customer := range customers {
 		response = append(response, FindCustomerResponse{
 			ID:    customer.ID,
-			Nome:  customer.Nome,
+			Nome:  customer.Name,
 			Email: customer.Email,
 			CPF:   customer.CPF,
 		})
@@ -69,7 +69,7 @@ func (h *CustomerHandler) GetCustomer(c *gin.Context) {
 
 	response := FindCustomerResponse{
 		ID:    customer.ID,
-		Nome:  customer.Nome,
+		Nome:  customer.Name,
 		Email: customer.Email,
 		CPF:   customer.CPF,
 	}
@@ -138,7 +138,7 @@ func (h *CustomerHandler) UpdateCustomer(c *gin.Context) {
 		})
 	}
 
-	customer.Nome = request.Nome
+	customer.Name = request.Nome
 	customer.Email = request.Email
 
 	_, err = h.UseCase.UpdateCustomer(customer)

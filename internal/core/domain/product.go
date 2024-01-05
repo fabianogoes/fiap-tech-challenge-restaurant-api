@@ -10,7 +10,6 @@ type Product struct {
 	ID        uint
 	Name      string
 	Price     float64
-	Quantity  int
 	Category  *Category
 	CreatedAt time.Time
 	UpdatedAt time.Time

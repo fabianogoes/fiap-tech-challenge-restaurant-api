@@ -15,8 +15,8 @@ func NewProductService(rep port.ProductRepositoryPort) *ProductService {
 	}
 }
 
-func (c *ProductService) CreateProduct(name string, price float64, quantity int, categoryID int) (*domain.Product, error) {
-	return c.productRepository.CreateProduct(name, price, quantity, categoryID)
+func (c *ProductService) CreateProduct(name string, price float64, categoryID int) (*domain.Product, error) {
+	return c.productRepository.CreateProduct(name, price, categoryID)
 }
 
 func (c *ProductService) GetProductById(id uint) (*domain.Product, error) {

@@ -7,7 +7,7 @@ import (
 
 type Customer struct {
 	gorm.Model
-	Nome  string
+	Name  string
 	Email string
 	CPF   string `gorm:"unique"`
 }
@@ -44,7 +44,7 @@ func (c *CustomerRepository) GetCustomerByCPF(cpf string) (*domain.Customer, err
 
 	return &domain.Customer{
 		ID:        result.ID,
-		Nome:      result.Nome,
+		Name:      result.Name,
 		Email:     result.Email,
 		CPF:       result.CPF,
 		CreatedAt: result.CreatedAt,
@@ -60,7 +60,7 @@ func (c *CustomerRepository) GetCustomerById(id uint) (*domain.Customer, error) 
 
 	return &domain.Customer{
 		ID:        result.ID,
-		Nome:      result.Nome,
+		Name:      result.Name,
 		Email:     result.Email,
 		CPF:       result.CPF,
 		CreatedAt: result.CreatedAt,
@@ -78,7 +78,7 @@ func (c *CustomerRepository) GetCustomers() ([]*domain.Customer, error) {
 	for _, result := range results {
 		customers = append(customers, &domain.Customer{
 			ID:        result.ID,
-			Nome:      result.Nome,
+			Name:      result.Name,
 			Email:     result.Email,
 			CPF:       result.CPF,
 			CreatedAt: result.CreatedAt,
@@ -95,7 +95,7 @@ func (c *CustomerRepository) UpdateCustomer(customer *domain.Customer) (*domain.
 		return nil, err
 	}
 
-	result.Nome = customer.Nome
+	result.Name = customer.Name
 	result.Email = customer.Email
 	result.CPF = customer.CPF
 

@@ -22,7 +22,6 @@ type FindProductResponse struct {
 	ID       uint              `json:"id"`
 	Name     string            `json:"name"`
 	Price    float64           `json:"price"`
-	Quantity int               `json:"quantity"`
 	Category *CategoryResponse `json:"category"`
 }
 
@@ -31,7 +30,6 @@ func ProductToResponse(product *domain.Product) *FindProductResponse {
 		ID:       product.ID,
 		Name:     product.Name,
 		Price:    product.Price,
-		Quantity: product.Quantity,
 		Category: CategoryToResponse(product.Category),
 	}
 }
@@ -94,7 +92,6 @@ func (h *ProductHandler) GetProductById(c *gin.Context) {
 type CreateProductRequest struct {
 	Name       string  `json:"name"`
 	Price      float64 `json:"price"`
-	Quantity   int     `json:"quantity"`
 	CategoryID int     `json:"categoryID"`
 }
 
@@ -111,7 +108,7 @@ func (h *ProductHandler) CreateProduct(c *gin.Context) {
 	}
 
 	fmt.Println(request)
-	product, err := h.UseCase.CreateProduct(request.Name, request.Price, request.Quantity, request.CategoryID)
+	product, err := h.UseCase.CreateProduct(request.Name, request.Price, request.CategoryID)
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
@@ -129,7 +126,6 @@ func (h *ProductHandler) CreateProduct(c *gin.Context) {
 type UpdateProductRequest struct {
 	Name     string  `json:"name"`
 	Price    float64 `json:"price"`
-	Quantity int     `json:"quantity"`
 	Category string  `json:"category"`
 }
 
@@ -159,7 +155,6 @@ func (h *ProductHandler) UpdateProduct(c *gin.Context) {
 
 	product.Name = request.Name
 	product.Price = request.Price
-	product.Quantity = request.Quantity
 	product.Category.Name = request.Category
 
 	_, err = h.UseCase.UpdateProduct(product)

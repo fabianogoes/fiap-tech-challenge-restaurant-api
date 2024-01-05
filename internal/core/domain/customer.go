@@ -4,7 +4,7 @@ import "time"
 
 type Customer struct {
 	ID        uint
-	Nome      string
+	Name      string
 	Email     string
 	CPF       string
 	CreatedAt time.Time
@@ -13,7 +13,7 @@ type Customer struct {
 
 func NewCustomer(nome string, email string, cpf string) (*Customer, error) {
 	return &Customer{
-		Nome:  nome,
+		Name:  nome,
 		Email: email,
 		CPF:   cpf,
 	}, nil
