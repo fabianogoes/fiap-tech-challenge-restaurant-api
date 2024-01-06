@@ -1,6 +1,8 @@
 package repository
 
 import (
+	"fmt"
+
 	"github.com/fiap/challenge-gofood/internal/core/domain"
 	"gorm.io/gorm"
 )
@@ -70,7 +72,7 @@ func (p *ProductRepository) CreateProduct(name string, price float64, categoryID
 func (p *ProductRepository) GetProductById(id uint) (*domain.Product, error) {
 	var result Product
 	if err := p.db.Model(&Product{}).Preload("Category").First(&result, id).Error; err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error to find product with id %d - %v", id, err)
 	}
 
 	return result.ToModel(), nil
