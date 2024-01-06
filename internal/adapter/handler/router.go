@@ -10,6 +10,7 @@ func NewRouter(
 	customerHandler *CustomerHandler,
 	attendantHandler *AttendantHandler,
 	productHandler *ProductHandler,
+	orderHandler *OrderHandler,
 ) (*Router, error) {
 	router := gin.Default()
 
@@ -29,6 +30,7 @@ func NewRouter(
 	{
 		customers.GET("/", customerHandler.GetCustomers)
 		customers.GET("/:id", customerHandler.GetCustomer)
+		customers.GET("/cpf/:cpf", customerHandler.GetCustomerByCPF)
 		customers.POST("/", customerHandler.CreateCustomer)
 		customers.PUT("/:id", customerHandler.UpdateCustomer)
 		customers.DELETE("/:id", customerHandler.DeleteCustomer)
@@ -50,6 +52,11 @@ func NewRouter(
 		products.POST("/", productHandler.CreateProduct)
 		products.PUT("/:id", productHandler.UpdateProduct)
 		products.DELETE("/:id", productHandler.DeleteProduct)
+	}
+
+	orders := router.Group("/orders")
+	{
+		orders.POST("/start", orderHandler.StartOrder)
 	}
 
 	return &Router{
