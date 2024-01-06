@@ -1,6 +1,8 @@
 package repository
 
 import (
+	"fmt"
+
 	"github.com/fiap/challenge-gofood/internal/core/domain"
 	"gorm.io/gorm"
 )
@@ -44,7 +46,7 @@ func (c *AttendantRepository) CreateAttendant(name string) (*domain.Attendant, e
 func (c *AttendantRepository) GetAttendantById(id uint) (*domain.Attendant, error) {
 	var result Attendant
 	if err := c.db.First(&result, id).Error; err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error to find attendant with id %d - %v", id, err)
 	}
 
 	return &domain.Attendant{
