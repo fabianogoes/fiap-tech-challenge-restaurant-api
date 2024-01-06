@@ -48,11 +48,8 @@ go version
 ```
 
 - Clonar o repostório
-- Entrar na pasta e rodar o comando para baixar as dependências
-
-```shell
-go mod tidy
-```
+- Entrar na pasta e rodar o comando para baixar as dependências `go mod tidy`
+- Fazer uma cópia do arquivo .env.example e renomear para .env `cp .env.example .env`
 
 ## Para Rodar o projeto
 
