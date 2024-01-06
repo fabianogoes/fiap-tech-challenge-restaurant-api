@@ -73,10 +73,19 @@ func main() {
 	productUseCase := service.NewProductService(productRepository)
 	productHandler := handler.NewProductHandler(productUseCase)
 
+	orderRepository := repository.NewOrderRepository(db)
+	orderUseCase := service.NewOrderService(orderRepository, customerRepository)
+	orderHandler := handler.NewOrderHandler(
+		orderUseCase,
+		customerUseCase,
+		attendantUseCase,
+	)
+
 	router, err := handler.NewRouter(
 		customerHandler,
 		attendantHandler,
 		productHandler,
+		orderHandler,
 	)
 	if err != nil {
 		panic(err)
