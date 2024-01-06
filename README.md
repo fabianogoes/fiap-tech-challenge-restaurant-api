@@ -4,6 +4,7 @@
 >
 > - [Documentação DDD Miro](https://miro.com/app/board/uXjVNNl_0q0=/)
 > - [Tech Challenge - Entregáveis fase 1](./doc/EntragaFase1.md)
+> - [Como Testar](./doc/ComoTestar.md)
 
 ## Arquitetura do projeto
 
