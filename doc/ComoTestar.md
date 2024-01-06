@@ -115,6 +115,13 @@ curl --request GET \
   --url http://localhost:8080/customers/1
 ```
 
+Busca de Cliente por CPF
+
+```shell
+curl --request GET \
+  --url http://localhost:8080/customers/cpf/15204180001
+```
+
 Lista de Clientes
 
 ```shell
@@ -177,4 +184,15 @@ Exclusão de Produto
 ```shell
 curl --request DELETE \
   --url http://localhost:8080/products/1
+```
+
+## Teste API de Orders usando o curl
+
+Start Order
+
+```shell
+curl --request POST \
+  --url http://localhost:8080/orders/start \
+  --header 'Content-Type: application/json' \
+  --data '{ "customerCPF": "15204180001", "attendantID": 1 }'
 ```
