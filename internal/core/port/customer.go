@@ -7,6 +7,7 @@ import "github.com/fiap/challenge-gofood/internal/core/domain"
 type CustomerUseCasePort interface {
 	CreateCustomer(nome string, email string, cpf string) (*domain.Customer, error)
 	GetCustomerById(id uint) (*domain.Customer, error)
+	GetCustomerByCPF(cpf string) (*domain.Customer, error)
 	GetCustomers() ([]*domain.Customer, error)
 	UpdateCustomer(customer *domain.Customer) (*domain.Customer, error)
 	DeleteCustomer(id uint) error

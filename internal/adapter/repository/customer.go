@@ -1,6 +1,8 @@
 package repository
 
 import (
+	"fmt"
+
 	"github.com/fiap/challenge-gofood/internal/core/domain"
 	"gorm.io/gorm"
 )
@@ -39,7 +41,7 @@ func (c *CustomerRepository) CreateCustomer(customer *domain.Customer) (*domain.
 func (c *CustomerRepository) GetCustomerByCPF(cpf string) (*domain.Customer, error) {
 	var result Customer
 	if err := c.db.Where("cpf = ?", cpf).First(&result).Error; err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error to find customer with cpf %s - %v", cpf, err)
 	}
 
 	return &domain.Customer{
@@ -55,7 +57,7 @@ func (c *CustomerRepository) GetCustomerByCPF(cpf string) (*domain.Customer, err
 func (c *CustomerRepository) GetCustomerById(id uint) (*domain.Customer, error) {
 	var result Customer
 	if err := c.db.First(&result, id).Error; err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error to find customer with id %d - %v", id, err)
 	}
 
 	return &domain.Customer{

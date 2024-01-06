@@ -28,6 +28,10 @@ func (c *CustomerService) GetCustomerById(id uint) (*domain.Customer, error) {
 	return c.customerRepository.GetCustomerById(id)
 }
 
+func (c *CustomerService) GetCustomerByCPF(cpf string) (*domain.Customer, error) {
+	return c.customerRepository.GetCustomerByCPF(cpf)
+}
+
 func (c *CustomerService) GetCustomers() ([]*domain.Customer, error) {
 	return c.customerRepository.GetCustomers()
 }

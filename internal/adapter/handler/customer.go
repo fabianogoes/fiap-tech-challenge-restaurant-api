@@ -77,6 +77,32 @@ func (h *CustomerHandler) GetCustomer(c *gin.Context) {
 	c.JSON(http.StatusOK, response)
 }
 
+func (h *CustomerHandler) GetCustomerByCPF(c *gin.Context) {
+	var err error
+	cpf := c.Param("cpf")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+	}
+
+	customer, err := h.UseCase.GetCustomerByCPF(cpf)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+	}
+
+	response := FindCustomerResponse{
+		ID:    customer.ID,
+		Nome:  customer.Name,
+		Email: customer.Email,
+		CPF:   customer.CPF,
+	}
+
+	c.JSON(http.StatusOK, response)
+}
+
 type CreateCustomerRequest struct {
 	Nome  string `json:"name"`
 	Email string `json:"email"`
