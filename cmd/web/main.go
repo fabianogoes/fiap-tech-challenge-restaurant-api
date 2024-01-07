@@ -79,6 +79,7 @@ func main() {
 		orderUseCase,
 		customerUseCase,
 		attendantUseCase,
+		productUseCase,
 	)
 
 	router, err := handler.NewRouter(

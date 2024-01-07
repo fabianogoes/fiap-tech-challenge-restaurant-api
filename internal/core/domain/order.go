@@ -10,15 +10,16 @@ type Order struct {
 	Status        OrderStatus
 	PaymentStatus string
 	Amount        float64
+	ItemsTotal    int
 	Items         []*OrderItem
 	CreatedAt     time.Time
 	UpdatedAt     time.Time
 }
 
 type OrderItem struct {
-	ID        int
+	ID        uint
 	Order     Order
-	Product   Product
+	Product   *Product
 	Quantity  int
 	UnitPrice float64
 }

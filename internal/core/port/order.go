@@ -6,9 +6,9 @@ import "github.com/fiap/challenge-gofood/internal/core/domain"
 
 type OrderUseCasePort interface {
 	StartOrder(customerID uint, attendantID uint) (*domain.Order, error)
-	// GetOrder(id int64) (*domain.Order, error)
+	GetOrderById(id uint) (*domain.Order, error)
+	AddItemToOrder(order *domain.Order, product *domain.Product, quantity int) (*domain.Order, error)
 	// GetOrders() ([]*domain.Order, error)
-	// UpdateOrder(order *domain.Order) (*domain.Order, error)
 	// DeleteOrder(id int64) error
 }
 
@@ -16,8 +16,8 @@ type OrderUseCasePort interface {
 
 type OrderRepositoryPort interface {
 	StartOrder(customerID uint, attendantID uint, orderStatus string, paymentStatus string) (*domain.Order, error)
-	// GetOrder(id int64) (*domain.Order, error)
-	// GetOrders() ([]*domain.Order, error)
-	// UpdateOrder(order *domain.Order) (*domain.Order, error)
+	GetOrderById(id uint) (*domain.Order, error)
+	AddItemToOrder(order *domain.Order, product *domain.Product, quantity int) (*domain.Order, error)
+	UpdateOrder(order *domain.Order) (*domain.Order, error)
 	// DeleteOrder(id int64) error
 }
