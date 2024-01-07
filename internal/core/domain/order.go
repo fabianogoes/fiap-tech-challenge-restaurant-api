@@ -28,15 +28,16 @@ type OrderStatus int
 
 const (
 	OrderStatusStarted OrderStatus = iota
+	OrderStatusAddingItems
 	OrderStatusConfirmed
-	OrderStatusInPreparation
 	OrderStatusPaid
+	OrderStatusInPreparation
 	OrderStatusDelivered
 	OrderStatusCanceled
 )
 
 func (os OrderStatus) ToString() string {
-	return [...]string{"STARTED", "CONFIRMED", "IN_PREPARATION", "PAID", "DELIVERED", "CANCELED"}[os]
+	return [...]string{"STARTED", "ADDING_ITEMS", "CONFIRMED", "IN_PREPARATION", "PAID", "DELIVERED", "CANCELED"}[os]
 }
 
 func (os OrderStatus) ToOrderStatus(status string) OrderStatus {

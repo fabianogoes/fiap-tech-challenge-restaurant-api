@@ -34,6 +34,7 @@ func (os *OrderService) AddItemToOrder(order *domain.Order, product *domain.Prod
 
 	order.Amount += product.Price * float64(quantity)
 	order.ItemsTotal += quantity
+	order.Status = domain.OrderStatusAddingItems
 
 	order.Items = append(order.Items, &domain.OrderItem{
 		Product:   product,

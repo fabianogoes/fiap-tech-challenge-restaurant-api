@@ -56,6 +56,8 @@ func mapOrderStatus(status string) domain.OrderStatus {
 	switch status {
 	case "STARTED":
 		return domain.OrderStatusStarted
+	case "ADDING_ITEMS":
+		return domain.OrderStatusAddingItems
 	case "CONFIRMED":
 		return domain.OrderStatusConfirmed
 	case "IN_PREPARATION":
@@ -180,6 +182,7 @@ func (or *OrderRepository) UpdateOrder(order *domain.Order) (*domain.Order, erro
 	}
 
 	orderToUpdate.Amount = order.Amount
+	orderToUpdate.Status = order.Status.ToString()
 
 	if err := or.db.Save(orderToUpdate).Error; err != nil {
 		return nil, err
