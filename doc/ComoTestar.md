@@ -188,11 +188,49 @@ curl --request DELETE \
 
 ## Teste API de Orders usando o curl
 
-Start Order
+Iniciando um novo Pedido
 
 ```shell
 curl --request POST \
   --url http://localhost:8080/orders/start \
   --header 'Content-Type: application/json' \
   --data '{ "customerCPF": "15204180001", "attendantID": 1 }'
+```
+
+> Adicionando Items ao Pedido
+
+Adicionando 1 `X-Burguer`
+
+```shell
+curl --request POST \
+  --url http://localhost:8080/orders/add/1 \
+  --header 'Content-Type: application/json' \
+  --data '{ "productID": 2, "quantity": 1 }'
+```
+
+Adicionando 1 `X-Bacon`
+
+```shell
+curl --request POST \
+  --url http://localhost:8080/orders/add/1 \
+  --header 'Content-Type: application/json' \
+  --data '{ "productID": 3, "quantity": 1 }'
+```
+
+Adicionando 2 `Coca-Cola`
+
+```shell
+curl --request POST \
+  --url http://localhost:8080/orders/add/1 \
+  --header 'Content-Type: application/json' \
+  --data '{ "productID": 6, "quantity": 1 }'
+```
+
+Adicionando 2 `Batata Frita`
+
+```shell
+curl --request POST \
+  --url http://localhost:8080/orders/add/1 \
+  --header 'Content-Type: application/json' \
+  --data '{ "productID": 22, "quantity": 1 }'
 ```
