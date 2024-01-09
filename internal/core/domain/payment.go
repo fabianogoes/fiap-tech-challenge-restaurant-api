@@ -8,10 +8,11 @@ const (
 	PaymentStatusPending PaymentStatus = iota
 	PaymentStatusPaid
 	PaymentStatusCanceled
+	PaymentStatusError
 )
 
 func (ps PaymentStatus) ToString() string {
-	return [...]string{"PENDING", "PAID", "CANCELED"}[ps]
+	return [...]string{"PENDING", "PAID", "CANCELED", "PAYMENT_ERROR"}[ps]
 }
 
 func (ps PaymentStatus) ToPaymentStatus(status string) PaymentStatus {
@@ -22,6 +23,8 @@ func (ps PaymentStatus) ToPaymentStatus(status string) PaymentStatus {
 		return PaymentStatusPaid
 	case "CANCELED":
 		return PaymentStatusCanceled
+	case "PAYMENT_ERROR":
+		return PaymentStatusError
 	default:
 		return PaymentStatusPending
 	}
@@ -33,13 +36,14 @@ const (
 	PaymentMethodCreditCard PaymentMethod = iota
 	PaymentMethodDebitCard
 	PaymentMethodMoney
+	PaymentMethodPIX
 )
 
 func (pm PaymentMethod) ToString() string {
-	return [...]string{"CREDIT_CARD", "DEBIT_CARD", "MONEY"}[pm]
+	return [...]string{"CREDIT_CARD", "DEBIT_CARD", "MONEY", "PIX"}[pm]
 }
 
-func (pm PaymentMethod) ToPaymentMethod(method string) PaymentMethod {
+func ToPaymentMethod(method string) PaymentMethod {
 	switch method {
 	case "CREDIT_CARD":
 		return PaymentMethodCreditCard
@@ -47,13 +51,15 @@ func (pm PaymentMethod) ToPaymentMethod(method string) PaymentMethod {
 		return PaymentMethodDebitCard
 	case "MONEY":
 		return PaymentMethodMoney
+	case "PIX":
+		return PaymentMethodPIX
 	default:
 		return PaymentMethodMoney
 	}
 }
 
 type Payment struct {
-	ID        int64
+	ID        uint
 	Order     Order
 	Date      time.Time
 	Method    PaymentMethod

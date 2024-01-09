@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -134,17 +135,22 @@ func (h *OrderHandler) AddItemToOrder(c *gin.Context) {
 }
 
 type OrderResponse struct {
-	ID            uint    `json:"id"`
-	CustomerID    uint    `json:"customerID"`
-	CustomerCPF   string  `json:"customerCPF"`
-	CustomerName  string  `json:"customerName"`
-	AttendantID   uint    `json:"attendantID"`
-	AttendantName string  `json:"attendantName"`
-	Amount        float64 `json:"amount"`
-	ItemsTotal    int     `json:"itemsTotal"`
-	Status        string  `json:"status"`
-	PaymentStatus string  `json:"paymentStatus"`
+	ID            uint                 `json:"id"`
+	CustomerID    uint                 `json:"customerID"`
+	CustomerCPF   string               `json:"customerCPF"`
+	CustomerName  string               `json:"customerName"`
+	AttendantID   uint                 `json:"attendantID"`
+	AttendantName string               `json:"attendantName"`
+	Amount        string               `json:"amount"`
+	ItemsTotal    int                  `json:"itemsTotal"`
+	Status        string               `json:"status"`
+	Payment       OrderPaymentResponse `json:"payment"`
 	Items         []OrderItemResponse
+}
+
+type OrderPaymentResponse struct {
+	Status string `json:"status"`
+	Method string `json:"method"`
 }
 
 type OrderItemResponse struct {
@@ -161,11 +167,14 @@ func mapOrderResponse(order *domain.Order) OrderResponse {
 		CustomerName:  order.Customer.Name,
 		AttendantID:   order.Attendant.ID,
 		AttendantName: order.Attendant.Name,
-		Amount:        order.Amount,
+		Amount:        fmt.Sprintf("%.2f", order.Amount),
 		ItemsTotal:    order.ItemsTotal,
 		Status:        order.Status.ToString(),
-		PaymentStatus: order.PaymentStatus,
-		Items:         []OrderItemResponse{},
+		Payment: OrderPaymentResponse{
+			Status: order.Payment.Status.ToString(),
+			Method: order.Payment.Method.ToString(),
+		},
+		Items: []OrderItemResponse{},
 	}
 
 	for _, item := range order.Items {
@@ -190,6 +199,77 @@ func (h *OrderHandler) GetOrderById(c *gin.Context) {
 	order, err := h.OrderUseCase.GetOrderById(uint(orderID))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	response := mapOrderResponse(order)
+
+	c.JSON(http.StatusOK, response)
+}
+
+func (h *OrderHandler) ConfirmationOrder(c *gin.Context) {
+	var err error
+	orderID, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+	}
+
+	order, err := h.OrderUseCase.GetOrderById(uint(orderID))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	order, err = h.OrderUseCase.ConfirmationOrder(order)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	response := mapOrderResponse(order)
+
+	c.JSON(http.StatusOK, response)
+}
+
+type PaymentOrderRequest struct {
+	PaymentMethod string `json:"paymentMethod"`
+}
+
+func (h *OrderHandler) PaymentOrder(c *gin.Context) {
+	var err error
+	orderID, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+	}
+
+	order, err := h.OrderUseCase.GetOrderById(uint(orderID))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	var request PaymentOrderRequest
+	if err := c.ShouldBindJSON(&request); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+	}
+
+	order, err = h.OrderUseCase.PaymentOrder(order, request.PaymentMethod)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
 		})
 		return

@@ -192,7 +192,7 @@ Iniciando um novo Pedido
 
 ```shell
 curl --request POST \
-  --url http://localhost:8080/orders/start \
+  --url http://localhost:8080/orders \
   --header 'Content-Type: application/json' \
   --data '{ "customerCPF": "15204180001", "attendantID": 1 }'
 ```
@@ -202,8 +202,8 @@ curl --request POST \
 Adicionando 1 `X-Burguer`
 
 ```shell
-curl --request POST \
-  --url http://localhost:8080/orders/add/1 \
+curl --request PUT \
+  --url http://localhost:8080/orders/1/product \
   --header 'Content-Type: application/json' \
   --data '{ "productID": 2, "quantity": 1 }'
 ```
@@ -211,8 +211,8 @@ curl --request POST \
 Adicionando 1 `X-Bacon`
 
 ```shell
-curl --request POST \
-  --url http://localhost:8080/orders/add/1 \
+curl --request PUT \
+  --url http://localhost:8080/orders/1/product \
   --header 'Content-Type: application/json' \
   --data '{ "productID": 3, "quantity": 1 }'
 ```
@@ -220,8 +220,8 @@ curl --request POST \
 Adicionando 2 `Coca-Cola`
 
 ```shell
-curl --request POST \
-  --url http://localhost:8080/orders/add/1 \
+curl --request PUT \
+  --url http://localhost:8080/orders/1/product \
   --header 'Content-Type: application/json' \
   --data '{ "productID": 6, "quantity": 1 }'
 ```
@@ -229,8 +229,31 @@ curl --request POST \
 Adicionando 2 `Batata Frita`
 
 ```shell
-curl --request POST \
-  --url http://localhost:8080/orders/add/1 \
+curl --request PUT \
+  --url http://localhost:8080/orders/1/product \
   --header 'Content-Type: application/json' \
   --data '{ "productID": 22, "quantity": 1 }'
+```
+
+Confirmando Pedido
+
+```shell
+curl --request PUT --url http://localhost:8080/orders/1/confirmation
+}'
+```
+
+Pagando Pedido
+
+métodos de pagamento possiveis:
+
+- CREDIT_CARD
+- DEBIT_CARD
+- MONEY
+- PIX
+
+```shell
+curl --request PUT \
+  --url http://localhost:8080/orders/1/payment \
+  --header 'Content-Type: application/json' \
+  --data '{ "paymentMethod": "CREDIT_CARD" }'
 ```

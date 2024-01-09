@@ -10,15 +10,16 @@ import (
 
 type Order struct {
 	gorm.Model
-	CustomerID    uint
-	Customer      Customer `gorm:"ForeignKey:CustomerID"`
-	AttendantID   uint
-	Attendant     Attendant `gorm:"ForeignKey:AttendantID"`
-	Date          time.Time
-	Status        string
-	PaymentStatus string
-	Amount        float64
-	Items         []*OrderItem
+	CustomerID  uint
+	Customer    Customer `gorm:"ForeignKey:CustomerID"`
+	AttendantID uint
+	Attendant   Attendant `gorm:"ForeignKey:AttendantID"`
+	Date        time.Time
+	Status      string
+	PaymentID   uint
+	Payment     Payment `gorm:"ForeignKey:PaymentID"`
+	Amount      float64
+	Items       []*OrderItem
 }
 
 func (o *Order) ToModel() *domain.Order {
@@ -41,14 +42,14 @@ func (o *Order) ToModel() *domain.Order {
 			ID:   o.Attendant.ID,
 			Name: o.Attendant.Name,
 		},
-		Date:          o.Date,
-		Status:        mapOrderStatus(o.Status),
-		PaymentStatus: o.PaymentStatus,
-		Amount:        o.Amount,
-		ItemsTotal:    itemsTotal,
-		Items:         items,
-		CreatedAt:     o.CreatedAt,
-		UpdatedAt:     o.UpdatedAt,
+		Date:       o.Date,
+		Status:     mapOrderStatus(o.Status),
+		Payment:    o.Payment.ToModel(),
+		Amount:     o.Amount,
+		ItemsTotal: itemsTotal,
+		Items:      items,
+		CreatedAt:  o.CreatedAt,
+		UpdatedAt:  o.UpdatedAt,
 	}
 }
 
@@ -107,44 +108,27 @@ func (or *OrderRepository) StartOrder(
 	paymentStatus string,
 ) (*domain.Order, error) {
 	order := &Order{
-		CustomerID:    customerID,
-		AttendantID:   attendantID,
-		Date:          time.Now(),
-		Status:        orderStatus,
-		PaymentStatus: paymentStatus,
-		Amount:        0,
-		Items:         []*OrderItem{},
+		CustomerID:  customerID,
+		AttendantID: attendantID,
+		Date:        time.Now(),
+		Status:      orderStatus,
+		Payment:     Payment{Status: paymentStatus},
+		Amount:      0,
+		Items:       []*OrderItem{},
 	}
 
 	if err := or.db.Create(order).Error; err != nil {
 		return nil, err
 	}
 
-	return &domain.Order{
-		ID: order.ID,
-		Customer: &domain.Customer{
-			ID:   order.Customer.ID,
-			Name: order.Customer.Name,
-			CPF:  order.Customer.CPF,
-		},
-		Attendant: &domain.Attendant{
-			ID:   order.Attendant.ID,
-			Name: order.Attendant.Name,
-		},
-		Date:          order.Date,
-		Status:        mapOrderStatus(order.Status),
-		PaymentStatus: order.PaymentStatus,
-		Amount:        order.Amount,
-		Items:         []*domain.OrderItem{},
-		CreatedAt:     order.CreatedAt,
-		UpdatedAt:     order.UpdatedAt,
-	}, nil
+	return order.ToModel(), nil
 }
 
 func (or *OrderRepository) GetOrderById(id uint) (*domain.Order, error) {
 	order := &Order{}
 
-	if err := or.db.Preload("Customer").Preload("Attendant").Preload("Items").First(order, id).Error; err != nil {
+	if err := or.db.Preload("Customer").Preload("Attendant").Preload("Payment").Preload("Items").
+		First(order, id).Error; err != nil {
 		return nil, fmt.Errorf("error to find order with id %d - %v", id, err)
 	}
 
@@ -177,12 +161,17 @@ func (or *OrderRepository) AddItemToOrder(order *domain.Order, product *domain.P
 func (or *OrderRepository) UpdateOrder(order *domain.Order) (*domain.Order, error) {
 	orderToUpdate := &Order{}
 
-	if err := or.db.Preload("Items").First(orderToUpdate, order.ID).Error; err != nil {
+	if err := or.db.Preload("Customer").Preload("Attendant").Preload("Payment").Preload("Items").
+		First(orderToUpdate, order.ID).Error; err != nil {
 		return nil, err
 	}
 
 	orderToUpdate.Amount = order.Amount
 	orderToUpdate.Status = order.Status.ToString()
+	orderToUpdate.Payment = mapPatmentEntity(order.Payment)
+
+	fmt.Printf("Status: %s Payment: %s\n", orderToUpdate.Status, orderToUpdate.Payment.Status)
+	fmt.Println(orderToUpdate.Payment)
 
 	if err := or.db.Save(orderToUpdate).Error; err != nil {
 		return nil, err

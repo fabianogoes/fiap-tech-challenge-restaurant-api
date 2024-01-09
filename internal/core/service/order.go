@@ -8,12 +8,21 @@ import (
 type OrderService struct {
 	orderRepository    port.OrderRepositoryPort
 	customerRepository port.CustomerRepositoryPort
+	paymentUseCase     port.PaymentUseCasePort
+	paymentClient      port.PaymentClientPort
 }
 
-func NewOrderService(rep port.OrderRepositoryPort, cr port.CustomerRepositoryPort) *OrderService {
+func NewOrderService(
+	rep port.OrderRepositoryPort,
+	cr port.CustomerRepositoryPort,
+	puc port.PaymentUseCasePort,
+	pc port.PaymentClientPort,
+) *OrderService {
 	return &OrderService{
 		orderRepository:    rep,
 		customerRepository: cr,
+		paymentUseCase:     puc,
+		paymentClient:      pc,
 	}
 }
 
@@ -43,4 +52,33 @@ func (os *OrderService) AddItemToOrder(order *domain.Order, product *domain.Prod
 	})
 
 	return os.orderRepository.AddItemToOrder(order, product, quantity)
+}
+
+func (os *OrderService) ConfirmationOrder(order *domain.Order) (*domain.Order, error) {
+	order.Status = domain.OrderStatusConfirmed
+	return os.orderRepository.UpdateOrder(order)
+}
+
+func (os *OrderService) PaymentOrder(order *domain.Order, paymentMethod string) (*domain.Order, error) {
+	payment, err := os.paymentUseCase.GetPaymentById(order.Payment.ID)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := os.paymentClient.Pay(order); err != nil {
+		order.Status = domain.OrderStatusPaymentError
+		payment.Status = domain.PaymentStatusError
+	} else {
+		order.Status = domain.OrderStatusPaid
+		payment.Status = domain.PaymentStatusPaid
+	}
+
+	payment.Method = domain.ToPaymentMethod(paymentMethod)
+	_, err = os.paymentUseCase.UpdatePayment(payment)
+	if err != nil {
+		return nil, err
+	}
+
+	order.Payment = payment
+	return os.orderRepository.UpdateOrder(order)
 }

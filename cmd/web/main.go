@@ -7,6 +7,7 @@ import (
 	"os"
 
 	"github.com/fiap/challenge-gofood/internal/adapter/handler"
+	"github.com/fiap/challenge-gofood/internal/adapter/payment"
 	"github.com/fiap/challenge-gofood/internal/adapter/repository"
 	"github.com/fiap/challenge-gofood/internal/core/service"
 	"github.com/joho/godotenv"
@@ -73,8 +74,11 @@ func main() {
 	productUseCase := service.NewProductService(productRepository)
 	productHandler := handler.NewProductHandler(productUseCase)
 
+	paymentClientUseCase := payment.NewPaymentClientUseCase()
+	paymentRepository := repository.NewPaymentRepository(db)
+	paymentUseCase := service.NewPaymentService(paymentRepository)
 	orderRepository := repository.NewOrderRepository(db)
-	orderUseCase := service.NewOrderService(orderRepository, customerRepository)
+	orderUseCase := service.NewOrderService(orderRepository, customerRepository, paymentUseCase, paymentClientUseCase)
 	orderHandler := handler.NewOrderHandler(
 		orderUseCase,
 		customerUseCase,

@@ -8,6 +8,8 @@ type OrderUseCasePort interface {
 	StartOrder(customerID uint, attendantID uint) (*domain.Order, error)
 	GetOrderById(id uint) (*domain.Order, error)
 	AddItemToOrder(order *domain.Order, product *domain.Product, quantity int) (*domain.Order, error)
+	ConfirmationOrder(order *domain.Order) (*domain.Order, error)
+	PaymentOrder(order *domain.Order, paymentMethod string) (*domain.Order, error)
 	// GetOrders() ([]*domain.Order, error)
 	// DeleteOrder(id int64) error
 }
