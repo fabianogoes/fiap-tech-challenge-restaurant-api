@@ -14,6 +14,7 @@ type OrderUseCasePort interface {
 	ReadyForDeliveryOrder(order *domain.Order) (*domain.Order, error)
 	SentForDeliveryOrder(order *domain.Order) (*domain.Order, error)
 	DeliveredOrder(order *domain.Order) (*domain.Order, error)
+	CancelOrder(order *domain.Order) (*domain.Order, error)
 }
 
 // Secondary ports to Order

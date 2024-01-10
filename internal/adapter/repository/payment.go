@@ -60,6 +60,8 @@ func mapPaymentStatus(status string) domain.PaymentStatus {
 		return domain.PaymentStatusPending
 	case "PAID":
 		return domain.PaymentStatusPaid
+	case "REVERSED":
+		return domain.PaymentStatusReversed
 	case "CANCELED":
 		return domain.PaymentStatusCanceled
 	case "PAYMENT_ERROR":

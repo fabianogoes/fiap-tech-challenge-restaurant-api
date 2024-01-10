@@ -63,6 +63,8 @@ func mapOrderStatus(status string) domain.OrderStatus {
 		return domain.OrderStatusConfirmed
 	case "PAID":
 		return domain.OrderStatusPaid
+	case "PAYMENT_REVERSED":
+		return domain.OrderStatusPaymentReversed
 	case "IN_PREPARATION":
 		return domain.OrderStatusInPreparation
 	case "READY_FOR_DELIVERY":

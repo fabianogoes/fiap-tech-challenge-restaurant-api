@@ -399,3 +399,30 @@ func (h *OrderHandler) DeliveredOrder(c *gin.Context) {
 
 	c.JSON(http.StatusOK, response)
 }
+
+func (h *OrderHandler) CancelOrder(c *gin.Context) {
+	var err error
+	orderID, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+	}
+
+	order, err := h.OrderUseCase.GetOrderById(uint(orderID))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+	order, err = h.OrderUseCase.CancelOrder(order)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+	response := mapOrderResponse(order)
+	c.JSON(http.StatusOK, response)
+}

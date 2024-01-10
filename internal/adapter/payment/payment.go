@@ -17,3 +17,8 @@ func (p *PaymentClientUseCase) Pay(order *domain.Order) error {
 	fmt.Printf("Order %d paid by method %s\n", order.ID, order.Payment.Method.ToString())
 	return nil
 }
+
+func (p *PaymentClientUseCase) Reverse(order *domain.Order) error {
+	fmt.Printf("Order %d payment reversed\n", order.ID)
+	return nil
+}

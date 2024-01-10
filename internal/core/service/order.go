@@ -1,6 +1,8 @@
 package service
 
 import (
+	"fmt"
+
 	"github.com/fiap/challenge-gofood/internal/core/domain"
 	"github.com/fiap/challenge-gofood/internal/core/port"
 )
@@ -100,5 +102,27 @@ func (os *OrderService) SentForDeliveryOrder(order *domain.Order) (*domain.Order
 
 func (os *OrderService) DeliveredOrder(order *domain.Order) (*domain.Order, error) {
 	order.Status = domain.OrderStatusDelivered
+	return os.orderRepository.UpdateOrder(order)
+}
+
+func (os *OrderService) CancelOrder(order *domain.Order) (*domain.Order, error) {
+	fmt.Printf("CancelOrder Payment Status: %s\n", order.Payment.Status.ToString())
+	if order.Payment.Status == domain.PaymentStatusPaid {
+		payment, _ := os.paymentUseCase.GetPaymentById(order.Payment.ID)
+		if err := os.paymentClient.Reverse(order); err != nil {
+			order.Status = domain.OrderStatusPaymentError
+			payment.Status = domain.PaymentStatusError
+		} else {
+			payment.Status = domain.PaymentStatusReversed
+			_, err = os.paymentUseCase.UpdatePayment(payment)
+			if err != nil {
+				return nil, err
+			}
+
+			order.Payment = payment
+		}
+	}
+
+	order.Status = domain.OrderStatusCanceled
 	return os.orderRepository.UpdateOrder(order)
 }

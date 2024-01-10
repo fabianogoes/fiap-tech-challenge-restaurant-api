@@ -31,6 +31,7 @@ const (
 	OrderStatusAddingItems
 	OrderStatusConfirmed
 	OrderStatusPaid
+	OrderStatusPaymentReversed
 	OrderStatusPaymentError
 	OrderStatusInPreparation
 	OrderStatusReadyForDelivery
@@ -45,6 +46,7 @@ func (os OrderStatus) ToString() string {
 		"ADDING_ITEMS",
 		"CONFIRMED",
 		"PAID",
+		"PAYMENT_REVERSED",
 		"PAYMENT_ERROR",
 		"IN_PREPARATION",
 		"READY_FOR_DELIVERY",
@@ -66,6 +68,8 @@ func (os OrderStatus) ToOrderStatus(status string) OrderStatus {
 		return OrderStatusReadyForDelivery
 	case "PAID":
 		return OrderStatusPaid
+	case "PAYMENT_REVERSED":
+		return OrderStatusPaymentReversed
 	case "PAYMENT_ERROR":
 		return OrderStatusPaymentError
 	case "SENT_FOR_DELIVERY":

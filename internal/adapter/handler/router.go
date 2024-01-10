@@ -65,6 +65,7 @@ func NewRouter(
 		orders.PUT("/:id/ready-for-delivery", orderHandler.ReadyForDeliveryOrder)
 		orders.PUT("/:id/sent-for-delivery", orderHandler.SentForDeliveryOrder)
 		orders.PUT("/:id/delivered", orderHandler.DeliveredOrder)
+		orders.PUT("/:id/cancel", orderHandler.CancelOrder)
 	}
 
 	return &Router{

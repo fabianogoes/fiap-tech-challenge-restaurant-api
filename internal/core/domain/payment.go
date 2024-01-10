@@ -7,13 +7,14 @@ type PaymentStatus int
 const (
 	PaymentStatusPending PaymentStatus = iota
 	PaymentStatusPaid
+	PaymentStatusReversed
 	PaymentStatusCanceled
 	PaymentStatusError
 	PaymentStatusNone
 )
 
 func (ps PaymentStatus) ToString() string {
-	return [...]string{"PENDING", "PAID", "CANCELED", "PAYMENT_ERROR", "NONE"}[ps]
+	return [...]string{"PENDING", "PAID", "REVERSED", "CANCELED", "ERROR", "NONE"}[ps]
 }
 
 func (ps PaymentStatus) ToPaymentStatus(status string) PaymentStatus {
@@ -22,9 +23,11 @@ func (ps PaymentStatus) ToPaymentStatus(status string) PaymentStatus {
 		return PaymentStatusPending
 	case "PAID":
 		return PaymentStatusPaid
+	case "REVERSED":
+		return PaymentStatusReversed
 	case "CANCELED":
 		return PaymentStatusCanceled
-	case "PAYMENT_ERROR":
+	case "ERROR":
 		return PaymentStatusError
 	default:
 		return PaymentStatusNone
