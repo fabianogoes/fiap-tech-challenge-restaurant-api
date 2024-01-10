@@ -1,8 +1,8 @@
 package service
 
 import (
-	"github.com/fiap/challenge-gofood/internal/core/domain"
-	"github.com/fiap/challenge-gofood/internal/core/port"
+	"github.com/fiap/challenge-gofood/internal/domain/entity"
+	"github.com/fiap/challenge-gofood/internal/domain/port"
 )
 
 type ProductService struct {
@@ -15,19 +15,19 @@ func NewProductService(rep port.ProductRepositoryPort) *ProductService {
 	}
 }
 
-func (c *ProductService) CreateProduct(name string, price float64, categoryID int) (*domain.Product, error) {
+func (c *ProductService) CreateProduct(name string, price float64, categoryID int) (*entity.Product, error) {
 	return c.productRepository.CreateProduct(name, price, categoryID)
 }
 
-func (c *ProductService) GetProductById(id uint) (*domain.Product, error) {
+func (c *ProductService) GetProductById(id uint) (*entity.Product, error) {
 	return c.productRepository.GetProductById(id)
 }
 
-func (c *ProductService) GetProducts() ([]*domain.Product, error) {
+func (c *ProductService) GetProducts() ([]*entity.Product, error) {
 	return c.productRepository.GetProducts()
 }
 
-func (c *ProductService) UpdateProduct(product *domain.Product) (*domain.Product, error) {
+func (c *ProductService) UpdateProduct(product *entity.Product) (*entity.Product, error) {
 	return c.productRepository.UpdateProduct(product)
 }
 

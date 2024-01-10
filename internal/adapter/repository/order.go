@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/fiap/challenge-gofood/internal/core/domain"
+	"github.com/fiap/challenge-gofood/internal/domain/entity"
 	"gorm.io/gorm"
 )
 
@@ -22,8 +22,8 @@ type Order struct {
 	Items       []*OrderItem
 }
 
-func (o *Order) ToModel() *domain.Order {
-	var items []*domain.OrderItem
+func (o *Order) ToModel() *entity.Order {
+	var items []*entity.OrderItem
 	var itemsTotal int
 
 	for _, item := range o.Items {
@@ -31,14 +31,14 @@ func (o *Order) ToModel() *domain.Order {
 		itemsTotal += int(item.Quantity)
 	}
 
-	return &domain.Order{
+	return &entity.Order{
 		ID: o.ID,
-		Customer: &domain.Customer{
+		Customer: &entity.Customer{
 			ID:   o.Customer.ID,
 			Name: o.Customer.Name,
 			CPF:  o.Customer.CPF,
 		},
-		Attendant: &domain.Attendant{
+		Attendant: &entity.Attendant{
 			ID:   o.Attendant.ID,
 			Name: o.Attendant.Name,
 		},
@@ -53,30 +53,30 @@ func (o *Order) ToModel() *domain.Order {
 	}
 }
 
-func mapOrderStatus(status string) domain.OrderStatus {
+func mapOrderStatus(status string) entity.OrderStatus {
 	switch status {
 	case "STARTED":
-		return domain.OrderStatusStarted
+		return entity.OrderStatusStarted
 	case "ADDING_ITEMS":
-		return domain.OrderStatusAddingItems
+		return entity.OrderStatusAddingItems
 	case "CONFIRMED":
-		return domain.OrderStatusConfirmed
+		return entity.OrderStatusConfirmed
 	case "PAID":
-		return domain.OrderStatusPaid
+		return entity.OrderStatusPaid
 	case "PAYMENT_REVERSED":
-		return domain.OrderStatusPaymentReversed
+		return entity.OrderStatusPaymentReversed
 	case "IN_PREPARATION":
-		return domain.OrderStatusInPreparation
+		return entity.OrderStatusInPreparation
 	case "READY_FOR_DELIVERY":
-		return domain.OrderStatusReadyForDelivery
+		return entity.OrderStatusReadyForDelivery
 	case "SENT_FOR_DELIVERY":
-		return domain.OrderStatusSentForDelivery
+		return entity.OrderStatusSentForDelivery
 	case "DELIVERED":
-		return domain.OrderStatusDelivered
+		return entity.OrderStatusDelivered
 	case "CANCELED":
-		return domain.OrderStatusCanceled
+		return entity.OrderStatusCanceled
 	default:
-		return domain.OrderStatusStarted
+		return entity.OrderStatusStarted
 	}
 }
 
@@ -90,8 +90,8 @@ type OrderItem struct {
 	UnitPrice float64
 }
 
-func (i *OrderItem) ToModel() *domain.OrderItem {
-	return &domain.OrderItem{
+func (i *OrderItem) ToModel() *entity.OrderItem {
+	return &entity.OrderItem{
 		ID:        i.ID,
 		Product:   i.Product.ToModel(),
 		Quantity:  int(i.Quantity),
@@ -112,7 +112,7 @@ func (or *OrderRepository) StartOrder(
 	attendantID uint,
 	orderStatus string,
 	paymentStatus string,
-) (*domain.Order, error) {
+) (*entity.Order, error) {
 	order := &Order{
 		CustomerID:  customerID,
 		AttendantID: attendantID,
@@ -130,7 +130,7 @@ func (or *OrderRepository) StartOrder(
 	return order.ToModel(), nil
 }
 
-func (or *OrderRepository) GetOrderById(id uint) (*domain.Order, error) {
+func (or *OrderRepository) GetOrderById(id uint) (*entity.Order, error) {
 	order := &Order{}
 
 	if err := or.db.Preload("Customer").Preload("Attendant").Preload("Payment").Preload("Items").
@@ -149,7 +149,7 @@ func (or *OrderRepository) GetOrderById(id uint) (*domain.Order, error) {
 	return order.ToModel(), nil
 }
 
-func (or *OrderRepository) AddItemToOrder(order *domain.Order, product *domain.Product, quantity int) (*domain.Order, error) {
+func (or *OrderRepository) AddItemToOrder(order *entity.Order, product *entity.Product, quantity int) (*entity.Order, error) {
 	orderItem := &OrderItem{
 		OrderID:   order.ID,
 		ProductID: product.ID,
@@ -164,7 +164,7 @@ func (or *OrderRepository) AddItemToOrder(order *domain.Order, product *domain.P
 	return or.UpdateOrder(order)
 }
 
-func (or *OrderRepository) UpdateOrder(order *domain.Order) (*domain.Order, error) {
+func (or *OrderRepository) UpdateOrder(order *entity.Order) (*entity.Order, error) {
 	orderToUpdate := &Order{}
 
 	if err := or.db.Preload("Customer").Preload("Attendant").Preload("Payment").Preload("Items").

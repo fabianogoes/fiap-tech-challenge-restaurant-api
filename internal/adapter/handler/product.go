@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/fiap/challenge-gofood/internal/core/domain"
-	"github.com/fiap/challenge-gofood/internal/core/port"
+	"github.com/fiap/challenge-gofood/internal/domain/entity"
+	"github.com/fiap/challenge-gofood/internal/domain/port"
 	"github.com/gin-gonic/gin"
 )
 
@@ -25,7 +25,7 @@ type FindProductResponse struct {
 	Category *CategoryResponse `json:"category"`
 }
 
-func ProductToResponse(product *domain.Product) *FindProductResponse {
+func ProductToResponse(product *entity.Product) *FindProductResponse {
 	return &FindProductResponse{
 		ID:       product.ID,
 		Name:     product.Name,
@@ -39,7 +39,7 @@ type CategoryResponse struct {
 	Name string `json:"name"`
 }
 
-func CategoryToResponse(category *domain.Category) *CategoryResponse {
+func CategoryToResponse(category *entity.Category) *CategoryResponse {
 	return &CategoryResponse{
 		ID:   category.ID,
 		Name: category.Name,

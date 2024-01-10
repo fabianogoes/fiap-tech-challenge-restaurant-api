@@ -3,7 +3,7 @@ package repository
 import (
 	"fmt"
 
-	"github.com/fiap/challenge-gofood/internal/core/domain"
+	"github.com/fiap/challenge-gofood/internal/domain/entity"
 	"gorm.io/gorm"
 )
 
@@ -24,7 +24,7 @@ func NewCustomerRepository(db *gorm.DB) *CustomerRepository {
 	}
 }
 
-func (c *CustomerRepository) CreateCustomer(customer *domain.Customer) (*domain.Customer, error) {
+func (c *CustomerRepository) CreateCustomer(customer *entity.Customer) (*entity.Customer, error) {
 	var err error
 	if err = c.db.Create(customer).Error; err != nil {
 		return nil, err
@@ -38,13 +38,13 @@ func (c *CustomerRepository) CreateCustomer(customer *domain.Customer) (*domain.
 	return result, nil
 }
 
-func (c *CustomerRepository) GetCustomerByCPF(cpf string) (*domain.Customer, error) {
+func (c *CustomerRepository) GetCustomerByCPF(cpf string) (*entity.Customer, error) {
 	var result Customer
 	if err := c.db.Where("cpf = ?", cpf).First(&result).Error; err != nil {
 		return nil, fmt.Errorf("error to find customer with cpf %s - %v", cpf, err)
 	}
 
-	return &domain.Customer{
+	return &entity.Customer{
 		ID:        result.ID,
 		Name:      result.Name,
 		Email:     result.Email,
@@ -54,13 +54,13 @@ func (c *CustomerRepository) GetCustomerByCPF(cpf string) (*domain.Customer, err
 	}, nil
 }
 
-func (c *CustomerRepository) GetCustomerById(id uint) (*domain.Customer, error) {
+func (c *CustomerRepository) GetCustomerById(id uint) (*entity.Customer, error) {
 	var result Customer
 	if err := c.db.First(&result, id).Error; err != nil {
 		return nil, fmt.Errorf("error to find customer with id %d - %v", id, err)
 	}
 
-	return &domain.Customer{
+	return &entity.Customer{
 		ID:        result.ID,
 		Name:      result.Name,
 		Email:     result.Email,
@@ -70,15 +70,15 @@ func (c *CustomerRepository) GetCustomerById(id uint) (*domain.Customer, error) 
 	}, nil
 }
 
-func (c *CustomerRepository) GetCustomers() ([]*domain.Customer, error) {
+func (c *CustomerRepository) GetCustomers() ([]*entity.Customer, error) {
 	var results []*Customer
 	if err := c.db.Find(&results).Error; err != nil {
 		return nil, err
 	}
 
-	var customers []*domain.Customer
+	var customers []*entity.Customer
 	for _, result := range results {
-		customers = append(customers, &domain.Customer{
+		customers = append(customers, &entity.Customer{
 			ID:        result.ID,
 			Name:      result.Name,
 			Email:     result.Email,
@@ -91,7 +91,7 @@ func (c *CustomerRepository) GetCustomers() ([]*domain.Customer, error) {
 	return customers, nil
 }
 
-func (c *CustomerRepository) UpdateCustomer(customer *domain.Customer) (*domain.Customer, error) {
+func (c *CustomerRepository) UpdateCustomer(customer *entity.Customer) (*entity.Customer, error) {
 	var result Customer
 	if err := c.db.First(&result, customer.ID).Error; err != nil {
 		return nil, err

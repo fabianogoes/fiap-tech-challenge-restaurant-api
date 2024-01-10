@@ -3,7 +3,7 @@ package repository
 import (
 	"fmt"
 
-	"github.com/fiap/challenge-gofood/internal/core/domain"
+	"github.com/fiap/challenge-gofood/internal/domain/entity"
 	"gorm.io/gorm"
 )
 
@@ -15,12 +15,12 @@ type Product struct {
 	Category   Category `gorm:"ForeignKey:CategoryID"`
 }
 
-func (p *Product) ToModel() *domain.Product {
-	return &domain.Product{
+func (p *Product) ToModel() *entity.Product {
+	return &entity.Product{
 		ID:    p.ID,
 		Name:  p.Name,
 		Price: p.Price,
-		Category: &domain.Category{
+		Category: &entity.Category{
 			ID:   p.Category.ID,
 			Name: p.Category.Name,
 		},
@@ -34,8 +34,8 @@ type Category struct {
 	Name string
 }
 
-func (c *Category) ToModel() *domain.Category {
-	return &domain.Category{
+func (c *Category) ToModel() *entity.Category {
+	return &entity.Category{
 		ID:   c.ID,
 		Name: c.Name,
 	}
@@ -51,7 +51,7 @@ func NewProductRepository(db *gorm.DB) *ProductRepository {
 	}
 }
 
-func (p *ProductRepository) CreateProduct(name string, price float64, categoryID int) (*domain.Product, error) {
+func (p *ProductRepository) CreateProduct(name string, price float64, categoryID int) (*entity.Product, error) {
 	var err error
 	product := &Product{
 		Name:       name,
@@ -69,7 +69,7 @@ func (p *ProductRepository) CreateProduct(name string, price float64, categoryID
 	return result.ToModel(), nil
 }
 
-func (p *ProductRepository) GetProductById(id uint) (*domain.Product, error) {
+func (p *ProductRepository) GetProductById(id uint) (*entity.Product, error) {
 	var result Product
 	if err := p.db.Model(&Product{}).Preload("Category").First(&result, id).Error; err != nil {
 		return nil, fmt.Errorf("error to find product with id %d - %v", id, err)
@@ -78,13 +78,13 @@ func (p *ProductRepository) GetProductById(id uint) (*domain.Product, error) {
 	return result.ToModel(), nil
 }
 
-func (p *ProductRepository) GetProducts() ([]*domain.Product, error) {
+func (p *ProductRepository) GetProducts() ([]*entity.Product, error) {
 	var results []*Product
 	if err := p.db.Model(&Product{}).Preload("Category").Find(&results).Error; err != nil {
 		return nil, err
 	}
 
-	var products []*domain.Product
+	var products []*entity.Product
 	for _, result := range results {
 		products = append(products, result.ToModel())
 	}
@@ -92,7 +92,7 @@ func (p *ProductRepository) GetProducts() ([]*domain.Product, error) {
 	return products, nil
 }
 
-func (p *ProductRepository) UpdateProduct(product *domain.Product) (*domain.Product, error) {
+func (p *ProductRepository) UpdateProduct(product *entity.Product) (*entity.Product, error) {
 	var result Product
 	if err := p.db.First(&result, product.ID).Error; err != nil {
 		return nil, err

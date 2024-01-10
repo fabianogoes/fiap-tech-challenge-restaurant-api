@@ -3,7 +3,7 @@ package repository
 import (
 	"time"
 
-	"github.com/fiap/challenge-gofood/internal/core/domain"
+	"github.com/fiap/challenge-gofood/internal/domain/entity"
 	"gorm.io/gorm"
 )
 
@@ -15,8 +15,8 @@ type Payment struct {
 	Value  float64
 }
 
-func (p *Payment) ToModel() *domain.Payment {
-	return &domain.Payment{
+func (p *Payment) ToModel() *entity.Payment {
+	return &entity.Payment{
 		ID:     p.ID,
 		Date:   p.Date,
 		Method: mapPaymentMethod(p.Method),
@@ -25,7 +25,7 @@ func (p *Payment) ToModel() *domain.Payment {
 	}
 }
 
-func mapPatmentEntity(payment *domain.Payment) Payment {
+func mapPatmentEntity(payment *entity.Payment) Payment {
 	return Payment{
 		Model: gorm.Model{
 			ID:        payment.ID,
@@ -39,35 +39,35 @@ func mapPatmentEntity(payment *domain.Payment) Payment {
 	}
 }
 
-func mapPaymentMethod(method string) domain.PaymentMethod {
+func mapPaymentMethod(method string) entity.PaymentMethod {
 	switch method {
 	case "CREDIT_CARD":
-		return domain.PaymentMethodCreditCard
+		return entity.PaymentMethodCreditCard
 	case "DEBIT_CARD":
-		return domain.PaymentMethodDebitCard
+		return entity.PaymentMethodDebitCard
 	case "MONEY":
-		return domain.PaymentMethodMoney
+		return entity.PaymentMethodMoney
 	case "PIX":
-		return domain.PaymentMethodPIX
+		return entity.PaymentMethodPIX
 	default:
-		return domain.PaymentMethodNone
+		return entity.PaymentMethodNone
 	}
 }
 
-func mapPaymentStatus(status string) domain.PaymentStatus {
+func mapPaymentStatus(status string) entity.PaymentStatus {
 	switch status {
 	case "PENDING":
-		return domain.PaymentStatusPending
+		return entity.PaymentStatusPending
 	case "PAID":
-		return domain.PaymentStatusPaid
+		return entity.PaymentStatusPaid
 	case "REVERSED":
-		return domain.PaymentStatusReversed
+		return entity.PaymentStatusReversed
 	case "CANCELED":
-		return domain.PaymentStatusCanceled
+		return entity.PaymentStatusCanceled
 	case "PAYMENT_ERROR":
-		return domain.PaymentStatusError
+		return entity.PaymentStatusError
 	default:
-		return domain.PaymentStatusNone
+		return entity.PaymentStatusNone
 	}
 }
 
@@ -79,7 +79,7 @@ func NewPaymentRepository(db *gorm.DB) *PaymentRepository {
 	return &PaymentRepository{db}
 }
 
-func (p *PaymentRepository) GetPaymentById(id uint) (*domain.Payment, error) {
+func (p *PaymentRepository) GetPaymentById(id uint) (*entity.Payment, error) {
 	var payment Payment
 	if err := p.db.Where("id = ?", id).First(&payment).Error; err != nil {
 		return nil, err
@@ -88,7 +88,7 @@ func (p *PaymentRepository) GetPaymentById(id uint) (*domain.Payment, error) {
 	return payment.ToModel(), nil
 }
 
-func (p *PaymentRepository) UpdatePayment(payment *domain.Payment) (*domain.Payment, error) {
+func (p *PaymentRepository) UpdatePayment(payment *entity.Payment) (*entity.Payment, error) {
 	var err error
 	paymentEntity := mapPatmentEntity(payment)
 

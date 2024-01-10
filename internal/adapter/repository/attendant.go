@@ -3,7 +3,7 @@ package repository
 import (
 	"fmt"
 
-	"github.com/fiap/challenge-gofood/internal/core/domain"
+	"github.com/fiap/challenge-gofood/internal/domain/entity"
 	"gorm.io/gorm"
 )
 
@@ -22,7 +22,7 @@ func NewAttendantRepository(db *gorm.DB) *AttendantRepository {
 	}
 }
 
-func (c *AttendantRepository) CreateAttendant(name string) (*domain.Attendant, error) {
+func (c *AttendantRepository) CreateAttendant(name string) (*entity.Attendant, error) {
 	attendant := &Attendant{
 		Name: name,
 	}
@@ -35,7 +35,7 @@ func (c *AttendantRepository) CreateAttendant(name string) (*domain.Attendant, e
 	var result Attendant
 	c.db.Where("name = ?", name).First(&result)
 
-	return &domain.Attendant{
+	return &entity.Attendant{
 		ID:        result.ID,
 		Name:      result.Name,
 		CreatedAt: result.CreatedAt,
@@ -43,13 +43,13 @@ func (c *AttendantRepository) CreateAttendant(name string) (*domain.Attendant, e
 	}, nil
 }
 
-func (c *AttendantRepository) GetAttendantById(id uint) (*domain.Attendant, error) {
+func (c *AttendantRepository) GetAttendantById(id uint) (*entity.Attendant, error) {
 	var result Attendant
 	if err := c.db.First(&result, id).Error; err != nil {
 		return nil, fmt.Errorf("error to find attendant with id %d - %v", id, err)
 	}
 
-	return &domain.Attendant{
+	return &entity.Attendant{
 		ID:        result.ID,
 		Name:      result.Name,
 		CreatedAt: result.CreatedAt,
@@ -57,15 +57,15 @@ func (c *AttendantRepository) GetAttendantById(id uint) (*domain.Attendant, erro
 	}, nil
 }
 
-func (c *AttendantRepository) GetAttendants() ([]*domain.Attendant, error) {
+func (c *AttendantRepository) GetAttendants() ([]*entity.Attendant, error) {
 	var results []*Attendant
 	if err := c.db.Find(&results).Error; err != nil {
 		return nil, err
 	}
 
-	var attendants []*domain.Attendant
+	var attendants []*entity.Attendant
 	for _, result := range results {
-		attendants = append(attendants, &domain.Attendant{
+		attendants = append(attendants, &entity.Attendant{
 			ID:        result.ID,
 			Name:      result.Name,
 			CreatedAt: result.CreatedAt,
@@ -76,7 +76,7 @@ func (c *AttendantRepository) GetAttendants() ([]*domain.Attendant, error) {
 	return attendants, nil
 }
 
-func (c *AttendantRepository) UpdateAttendant(attendant *domain.Attendant) (*domain.Attendant, error) {
+func (c *AttendantRepository) UpdateAttendant(attendant *entity.Attendant) (*entity.Attendant, error) {
 	var result Attendant
 	if err := c.db.First(&result, attendant.ID).Error; err != nil {
 		return nil, err

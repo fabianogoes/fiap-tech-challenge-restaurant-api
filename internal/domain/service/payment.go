@@ -1,8 +1,8 @@
 package service
 
 import (
-	"github.com/fiap/challenge-gofood/internal/core/domain"
-	"github.com/fiap/challenge-gofood/internal/core/port"
+	"github.com/fiap/challenge-gofood/internal/domain/entity"
+	"github.com/fiap/challenge-gofood/internal/domain/port"
 )
 
 type PaymentService struct {
@@ -15,10 +15,10 @@ func NewPaymentService(rep port.PaymentRepositoryPort) *PaymentService {
 	}
 }
 
-func (c *PaymentService) GetPaymentById(id uint) (*domain.Payment, error) {
+func (c *PaymentService) GetPaymentById(id uint) (*entity.Payment, error) {
 	return c.paymentRepository.GetPaymentById(id)
 }
 
-func (c *PaymentService) UpdatePayment(payment *domain.Payment) (*domain.Payment, error) {
+func (c *PaymentService) UpdatePayment(payment *entity.Payment) (*entity.Payment, error) {
 	return c.paymentRepository.UpdatePayment(payment)
 }

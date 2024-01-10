@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/fiap/challenge-gofood/internal/core/domain"
-	"github.com/fiap/challenge-gofood/internal/core/port"
+	"github.com/fiap/challenge-gofood/internal/domain/entity"
+	"github.com/fiap/challenge-gofood/internal/domain/port"
 	"github.com/gin-gonic/gin"
 )
 
@@ -160,7 +160,7 @@ type OrderItemResponse struct {
 	UnitPrice   float64 `json:"unitPrice"`
 }
 
-func mapOrderResponse(order *domain.Order) OrderResponse {
+func mapOrderResponse(order *entity.Order) OrderResponse {
 	response := OrderResponse{
 		ID:            order.ID,
 		CustomerCPF:   order.Customer.CPF,

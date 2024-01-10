@@ -1,8 +1,8 @@
 package service
 
 import (
-	"github.com/fiap/challenge-gofood/internal/core/domain"
-	"github.com/fiap/challenge-gofood/internal/core/port"
+	"github.com/fiap/challenge-gofood/internal/domain/entity"
+	"github.com/fiap/challenge-gofood/internal/domain/port"
 )
 
 type AttendantService struct {
@@ -15,19 +15,19 @@ func NewAttendantService(cr port.AttendantRepositoryPort) *AttendantService {
 	}
 }
 
-func (c *AttendantService) CreateAttendant(nome string) (*domain.Attendant, error) {
+func (c *AttendantService) CreateAttendant(nome string) (*entity.Attendant, error) {
 	return c.attendantRepository.CreateAttendant(nome)
 }
 
-func (c *AttendantService) GetAttendantById(id uint) (*domain.Attendant, error) {
+func (c *AttendantService) GetAttendantById(id uint) (*entity.Attendant, error) {
 	return c.attendantRepository.GetAttendantById(id)
 }
 
-func (c *AttendantService) GetAttendants() ([]*domain.Attendant, error) {
+func (c *AttendantService) GetAttendants() ([]*entity.Attendant, error) {
 	return c.attendantRepository.GetAttendants()
 }
 
-func (c *AttendantService) UpdateAttendant(attendant *domain.Attendant) (*domain.Attendant, error) {
+func (c *AttendantService) UpdateAttendant(attendant *entity.Attendant) (*entity.Attendant, error) {
 	return c.attendantRepository.UpdateAttendant(attendant)
 }
 
