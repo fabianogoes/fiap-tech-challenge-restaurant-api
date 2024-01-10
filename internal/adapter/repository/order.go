@@ -61,10 +61,14 @@ func mapOrderStatus(status string) domain.OrderStatus {
 		return domain.OrderStatusAddingItems
 	case "CONFIRMED":
 		return domain.OrderStatusConfirmed
-	case "IN_PREPARATION":
-		return domain.OrderStatusInPreparation
 	case "PAID":
 		return domain.OrderStatusPaid
+	case "IN_PREPARATION":
+		return domain.OrderStatusInPreparation
+	case "READY_FOR_DELIVERY":
+		return domain.OrderStatusReadyForDelivery
+	case "SENT_FOR_DELIVERY":
+		return domain.OrderStatusSentForDelivery
 	case "DELIVERED":
 		return domain.OrderStatusDelivered
 	case "CANCELED":

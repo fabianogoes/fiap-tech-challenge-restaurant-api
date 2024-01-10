@@ -82,3 +82,23 @@ func (os *OrderService) PaymentOrder(order *domain.Order, paymentMethod string) 
 	order.Payment = payment
 	return os.orderRepository.UpdateOrder(order)
 }
+
+func (os *OrderService) InPreparationOrder(order *domain.Order) (*domain.Order, error) {
+	order.Status = domain.OrderStatusInPreparation
+	return os.orderRepository.UpdateOrder(order)
+}
+
+func (os *OrderService) ReadyForDeliveryOrder(order *domain.Order) (*domain.Order, error) {
+	order.Status = domain.OrderStatusReadyForDelivery
+	return os.orderRepository.UpdateOrder(order)
+}
+
+func (os *OrderService) SentForDeliveryOrder(order *domain.Order) (*domain.Order, error) {
+	order.Status = domain.OrderStatusSentForDelivery
+	return os.orderRepository.UpdateOrder(order)
+}
+
+func (os *OrderService) DeliveredOrder(order *domain.Order) (*domain.Order, error) {
+	order.Status = domain.OrderStatusDelivered
+	return os.orderRepository.UpdateOrder(order)
+}

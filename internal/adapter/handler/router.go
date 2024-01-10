@@ -61,6 +61,10 @@ func NewRouter(
 		orders.GET("/:id", orderHandler.GetOrderById)
 		orders.PUT("/:id/confirmation", orderHandler.ConfirmationOrder)
 		orders.PUT("/:id/payment", orderHandler.PaymentOrder)
+		orders.PUT("/:id/in-preparation", orderHandler.InPreparationOrder)
+		orders.PUT("/:id/ready-for-delivery", orderHandler.ReadyForDeliveryOrder)
+		orders.PUT("/:id/sent-for-delivery", orderHandler.SentForDeliveryOrder)
+		orders.PUT("/:id/delivered", orderHandler.DeliveredOrder)
 	}
 
 	return &Router{

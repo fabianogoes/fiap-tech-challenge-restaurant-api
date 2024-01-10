@@ -50,7 +50,7 @@ func mapPaymentMethod(method string) domain.PaymentMethod {
 	case "PIX":
 		return domain.PaymentMethodPIX
 	default:
-		return domain.PaymentMethodMoney
+		return domain.PaymentMethodNone
 	}
 }
 
@@ -65,7 +65,7 @@ func mapPaymentStatus(status string) domain.PaymentStatus {
 	case "PAYMENT_ERROR":
 		return domain.PaymentStatusError
 	default:
-		return domain.PaymentStatusPending
+		return domain.PaymentStatusNone
 	}
 }
 

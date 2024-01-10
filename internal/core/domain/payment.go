@@ -9,10 +9,11 @@ const (
 	PaymentStatusPaid
 	PaymentStatusCanceled
 	PaymentStatusError
+	PaymentStatusNone
 )
 
 func (ps PaymentStatus) ToString() string {
-	return [...]string{"PENDING", "PAID", "CANCELED", "PAYMENT_ERROR"}[ps]
+	return [...]string{"PENDING", "PAID", "CANCELED", "PAYMENT_ERROR", "NONE"}[ps]
 }
 
 func (ps PaymentStatus) ToPaymentStatus(status string) PaymentStatus {
@@ -26,7 +27,7 @@ func (ps PaymentStatus) ToPaymentStatus(status string) PaymentStatus {
 	case "PAYMENT_ERROR":
 		return PaymentStatusError
 	default:
-		return PaymentStatusPending
+		return PaymentStatusNone
 	}
 }
 
@@ -37,10 +38,11 @@ const (
 	PaymentMethodDebitCard
 	PaymentMethodMoney
 	PaymentMethodPIX
+	PaymentMethodNone
 )
 
 func (pm PaymentMethod) ToString() string {
-	return [...]string{"CREDIT_CARD", "DEBIT_CARD", "MONEY", "PIX"}[pm]
+	return [...]string{"CREDIT_CARD", "DEBIT_CARD", "MONEY", "PIX", "NONE"}[pm]
 }
 
 func ToPaymentMethod(method string) PaymentMethod {
@@ -54,7 +56,7 @@ func ToPaymentMethod(method string) PaymentMethod {
 	case "PIX":
 		return PaymentMethodPIX
 	default:
-		return PaymentMethodMoney
+		return PaymentMethodNone
 	}
 }
 
