@@ -12,6 +12,7 @@ type OrderService struct {
 	customerRepository port.CustomerRepositoryPort
 	paymentUseCase     port.PaymentUseCasePort
 	paymentClient      port.PaymentClientPort
+	deliveryClient     port.DeliveryClientPort
 }
 
 func NewOrderService(
@@ -19,12 +20,14 @@ func NewOrderService(
 	cr port.CustomerRepositoryPort,
 	puc port.PaymentUseCasePort,
 	pc port.PaymentClientPort,
+	dc port.DeliveryClientPort,
 ) *OrderService {
 	return &OrderService{
 		orderRepository:    rep,
 		customerRepository: cr,
 		paymentUseCase:     puc,
 		paymentClient:      pc,
+		deliveryClient:     dc,
 	}
 }
 
@@ -101,7 +104,11 @@ func (os *OrderService) SentForDeliveryOrder(order *entity.Order) (*entity.Order
 }
 
 func (os *OrderService) DeliveredOrder(order *entity.Order) (*entity.Order, error) {
-	order.Status = entity.OrderStatusDelivered
+	if err := os.deliveryClient.Deliver(order); err != nil {
+		order.Status = entity.OrderStatusDeliveryError
+	} else {
+		order.Status = entity.OrderStatusDelivered
+	}
 	return os.orderRepository.UpdateOrder(order)
 }
 

@@ -6,6 +6,7 @@ import (
 	"log/slog"
 	"os"
 
+	"github.com/fiap/challenge-gofood/internal/adapter/delivery"
 	"github.com/fiap/challenge-gofood/internal/adapter/handler"
 	"github.com/fiap/challenge-gofood/internal/adapter/payment"
 	"github.com/fiap/challenge-gofood/internal/adapter/repository"
@@ -74,11 +75,18 @@ func main() {
 	productUseCase := service.NewProductService(productRepository)
 	productHandler := handler.NewProductHandler(productUseCase)
 
+	deliveryClientAdapter := delivery.NewDeliveryClientAdapter()
 	paymentClientUseCase := payment.NewPaymentClientUseCase()
 	paymentRepository := repository.NewPaymentRepository(db)
 	paymentUseCase := service.NewPaymentService(paymentRepository)
 	orderRepository := repository.NewOrderRepository(db)
-	orderUseCase := service.NewOrderService(orderRepository, customerRepository, paymentUseCase, paymentClientUseCase)
+	orderUseCase := service.NewOrderService(
+		orderRepository,
+		customerRepository,
+		paymentUseCase,
+		paymentClientUseCase,
+		deliveryClientAdapter,
+	)
 	orderHandler := handler.NewOrderHandler(
 		orderUseCase,
 		customerUseCase,

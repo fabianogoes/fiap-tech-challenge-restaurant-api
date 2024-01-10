@@ -37,6 +37,7 @@ const (
 	OrderStatusReadyForDelivery
 	OrderStatusSentForDelivery
 	OrderStatusDelivered
+	OrderStatusDeliveryError
 	OrderStatusCanceled
 )
 
@@ -52,6 +53,7 @@ func (os OrderStatus) ToString() string {
 		"READY_FOR_DELIVERY",
 		"SENT_FOR_DELIVERY",
 		"DELIVERED",
+		"DELIVERY_ERROR",
 		"CANCELED",
 	}[os]
 }
@@ -76,6 +78,8 @@ func (os OrderStatus) ToOrderStatus(status string) OrderStatus {
 		return OrderStatusSentForDelivery
 	case "DELIVERED":
 		return OrderStatusDelivered
+	case "DELIVERY_ERROR":
+		return OrderStatusDeliveryError
 	case "CANCELED":
 		return OrderStatusCanceled
 	default:
