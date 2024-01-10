@@ -7,8 +7,8 @@
 ## Entregável 1
 
 - [x] Documentação do sistema (DDD) utilizando linguagem ubíqua dos fluxos:
-  - [ ] Realização do pedido e pagamento
-  - [ ] Preparação e entrega do pedido
+  - [x] Realização do pedido e pagamento
+  - [x] Preparação e entrega do pedido
 
 ## Entregável 2
 
@@ -32,4 +32,4 @@ A aplicação deve ser entregue com um Dockerfile configurado para executá-la c
 Para validação da POC, temos a seguinte limitação de infraestrutura:
 
 - [ ] 1 instância para banco de dados
-- [ ] 1 instância para executar a aplicação
+- [x] 1 instância para executar a aplicação
