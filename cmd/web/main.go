@@ -76,7 +76,7 @@ func main() {
 	productHandler := handler.NewProductHandler(productUseCase)
 
 	deliveryClientAdapter := delivery.NewDeliveryClientAdapter()
-	paymentClientUseCase := payment.NewPaymentClientUseCase()
+	paymentClientAdapter := payment.NewPaymentClientAdapter()
 	paymentRepository := repository.NewPaymentRepository(db)
 	paymentUseCase := service.NewPaymentService(paymentRepository)
 	orderRepository := repository.NewOrderRepository(db)
@@ -84,7 +84,7 @@ func main() {
 		orderRepository,
 		customerRepository,
 		paymentUseCase,
-		paymentClientUseCase,
+		paymentClientAdapter,
 		deliveryClientAdapter,
 	)
 	orderHandler := handler.NewOrderHandler(

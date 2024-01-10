@@ -6,19 +6,19 @@ import (
 	"github.com/fiap/challenge-gofood/internal/domain/entity"
 )
 
-type PaymentClientUseCase struct {
+type PaymentClientAdapter struct {
 }
 
-func NewPaymentClientUseCase() *PaymentClientUseCase {
-	return &PaymentClientUseCase{}
+func NewPaymentClientAdapter() *PaymentClientAdapter {
+	return &PaymentClientAdapter{}
 }
 
-func (p *PaymentClientUseCase) Pay(order *entity.Order) error {
+func (p *PaymentClientAdapter) Pay(order *entity.Order) error {
 	fmt.Printf("Order %d paid by method %s\n", order.ID, order.Payment.Method.ToString())
 	return nil
 }
 
-func (p *PaymentClientUseCase) Reverse(order *entity.Order) error {
+func (p *PaymentClientAdapter) Reverse(order *entity.Order) error {
 	fmt.Printf("Order %d payment reversed\n", order.ID)
 	return nil
 }
