@@ -167,8 +167,8 @@ func mapOrderResponse(order *entity.Order) OrderResponse {
 		CustomerName:  order.Customer.Name,
 		AttendantID:   order.Attendant.ID,
 		AttendantName: order.Attendant.Name,
-		Amount:        fmt.Sprintf("%.2f", order.Amount),
-		ItemsTotal:    order.ItemsTotal,
+		Amount:        fmt.Sprintf("%.2f", order.Amount()),
+		ItemsTotal:    order.ItemsQuantity(),
 		Status:        order.Status.ToString(),
 		Payment: OrderPaymentResponse{
 			Status: order.Payment.Status.ToString(),

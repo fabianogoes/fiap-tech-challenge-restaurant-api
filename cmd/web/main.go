@@ -83,6 +83,7 @@ func main() {
 	orderUseCase := service.NewOrderService(
 		orderRepository,
 		customerRepository,
+		attendantRepository,
 		paymentUseCase,
 		paymentClientAdapter,
 		deliveryClientAdapter,

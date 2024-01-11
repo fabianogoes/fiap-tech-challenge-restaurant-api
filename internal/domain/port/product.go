@@ -7,7 +7,7 @@ import (
 // Primary ports to Customer
 
 type ProductUseCasePort interface {
-	CreateProduct(name string, price float64, categoryID int) (*entity.Product, error)
+	CreateProduct(name string, price float64, categoryID uint) (*entity.Product, error)
 	GetProductById(id uint) (*entity.Product, error)
 	GetProducts() ([]*entity.Product, error)
 	UpdateProduct(product *entity.Product) (*entity.Product, error)
@@ -17,7 +17,7 @@ type ProductUseCasePort interface {
 // Secondary ports to Product
 
 type ProductRepositoryPort interface {
-	CreateProduct(name string, price float64, categoryID int) (*entity.Product, error)
+	CreateProduct(name string, price float64, categoryID uint) (*entity.Product, error)
 	GetProductById(id uint) (*entity.Product, error)
 	GetProducts() ([]*entity.Product, error)
 	UpdateProduct(product *entity.Product) (*entity.Product, error)

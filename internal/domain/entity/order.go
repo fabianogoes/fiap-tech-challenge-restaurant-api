@@ -3,17 +3,57 @@ package entity
 import "time"
 
 type Order struct {
-	ID         uint
-	Customer   *Customer
-	Attendant  *Attendant
-	Date       time.Time
-	Status     OrderStatus
-	Payment    *Payment
-	Amount     float64
-	ItemsTotal int
-	Items      []*OrderItem
-	CreatedAt  time.Time
-	UpdatedAt  time.Time
+	ID        uint
+	Customer  *Customer
+	Attendant *Attendant
+	Date      time.Time
+	Status    OrderStatus
+	Payment   *Payment
+	Items     []*OrderItem
+	CreatedAt time.Time
+	UpdatedAt time.Time
+}
+
+func NewOrder(customer *Customer, attendant *Attendant) (*Order, error) {
+	return &Order{
+		Customer:  customer,
+		Attendant: attendant,
+		Date:      time.Now(),
+		Status:    OrderStatusStarted,
+		Items:     []*OrderItem{},
+		Payment: &Payment{
+			Status: PaymentStatusPending,
+			Method: PaymentMethodNone,
+		},
+	}, nil
+}
+
+func (o *Order) Amount() float64 {
+	var amount float64
+
+	for _, item := range o.Items {
+		amount += item.UnitPrice * float64(item.Quantity)
+	}
+
+	return amount
+}
+
+func (o *Order) AddItem(product *Product, quantity int) {
+	o.Items = append(o.Items, &OrderItem{
+		Product:   product,
+		Quantity:  quantity,
+		UnitPrice: product.Price,
+	})
+}
+
+func (o *Order) ItemsQuantity() int {
+	var itemsTotal int
+
+	for _, item := range o.Items {
+		itemsTotal += item.Quantity
+	}
+
+	return itemsTotal
 }
 
 type OrderItem struct {
@@ -22,6 +62,8 @@ type OrderItem struct {
 	Product   *Product
 	Quantity  int
 	UnitPrice float64
+	CreatedAt time.Time
+	UpdatedAt time.Time
 }
 
 type OrderStatus int

@@ -8,36 +8,53 @@ import (
 )
 
 type OrderService struct {
-	orderRepository    port.OrderRepositoryPort
-	customerRepository port.CustomerRepositoryPort
-	paymentUseCase     port.PaymentUseCasePort
-	paymentClient      port.PaymentClientPort
-	deliveryClient     port.DeliveryClientPort
+	orderRepository     port.OrderRepositoryPort
+	customerRepository  port.CustomerRepositoryPort
+	attendantRepository port.AttendantRepositoryPort
+	paymentUseCase      port.PaymentUseCasePort
+	paymentClient       port.PaymentClientPort
+	deliveryClient      port.DeliveryClientPort
 }
 
 func NewOrderService(
-	rep port.OrderRepositoryPort,
-	cr port.CustomerRepositoryPort,
-	puc port.PaymentUseCasePort,
-	pc port.PaymentClientPort,
-	dc port.DeliveryClientPort,
+	orderRepo port.OrderRepositoryPort,
+	customerRepo port.CustomerRepositoryPort,
+	attendantRepo port.AttendantRepositoryPort,
+	paymentUC port.PaymentUseCasePort,
+	paymentClient port.PaymentClientPort,
+	deliveryClient port.DeliveryClientPort,
 ) *OrderService {
 	return &OrderService{
-		orderRepository:    rep,
-		customerRepository: cr,
-		paymentUseCase:     puc,
-		paymentClient:      pc,
-		deliveryClient:     dc,
+		orderRepository:    orderRepo,
+		customerRepository: customerRepo,
+		attendantRepository: attendantRepo,
+		paymentUseCase:     paymentUC,
+		paymentClient:      paymentClient,
+		deliveryClient:     deliveryClient,
 	}
 }
 
 func (os *OrderService) StartOrder(customerID uint, attendantID uint) (*entity.Order, error) {
-	return os.orderRepository.StartOrder(
-		customerID,
-		attendantID,
-		entity.OrderStatusStarted.ToString(),
-		entity.PaymentStatusPending.ToString(),
-	)
+	var err error
+	customer, err := os.customerRepository.GetCustomerById(customerID)
+	if err != nil {
+		return nil, err
+	}
+	fmt.Println("StartOrder Customer, ", customer)
+
+	attendant, err := os.attendantRepository.GetAttendantById(attendantID)
+	if err != nil {
+		return nil, err
+	}
+	fmt.Println("StartOrder Attendant, ", attendant)
+
+	order, err := entity.NewOrder(customer, attendant)
+	if err != nil {
+		return nil, err
+	}
+
+	fmt.Println("StartOrder Order, ", order)
+	return os.orderRepository.CreateOrder(order)
 }
 
 func (os *OrderService) GetOrderById(id uint) (*entity.Order, error) {
@@ -46,17 +63,12 @@ func (os *OrderService) GetOrderById(id uint) (*entity.Order, error) {
 
 func (os *OrderService) AddItemToOrder(order *entity.Order, product *entity.Product, quantity int) (*entity.Order, error) {
 
-	order.Amount += product.Price * float64(quantity)
-	order.ItemsTotal += quantity
+	if err := os.orderRepository.AddItemToOrder(order.ID, product.ID, quantity, product.Price); err != nil {
+		return nil, err
+	}
+
 	order.Status = entity.OrderStatusAddingItems
-
-	order.Items = append(order.Items, &entity.OrderItem{
-		Product:   product,
-		Quantity:  quantity,
-		UnitPrice: product.Price,
-	})
-
-	return os.orderRepository.AddItemToOrder(order, product, quantity)
+	return os.orderRepository.UpdateOrder(order)
 }
 
 func (os *OrderService) ConfirmationOrder(order *entity.Order) (*entity.Order, error) {

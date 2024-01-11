@@ -22,8 +22,8 @@ type OrderUseCasePort interface {
 // Secondary ports to Order
 
 type OrderRepositoryPort interface {
-	StartOrder(customerID uint, attendantID uint, orderStatus string, paymentStatus string) (*entity.Order, error)
+	CreateOrder(entity *entity.Order) (*entity.Order, error)
 	GetOrderById(id uint) (*entity.Order, error)
-	AddItemToOrder(order *entity.Order, product *entity.Product, quantity int) (*entity.Order, error)
+	AddItemToOrder(orderID uint, productID uint, quantity int, unitPrice float64) error
 	UpdateOrder(order *entity.Order) (*entity.Order, error)
 }

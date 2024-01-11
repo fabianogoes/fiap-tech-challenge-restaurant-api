@@ -57,7 +57,7 @@ func NewRouter(
 	orders := router.Group("/orders")
 	{
 		orders.POST("/", orderHandler.StartOrder)
-		orders.PUT("/:id/product", orderHandler.AddItemToOrder)
+		orders.POST("/:id/item", orderHandler.AddItemToOrder)
 		orders.GET("/:id", orderHandler.GetOrderById)
 		orders.PUT("/:id/confirmation", orderHandler.ConfirmationOrder)
 		orders.PUT("/:id/payment", orderHandler.PaymentOrder)

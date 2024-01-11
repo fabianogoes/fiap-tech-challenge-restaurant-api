@@ -15,7 +15,7 @@ func NewProductService(rep port.ProductRepositoryPort) *ProductService {
 	}
 }
 
-func (c *ProductService) CreateProduct(name string, price float64, categoryID int) (*entity.Product, error) {
+func (c *ProductService) CreateProduct(name string, price float64, categoryID uint) (*entity.Product, error) {
 	return c.productRepository.CreateProduct(name, price, categoryID)
 }
 

@@ -92,7 +92,7 @@ func (h *ProductHandler) GetProductById(c *gin.Context) {
 type CreateProductRequest struct {
 	Name       string  `json:"name"`
 	Price      float64 `json:"price"`
-	CategoryID int     `json:"categoryID"`
+	CategoryID uint    `json:"categoryID"`
 }
 
 type CreateProductResponse struct {

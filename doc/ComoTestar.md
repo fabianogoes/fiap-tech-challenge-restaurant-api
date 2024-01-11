@@ -202,8 +202,8 @@ curl --request POST \
 Adicionando 1 `X-Burguer`
 
 ```shell
-curl --request PUT \
-  --url http://localhost:8080/orders/1/product \
+curl --request POST \
+  --url http://localhost:8080/orders/1/item \
   --header 'Content-Type: application/json' \
   --data '{ "productID": 2, "quantity": 1 }'
 ```
@@ -211,8 +211,8 @@ curl --request PUT \
 Adicionando 1 `X-Bacon`
 
 ```shell
-curl --request PUT \
-  --url http://localhost:8080/orders/1/product \
+curl --request POST \
+  --url http://localhost:8080/orders/1/item \
   --header 'Content-Type: application/json' \
   --data '{ "productID": 3, "quantity": 1 }'
 ```
@@ -220,8 +220,8 @@ curl --request PUT \
 Adicionando 2 `Coca-Cola`
 
 ```shell
-curl --request PUT \
-  --url http://localhost:8080/orders/1/product \
+curl --request POST \
+  --url http://localhost:8080/orders/1/item \
   --header 'Content-Type: application/json' \
   --data '{ "productID": 6, "quantity": 1 }'
 ```
@@ -229,8 +229,8 @@ curl --request PUT \
 Adicionando 2 `Batata Frita`
 
 ```shell
-curl --request PUT \
-  --url http://localhost:8080/orders/1/product \
+curl --request POST \
+  --url http://localhost:8080/orders/1/item \
   --header 'Content-Type: application/json' \
   --data '{ "productID": 22, "quantity": 1 }'
 ```

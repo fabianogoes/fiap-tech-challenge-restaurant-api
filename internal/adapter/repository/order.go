@@ -4,100 +4,10 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/fiap/challenge-gofood/internal/adapter/repository/dbo"
 	"github.com/fiap/challenge-gofood/internal/domain/entity"
 	"gorm.io/gorm"
 )
-
-type Order struct {
-	gorm.Model
-	CustomerID  uint
-	Customer    Customer `gorm:"ForeignKey:CustomerID"`
-	AttendantID uint
-	Attendant   Attendant `gorm:"ForeignKey:AttendantID"`
-	Date        time.Time
-	Status      string
-	PaymentID   uint
-	Payment     Payment `gorm:"ForeignKey:PaymentID"`
-	Amount      float64
-	Items       []*OrderItem
-}
-
-func (o *Order) ToModel() *entity.Order {
-	var items []*entity.OrderItem
-	var itemsTotal int
-
-	for _, item := range o.Items {
-		items = append(items, item.ToModel())
-		itemsTotal += int(item.Quantity)
-	}
-
-	return &entity.Order{
-		ID: o.ID,
-		Customer: &entity.Customer{
-			ID:   o.Customer.ID,
-			Name: o.Customer.Name,
-			CPF:  o.Customer.CPF,
-		},
-		Attendant: &entity.Attendant{
-			ID:   o.Attendant.ID,
-			Name: o.Attendant.Name,
-		},
-		Date:       o.Date,
-		Status:     mapOrderStatus(o.Status),
-		Payment:    o.Payment.ToModel(),
-		Amount:     o.Amount,
-		ItemsTotal: itemsTotal,
-		Items:      items,
-		CreatedAt:  o.CreatedAt,
-		UpdatedAt:  o.UpdatedAt,
-	}
-}
-
-func mapOrderStatus(status string) entity.OrderStatus {
-	switch status {
-	case "STARTED":
-		return entity.OrderStatusStarted
-	case "ADDING_ITEMS":
-		return entity.OrderStatusAddingItems
-	case "CONFIRMED":
-		return entity.OrderStatusConfirmed
-	case "PAID":
-		return entity.OrderStatusPaid
-	case "PAYMENT_REVERSED":
-		return entity.OrderStatusPaymentReversed
-	case "IN_PREPARATION":
-		return entity.OrderStatusInPreparation
-	case "READY_FOR_DELIVERY":
-		return entity.OrderStatusReadyForDelivery
-	case "SENT_FOR_DELIVERY":
-		return entity.OrderStatusSentForDelivery
-	case "DELIVERED":
-		return entity.OrderStatusDelivered
-	case "CANCELED":
-		return entity.OrderStatusCanceled
-	default:
-		return entity.OrderStatusStarted
-	}
-}
-
-type OrderItem struct {
-	gorm.Model
-	OrderID   uint
-	Order     Order
-	ProductID uint
-	Product   *Product
-	Quantity  int64
-	UnitPrice float64
-}
-
-func (i *OrderItem) ToModel() *entity.OrderItem {
-	return &entity.OrderItem{
-		ID:        i.ID,
-		Product:   i.Product.ToModel(),
-		Quantity:  int(i.Quantity),
-		UnitPrice: i.UnitPrice,
-	}
-}
 
 type OrderRepository struct {
 	db *gorm.DB
@@ -107,31 +17,25 @@ func NewOrderRepository(db *gorm.DB) *OrderRepository {
 	return &OrderRepository{db}
 }
 
-func (or *OrderRepository) StartOrder(
-	customerID uint,
-	attendantID uint,
-	orderStatus string,
-	paymentStatus string,
-) (*entity.Order, error) {
-	order := &Order{
-		CustomerID:  customerID,
-		AttendantID: attendantID,
+func (or *OrderRepository) CreateOrder(entity *entity.Order) (*entity.Order, error) {
+	order := &dbo.Order{
+		CustomerID:  entity.Customer.ID,
+		AttendantID: entity.Attendant.ID,
 		Date:        time.Now(),
-		Status:      orderStatus,
-		Payment:     Payment{Status: paymentStatus},
-		Amount:      0,
-		Items:       []*OrderItem{},
+		Status:      entity.Status.ToString(),
+		Payment:     dbo.ToPaymentDBO(entity.Payment),
+		Amount:      entity.Amount(),
 	}
 
 	if err := or.db.Create(order).Error; err != nil {
 		return nil, err
 	}
 
-	return order.ToModel(), nil
+	return order.ToEntity(), nil
 }
 
 func (or *OrderRepository) GetOrderById(id uint) (*entity.Order, error) {
-	order := &Order{}
+	order := &dbo.Order{}
 
 	if err := or.db.Preload("Customer").Preload("Attendant").Preload("Payment").Preload("Items").
 		First(order, id).Error; err != nil {
@@ -139,45 +43,42 @@ func (or *OrderRepository) GetOrderById(id uint) (*entity.Order, error) {
 	}
 
 	for _, item := range order.Items {
-		product := &Product{}
+		product := &dbo.Product{}
 		if err := or.db.First(product, item.ProductID).Error; err != nil {
 			return nil, fmt.Errorf("error to find product with id %d - %v", item.ProductID, err)
 		}
 		item.Product = product
 	}
 
-	return order.ToModel(), nil
+	return order.ToEntity(), nil
 }
 
-func (or *OrderRepository) AddItemToOrder(order *entity.Order, product *entity.Product, quantity int) (*entity.Order, error) {
-	orderItem := &OrderItem{
-		OrderID:   order.ID,
-		ProductID: product.ID,
-		Quantity:  int64(quantity),
-		UnitPrice: product.Price,
+func (or *OrderRepository) AddItemToOrder(orderID uint, productID uint, quantity int, unitPrice float64) error {
+	orderItem := &dbo.OrderItem{
+		OrderID:   orderID,
+		ProductID: productID,
+		Quantity:  quantity,
+		UnitPrice: unitPrice,
 	}
 
 	if err := or.db.Create(orderItem).Error; err != nil {
-		return nil, err
+		return nil
 	}
 
-	return or.UpdateOrder(order)
+	return nil
 }
 
 func (or *OrderRepository) UpdateOrder(order *entity.Order) (*entity.Order, error) {
-	orderToUpdate := &Order{}
+	orderToUpdate := &dbo.Order{}
 
 	if err := or.db.Preload("Customer").Preload("Attendant").Preload("Payment").Preload("Items").
 		First(orderToUpdate, order.ID).Error; err != nil {
 		return nil, err
 	}
 
-	orderToUpdate.Amount = order.Amount
+	orderToUpdate.Amount = order.Amount()
 	orderToUpdate.Status = order.Status.ToString()
-	orderToUpdate.Payment = mapPatmentEntity(order.Payment)
-
-	fmt.Printf("Status: %s Payment: %s\n", orderToUpdate.Status, orderToUpdate.Payment.Status)
-	fmt.Println(orderToUpdate.Payment)
+	orderToUpdate.Payment = dbo.ToPaymentDBO(order.Payment)
 
 	if err := or.db.Save(orderToUpdate).Error; err != nil {
 		return nil, err
