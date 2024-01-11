@@ -79,7 +79,8 @@ func main() {
 	paymentClientAdapter := payment.NewPaymentClientAdapter()
 	paymentRepository := repository.NewPaymentRepository(db)
 	paymentUseCase := service.NewPaymentService(paymentRepository)
-	orderRepository := repository.NewOrderRepository(db)
+	orderItemRepository := repository.NewOrderItemRepository(db)
+	orderRepository := repository.NewOrderRepository(db, orderItemRepository)
 	orderUseCase := service.NewOrderService(
 		orderRepository,
 		customerRepository,

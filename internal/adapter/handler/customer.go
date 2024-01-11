@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/fiap/challenge-gofood/internal/adapter/handler/dto"
 	"github.com/fiap/challenge-gofood/internal/domain/port"
 	"github.com/gin-gonic/gin"
 )
@@ -15,13 +16,6 @@ type CustomerHandler struct {
 
 func NewCustomerHandler(useCase port.CustomerUseCasePort) *CustomerHandler {
 	return &CustomerHandler{useCase}
-}
-
-type FindCustomerResponse struct {
-	ID    uint   `json:"id"`
-	Nome  string `json:"name"`
-	Email string `json:"email"`
-	CPF   string `json:"cpf"`
 }
 
 func (h *CustomerHandler) GetCustomers(c *gin.Context) {
@@ -38,17 +32,7 @@ func (h *CustomerHandler) GetCustomers(c *gin.Context) {
 		})
 	}
 
-	var response []FindCustomerResponse
-	for _, customer := range customers {
-		response = append(response, FindCustomerResponse{
-			ID:    customer.ID,
-			Nome:  customer.Name,
-			Email: customer.Email,
-			CPF:   customer.CPF,
-		})
-	}
-
-	c.JSON(http.StatusOK, response)
+	c.JSON(http.StatusOK, dto.ToCustomerResponses(customers))
 }
 
 func (h *CustomerHandler) GetCustomer(c *gin.Context) {
@@ -67,14 +51,7 @@ func (h *CustomerHandler) GetCustomer(c *gin.Context) {
 		})
 	}
 
-	response := FindCustomerResponse{
-		ID:    customer.ID,
-		Nome:  customer.Name,
-		Email: customer.Email,
-		CPF:   customer.CPF,
-	}
-
-	c.JSON(http.StatusOK, response)
+	c.JSON(http.StatusOK, dto.ToCustomerResponse(customer))
 }
 
 func (h *CustomerHandler) GetCustomerByCPF(c *gin.Context) {
@@ -93,7 +70,7 @@ func (h *CustomerHandler) GetCustomerByCPF(c *gin.Context) {
 		})
 	}
 
-	response := FindCustomerResponse{
+	response := dto.GetCustomerResponse{
 		ID:    customer.ID,
 		Nome:  customer.Name,
 		Email: customer.Email,
@@ -103,18 +80,8 @@ func (h *CustomerHandler) GetCustomerByCPF(c *gin.Context) {
 	c.JSON(http.StatusOK, response)
 }
 
-type CreateCustomerRequest struct {
-	Nome  string `json:"name"`
-	Email string `json:"email"`
-	CPF   string `json:"cpf"`
-}
-
-type CreateCustomerResponse struct {
-	ID uint `json:"id"`
-}
-
 func (h *CustomerHandler) CreateCustomer(c *gin.Context) {
-	var request CreateCustomerRequest
+	var request dto.CreateCustomerRequest
 	if err := c.ShouldBindJSON(&request); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
@@ -128,20 +95,11 @@ func (h *CustomerHandler) CreateCustomer(c *gin.Context) {
 		})
 	}
 
-	response := CreateCustomerResponse{
-		ID: customer.ID,
-	}
-
-	c.JSON(http.StatusCreated, response)
-}
-
-type UpdateCustomerRequest struct {
-	Nome  string `json:"name"`
-	Email string `json:"email"`
+	c.JSON(http.StatusCreated, dto.ToCustomerResponse(customer))
 }
 
 func (h *CustomerHandler) UpdateCustomer(c *gin.Context) {
-	var request UpdateCustomerRequest
+	var request dto.UpdateCustomerRequest
 	var err error
 
 	id, err := strconv.Atoi(c.Param("id"))

@@ -19,6 +19,7 @@ type AttendantUseCasePort interface {
 type AttendantRepositoryPort interface {
 	CreateAttendant(nome string) (*entity.Attendant, error)
 	GetAttendantById(id uint) (*entity.Attendant, error)
+	GetAttendantByName(name string) (*entity.Attendant, error)
 	GetAttendants() ([]*entity.Attendant, error)
 	UpdateAttendant(attendant *entity.Attendant) (*entity.Attendant, error)
 	DeleteAttendant(id uint) error

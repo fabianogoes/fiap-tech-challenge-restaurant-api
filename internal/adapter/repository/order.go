@@ -10,11 +10,12 @@ import (
 )
 
 type OrderRepository struct {
-	db *gorm.DB
+	db             *gorm.DB
+	itemRepository *OrderItemRepository
 }
 
-func NewOrderRepository(db *gorm.DB) *OrderRepository {
-	return &OrderRepository{db}
+func NewOrderRepository(db *gorm.DB, itemRepo *OrderItemRepository) *OrderRepository {
+	return &OrderRepository{db, itemRepo}
 }
 
 func (or *OrderRepository) CreateOrder(entity *entity.Order) (*entity.Order, error) {
@@ -53,27 +54,20 @@ func (or *OrderRepository) GetOrderById(id uint) (*entity.Order, error) {
 	return order.ToEntity(), nil
 }
 
-func (or *OrderRepository) AddItemToOrder(orderID uint, productID uint, quantity int, unitPrice float64) error {
-	orderItem := &dbo.OrderItem{
-		OrderID:   orderID,
-		ProductID: productID,
-		Quantity:  quantity,
-		UnitPrice: unitPrice,
-	}
-
-	if err := or.db.Create(orderItem).Error; err != nil {
-		return nil
-	}
-
-	return nil
-}
-
 func (or *OrderRepository) UpdateOrder(order *entity.Order) (*entity.Order, error) {
 	orderToUpdate := &dbo.Order{}
 
 	if err := or.db.Preload("Customer").Preload("Attendant").Preload("Payment").Preload("Items").
 		First(orderToUpdate, order.ID).Error; err != nil {
 		return nil, err
+	}
+
+	for _, item := range order.Items {
+		if item.ID == 0 {
+			if err := or.itemRepository.CreateOrderItem(dbo.ToOrderItemDBO(item)); err != nil {
+				return nil, err
+			}
+		}
 	}
 
 	orderToUpdate.Amount = order.Amount()
@@ -85,4 +79,20 @@ func (or *OrderRepository) UpdateOrder(order *entity.Order) (*entity.Order, erro
 	}
 
 	return or.GetOrderById(order.ID)
+}
+
+type OrderItemRepository struct {
+	db *gorm.DB
+}
+
+func NewOrderItemRepository(db *gorm.DB) *OrderItemRepository {
+	return &OrderItemRepository{db}
+}
+
+func (oir *OrderItemRepository) CreateOrderItem(orderItem *dbo.OrderItem) error {
+	if err := oir.db.Create(orderItem).Error; err != nil {
+		return err
+	}
+
+	return nil
 }

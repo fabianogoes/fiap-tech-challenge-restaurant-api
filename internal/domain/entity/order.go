@@ -40,6 +40,7 @@ func (o *Order) Amount() float64 {
 
 func (o *Order) AddItem(product *Product, quantity int) {
 	o.Items = append(o.Items, &OrderItem{
+		Order:     *o,
 		Product:   product,
 		Quantity:  quantity,
 		UnitPrice: product.Price,

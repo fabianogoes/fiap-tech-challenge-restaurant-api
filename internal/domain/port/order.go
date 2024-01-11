@@ -24,6 +24,5 @@ type OrderUseCasePort interface {
 type OrderRepositoryPort interface {
 	CreateOrder(entity *entity.Order) (*entity.Order, error)
 	GetOrderById(id uint) (*entity.Order, error)
-	AddItemToOrder(orderID uint, productID uint, quantity int, unitPrice float64) error
 	UpdateOrder(order *entity.Order) (*entity.Order, error)
 }

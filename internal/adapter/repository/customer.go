@@ -20,16 +20,12 @@ func NewCustomerRepository(db *gorm.DB) *CustomerRepository {
 
 func (c *CustomerRepository) CreateCustomer(customer *entity.Customer) (*entity.Customer, error) {
 	var err error
+
 	if err = c.db.Create(customer).Error; err != nil {
 		return nil, err
 	}
 
-	result, err := c.GetCustomerByCPF(customer.CPF)
-	if err != nil {
-		return nil, err
-	}
-
-	return result, nil
+	return c.GetCustomerByCPF(customer.CPF)
 }
 
 func (c *CustomerRepository) GetCustomerByCPF(cpf string) (*entity.Customer, error) {

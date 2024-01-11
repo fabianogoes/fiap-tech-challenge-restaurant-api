@@ -102,13 +102,14 @@ func (i *OrderItem) ToEntity() *entity.OrderItem {
 }
 
 // ToDBO converts entity.OrderItem to OrderItem DBO
-func ToOrderItemDBO(i *entity.OrderItem) OrderItem {
-	return OrderItem{
+func ToOrderItemDBO(i *entity.OrderItem) *OrderItem {
+	return &OrderItem{
 		Model: gorm.Model{
 			ID:        i.ID,
 			CreatedAt: i.CreatedAt,
 			UpdatedAt: i.UpdatedAt,
 		},
+		OrderID:   i.Order.ID,
 		ProductID: i.Product.ID,
 		Quantity:  i.Quantity,
 		UnitPrice: i.UnitPrice,

@@ -28,8 +28,14 @@ func (c *AttendantRepository) CreateAttendant(name string) (*entity.Attendant, e
 		return nil, err
 	}
 
+	return c.GetAttendantByName(name)
+}
+
+func (c *AttendantRepository) GetAttendantByName(name string) (*entity.Attendant, error) {
 	var result dbo.Attendant
-	c.db.Where("name = ?", name).First(&result)
+	if err := c.db.Where("name = ?", name).First(&result).Error; err != nil {
+		return nil, fmt.Errorf("error to find attendant with name %s - %v", name, err)
+	}
 
 	return result.ToEntity(), nil
 }

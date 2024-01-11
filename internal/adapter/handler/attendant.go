@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/fiap/challenge-gofood/internal/adapter/handler/dto"
 	"github.com/fiap/challenge-gofood/internal/domain/port"
 	"github.com/gin-gonic/gin"
 )
@@ -15,11 +16,6 @@ type AttendantHandler struct {
 
 func NewAttendantHandler(useCase port.AttendantUseCasePort) *AttendantHandler {
 	return &AttendantHandler{useCase}
-}
-
-type FindAttendantResponse struct {
-	ID   uint   `json:"id"`
-	Name string `json:"name"`
 }
 
 func (h *AttendantHandler) GetAttendants(c *gin.Context) {
@@ -36,15 +32,7 @@ func (h *AttendantHandler) GetAttendants(c *gin.Context) {
 		})
 	}
 
-	var response []FindAttendantResponse
-	for _, attendant := range attendants {
-		response = append(response, FindAttendantResponse{
-			ID:   attendant.ID,
-			Name: attendant.Name,
-		})
-	}
-
-	c.JSON(http.StatusOK, response)
+	c.JSON(http.StatusOK, dto.ToAttendantResponses(attendants))
 }
 
 func (h *AttendantHandler) GetAttendant(c *gin.Context) {
@@ -63,24 +51,11 @@ func (h *AttendantHandler) GetAttendant(c *gin.Context) {
 		})
 	}
 
-	response := FindAttendantResponse{
-		ID:   attendant.ID,
-		Name: attendant.Name,
-	}
-
-	c.JSON(http.StatusOK, response)
-}
-
-type CreateAttendantRequest struct {
-	Name string `json:"name"`
-}
-
-type CreateAttendantResponse struct {
-	ID uint `json:"id"`
+	c.JSON(http.StatusOK, dto.ToAttendantResponse(attendant))
 }
 
 func (h *AttendantHandler) CreateAttendant(c *gin.Context) {
-	var request CreateAttendantRequest
+	var request dto.CreateAttendantRequest
 	if err := c.ShouldBindJSON(&request); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
@@ -94,19 +69,11 @@ func (h *AttendantHandler) CreateAttendant(c *gin.Context) {
 		})
 	}
 
-	response := CreateAttendantResponse{
-		ID: attendant.ID,
-	}
-
-	c.JSON(http.StatusCreated, response)
-}
-
-type UpdateAttendantRequest struct {
-	Nome string `json:"name"`
+	c.JSON(http.StatusCreated, dto.ToAttendantResponse(attendant))
 }
 
 func (h *AttendantHandler) UpdateAttendant(c *gin.Context) {
-	var request UpdateAttendantRequest
+	var request dto.UpdateAttendantRequest
 	var err error
 
 	id, err := strconv.Atoi(c.Param("id"))
@@ -130,14 +97,9 @@ func (h *AttendantHandler) UpdateAttendant(c *gin.Context) {
 	}
 
 	attendant.Name = request.Nome
+	attendantUpdated, err := h.UseCase.UpdateAttendant(attendant)
 
-	_, err = h.UseCase.UpdateAttendant(attendant)
-
-	response := fmt.Sprintf("Attendant[%d] - %s updated", attendant.ID, request.Nome)
-
-	c.JSON(http.StatusAccepted, gin.H{
-		"message": response,
-	})
+	c.JSON(http.StatusAccepted, dto.ToAttendantResponse(attendantUpdated))
 }
 
 func (h *AttendantHandler) DeleteAttendant(c *gin.Context) {

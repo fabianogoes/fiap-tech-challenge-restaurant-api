@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/fiap/challenge-gofood/internal/domain/entity"
+	"github.com/fiap/challenge-gofood/internal/adapter/handler/dto"
 	"github.com/fiap/challenge-gofood/internal/domain/port"
 	"github.com/gin-gonic/gin"
 )
@@ -16,34 +16,6 @@ type ProductHandler struct {
 
 func NewProductHandler(useCase port.ProductUseCasePort) *ProductHandler {
 	return &ProductHandler{useCase}
-}
-
-type FindProductResponse struct {
-	ID       uint              `json:"id"`
-	Name     string            `json:"name"`
-	Price    float64           `json:"price"`
-	Category *CategoryResponse `json:"category"`
-}
-
-func ProductToResponse(product *entity.Product) *FindProductResponse {
-	return &FindProductResponse{
-		ID:       product.ID,
-		Name:     product.Name,
-		Price:    product.Price,
-		Category: CategoryToResponse(product.Category),
-	}
-}
-
-type CategoryResponse struct {
-	ID   uint   `json:"id"`
-	Name string `json:"name"`
-}
-
-func CategoryToResponse(category *entity.Category) *CategoryResponse {
-	return &CategoryResponse{
-		ID:   category.ID,
-		Name: category.Name,
-	}
 }
 
 func (h *ProductHandler) GetProducts(c *gin.Context) {
@@ -60,12 +32,7 @@ func (h *ProductHandler) GetProducts(c *gin.Context) {
 		})
 	}
 
-	var response []FindProductResponse
-	for _, product := range products {
-		response = append(response, *ProductToResponse(product))
-	}
-
-	c.JSON(http.StatusOK, response)
+	c.JSON(http.StatusOK, dto.ToProductResponses(products))
 }
 
 func (h *ProductHandler) GetProductById(c *gin.Context) {
@@ -84,23 +51,11 @@ func (h *ProductHandler) GetProductById(c *gin.Context) {
 		})
 	}
 
-	response := *ProductToResponse(product)
-
-	c.JSON(http.StatusOK, response)
-}
-
-type CreateProductRequest struct {
-	Name       string  `json:"name"`
-	Price      float64 `json:"price"`
-	CategoryID uint    `json:"categoryID"`
-}
-
-type CreateProductResponse struct {
-	ID uint `json:"id"`
+	c.JSON(http.StatusOK, dto.ToProductResponse(product))
 }
 
 func (h *ProductHandler) CreateProduct(c *gin.Context) {
-	var request CreateProductRequest
+	var request dto.CreateProductRequest
 	if err := c.ShouldBindJSON(&request); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
@@ -116,21 +71,11 @@ func (h *ProductHandler) CreateProduct(c *gin.Context) {
 		})
 	}
 
-	response := CreateProductResponse{
-		ID: product.ID,
-	}
-
-	c.JSON(http.StatusCreated, response)
-}
-
-type UpdateProductRequest struct {
-	Name     string  `json:"name"`
-	Price    float64 `json:"price"`
-	Category string  `json:"category"`
+	c.JSON(http.StatusCreated, dto.ToProductResponse(product))
 }
 
 func (h *ProductHandler) UpdateProduct(c *gin.Context) {
-	var request UpdateProductRequest
+	var request dto.UpdateProductRequest
 	var err error
 
 	id, err := strconv.Atoi(c.Param("id"))
@@ -157,13 +102,9 @@ func (h *ProductHandler) UpdateProduct(c *gin.Context) {
 	product.Price = request.Price
 	product.Category.Name = request.Category
 
-	_, err = h.UseCase.UpdateProduct(product)
+	productUpdated, err := h.UseCase.UpdateProduct(product)
 
-	response := fmt.Sprintf("Product[%d] - %s updated", product.ID, request.Name)
-
-	c.JSON(http.StatusAccepted, gin.H{
-		"message": response,
-	})
+	c.JSON(http.StatusAccepted, dto.ToProductResponse(productUpdated))
 }
 
 func (h *ProductHandler) DeleteProduct(c *gin.Context) {

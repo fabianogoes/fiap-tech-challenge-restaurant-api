@@ -30,8 +30,14 @@ func (p *ProductRepository) CreateProduct(name string, price float64, categoryID
 		return nil, err
 	}
 
+	return p.GetProductByName(name)
+}
+
+func (p *ProductRepository) GetProductByName(name string) (*entity.Product, error) {
 	var result dbo.Product
-	p.db.Where("name = ?", product.Name).First(&result)
+	if err := p.db.Where("name = ?", name).First(&result).Error; err != nil {
+		return nil, fmt.Errorf("error to find product with name %s - %v", name, err)
+	}
 
 	return result.ToEntity(), nil
 }

@@ -1,11 +1,10 @@
 package handler
 
 import (
-	"fmt"
 	"net/http"
 	"strconv"
 
-	"github.com/fiap/challenge-gofood/internal/domain/entity"
+	"github.com/fiap/challenge-gofood/internal/adapter/handler/dto"
 	"github.com/fiap/challenge-gofood/internal/domain/port"
 	"github.com/gin-gonic/gin"
 )
@@ -31,17 +30,8 @@ func NewOrderHandler(
 	}
 }
 
-type StartOrderRequest struct {
-	CustomerCPF string `json:"customerCPF"`
-	AttendantID uint   `json:"attendantID"`
-}
-
-type StartOrderResponse struct {
-	ID uint `json:"id"`
-}
-
 func (h *OrderHandler) StartOrder(c *gin.Context) {
-	var request StartOrderRequest
+	var request dto.StartOrderRequest
 	if err := c.ShouldBindJSON(&request); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
@@ -72,22 +62,7 @@ func (h *OrderHandler) StartOrder(c *gin.Context) {
 		return
 	}
 
-	response := StartOrderResponse{
-		ID: order.ID,
-	}
-
-	c.JSON(http.StatusCreated, response)
-}
-
-type AddItemToOrderRequest struct {
-	ProductID uint `json:"productID"`
-	Quantity  int  `json:"quantity"`
-}
-
-type AddItemToOrderResponse struct {
-	ID         uint    `json:"id"`
-	Amount     float64 `json:"amount"`
-	ItemsTotal int     `json:"itemsTotal"`
+	c.JSON(http.StatusCreated, dto.ToStartOrderResponse(order))
 }
 
 func (h *OrderHandler) AddItemToOrder(c *gin.Context) {
@@ -98,7 +73,7 @@ func (h *OrderHandler) AddItemToOrder(c *gin.Context) {
 		})
 	}
 
-	var request AddItemToOrderRequest
+	var request dto.AddItemToOrderRequest
 	if err := c.ShouldBindJSON(&request); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
@@ -129,63 +104,7 @@ func (h *OrderHandler) AddItemToOrder(c *gin.Context) {
 		return
 	}
 
-	response := mapOrderResponse(orderUpdated)
-
-	c.JSON(http.StatusCreated, response)
-}
-
-type OrderResponse struct {
-	ID            uint                 `json:"id"`
-	CustomerID    uint                 `json:"customerID"`
-	CustomerCPF   string               `json:"customerCPF"`
-	CustomerName  string               `json:"customerName"`
-	AttendantID   uint                 `json:"attendantID"`
-	AttendantName string               `json:"attendantName"`
-	Amount        string               `json:"amount"`
-	ItemsTotal    int                  `json:"itemsTotal"`
-	Status        string               `json:"status"`
-	Payment       OrderPaymentResponse `json:"payment"`
-	Items         []OrderItemResponse
-}
-
-type OrderPaymentResponse struct {
-	Status string `json:"status"`
-	Method string `json:"method"`
-}
-
-type OrderItemResponse struct {
-	ProductID   uint    `json:"productID"`
-	ProductName string  `json:"productName"`
-	Quantity    int     `json:"quantity"`
-	UnitPrice   float64 `json:"unitPrice"`
-}
-
-func mapOrderResponse(order *entity.Order) OrderResponse {
-	response := OrderResponse{
-		ID:            order.ID,
-		CustomerCPF:   order.Customer.CPF,
-		CustomerName:  order.Customer.Name,
-		AttendantID:   order.Attendant.ID,
-		AttendantName: order.Attendant.Name,
-		Amount:        fmt.Sprintf("%.2f", order.Amount()),
-		ItemsTotal:    order.ItemsQuantity(),
-		Status:        order.Status.ToString(),
-		Payment: OrderPaymentResponse{
-			Status: order.Payment.Status.ToString(),
-			Method: order.Payment.Method.ToString(),
-		},
-		Items: []OrderItemResponse{},
-	}
-
-	for _, item := range order.Items {
-		response.Items = append(response.Items, OrderItemResponse{
-			ProductID:   item.Product.ID,
-			ProductName: item.Product.Name,
-			Quantity:    item.Quantity,
-			UnitPrice:   item.UnitPrice,
-		})
-	}
-	return response
+	c.JSON(http.StatusCreated, dto.ToOrderResponse(orderUpdated))
 }
 
 func (h *OrderHandler) GetOrderById(c *gin.Context) {
@@ -204,9 +123,7 @@ func (h *OrderHandler) GetOrderById(c *gin.Context) {
 		return
 	}
 
-	response := mapOrderResponse(order)
-
-	c.JSON(http.StatusOK, response)
+	c.JSON(http.StatusOK, dto.ToOrderResponse(order))
 }
 
 func (h *OrderHandler) ConfirmationOrder(c *gin.Context) {
@@ -234,13 +151,7 @@ func (h *OrderHandler) ConfirmationOrder(c *gin.Context) {
 		return
 	}
 
-	response := mapOrderResponse(order)
-
-	c.JSON(http.StatusOK, response)
-}
-
-type PaymentOrderRequest struct {
-	PaymentMethod string `json:"paymentMethod"`
+	c.JSON(http.StatusOK, dto.ToOrderResponse(order))
 }
 
 func (h *OrderHandler) PaymentOrder(c *gin.Context) {
@@ -260,7 +171,7 @@ func (h *OrderHandler) PaymentOrder(c *gin.Context) {
 		return
 	}
 
-	var request PaymentOrderRequest
+	var request dto.PaymentOrderRequest
 	if err := c.ShouldBindJSON(&request); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
@@ -275,9 +186,7 @@ func (h *OrderHandler) PaymentOrder(c *gin.Context) {
 		return
 	}
 
-	response := mapOrderResponse(order)
-
-	c.JSON(http.StatusOK, response)
+	c.JSON(http.StatusOK, dto.ToOrderResponse(order))
 }
 
 func (h *OrderHandler) InPreparationOrder(c *gin.Context) {
@@ -305,9 +214,7 @@ func (h *OrderHandler) InPreparationOrder(c *gin.Context) {
 		return
 	}
 
-	response := mapOrderResponse(order)
-
-	c.JSON(http.StatusOK, response)
+	c.JSON(http.StatusOK, dto.ToOrderResponse(order))
 }
 
 func (h *OrderHandler) ReadyForDeliveryOrder(c *gin.Context) {
@@ -335,9 +242,7 @@ func (h *OrderHandler) ReadyForDeliveryOrder(c *gin.Context) {
 		return
 	}
 
-	response := mapOrderResponse(order)
-
-	c.JSON(http.StatusOK, response)
+	c.JSON(http.StatusOK, dto.ToOrderResponse(order))
 }
 
 func (h *OrderHandler) SentForDeliveryOrder(c *gin.Context) {
@@ -365,9 +270,7 @@ func (h *OrderHandler) SentForDeliveryOrder(c *gin.Context) {
 		return
 	}
 
-	response := mapOrderResponse(order)
-
-	c.JSON(http.StatusOK, response)
+	c.JSON(http.StatusOK, dto.ToOrderResponse(order))
 }
 
 func (h *OrderHandler) DeliveredOrder(c *gin.Context) {
@@ -395,9 +298,7 @@ func (h *OrderHandler) DeliveredOrder(c *gin.Context) {
 		return
 	}
 
-	response := mapOrderResponse(order)
-
-	c.JSON(http.StatusOK, response)
+	c.JSON(http.StatusOK, dto.ToOrderResponse(order))
 }
 
 func (h *OrderHandler) CancelOrder(c *gin.Context) {
@@ -423,6 +324,6 @@ func (h *OrderHandler) CancelOrder(c *gin.Context) {
 		})
 		return
 	}
-	response := mapOrderResponse(order)
-	c.JSON(http.StatusOK, response)
+
+	c.JSON(http.StatusOK, dto.ToOrderResponse(order))
 }

@@ -25,12 +25,12 @@ func NewOrderService(
 	deliveryClient port.DeliveryClientPort,
 ) *OrderService {
 	return &OrderService{
-		orderRepository:    orderRepo,
-		customerRepository: customerRepo,
+		orderRepository:     orderRepo,
+		customerRepository:  customerRepo,
 		attendantRepository: attendantRepo,
-		paymentUseCase:     paymentUC,
-		paymentClient:      paymentClient,
-		deliveryClient:     deliveryClient,
+		paymentUseCase:      paymentUC,
+		paymentClient:       paymentClient,
+		deliveryClient:      deliveryClient,
 	}
 }
 
@@ -40,20 +40,17 @@ func (os *OrderService) StartOrder(customerID uint, attendantID uint) (*entity.O
 	if err != nil {
 		return nil, err
 	}
-	fmt.Println("StartOrder Customer, ", customer)
 
 	attendant, err := os.attendantRepository.GetAttendantById(attendantID)
 	if err != nil {
 		return nil, err
 	}
-	fmt.Println("StartOrder Attendant, ", attendant)
 
 	order, err := entity.NewOrder(customer, attendant)
 	if err != nil {
 		return nil, err
 	}
 
-	fmt.Println("StartOrder Order, ", order)
 	return os.orderRepository.CreateOrder(order)
 }
 
@@ -63,11 +60,9 @@ func (os *OrderService) GetOrderById(id uint) (*entity.Order, error) {
 
 func (os *OrderService) AddItemToOrder(order *entity.Order, product *entity.Product, quantity int) (*entity.Order, error) {
 
-	if err := os.orderRepository.AddItemToOrder(order.ID, product.ID, quantity, product.Price); err != nil {
-		return nil, err
-	}
-
+	order.AddItem(product, quantity)
 	order.Status = entity.OrderStatusAddingItems
+
 	return os.orderRepository.UpdateOrder(order)
 }
 
