@@ -14,9 +14,13 @@
   - `enriry`: diretório que contém modelos/entidades de domínio que representam os principais conceitos de negócios.
   - `port`: diretório que contém interfaces ou contratos definidos que os adaptadores devem seguir.
   - `service`: diretório que contém Serviços de Domínio ou Use Cases.
-- `adapters`: diretório para conter serviços externos que irão interagir com o core do aplicativo
+- `adapters`: diretório para conter serviços externos que irão interagir com o core do aplicativo.
   - `handler`: diretório que contém os controllers e manipulador de requisições REST.
+  - `handler\dto`: diretório que contém objetos/modelo de request e response.
   - `repository`: diretório que contém adaptadores de banco de dados exemplo para PostgreSQL.
+  - `repository\dbo`: diretório que contém objetos/entidades de banco de dados.
+  - `payment`: adaptador para meio de pagamento externo.
+  - `delivery`: adaptador para meio de entrega externo.
 
 ## Stack
 
