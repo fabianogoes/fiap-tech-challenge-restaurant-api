@@ -25,6 +25,7 @@ func (or *OrderRepository) CreateOrder(entity *entity.Order) (*entity.Order, err
 		Date:        time.Now(),
 		Status:      entity.Status.ToString(),
 		Payment:     dbo.ToPaymentDBO(entity.Payment),
+		Delivery:    dbo.ToDeliveryDBO(entity.Delivery),
 		Amount:      entity.Amount(),
 	}
 
@@ -38,7 +39,11 @@ func (or *OrderRepository) CreateOrder(entity *entity.Order) (*entity.Order, err
 func (or *OrderRepository) GetOrderById(id uint) (*entity.Order, error) {
 	order := &dbo.Order{}
 
-	if err := or.db.Preload("Customer").Preload("Attendant").Preload("Payment").Preload("Items").
+	if err := or.db.Preload("Customer").
+		Preload("Attendant").
+		Preload("Payment").
+		Preload("Delivery").
+		Preload("Items").
 		First(order, id).Error; err != nil {
 		return nil, fmt.Errorf("error to find order with id %d - %v", id, err)
 	}

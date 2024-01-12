@@ -10,8 +10,6 @@ import (
 // Delivery is a Database Object for delivery
 type Delivery struct {
 	gorm.Model
-	OrderID uint
-	Order   Order
 	Date    time.Time
 	Status  string
 }

@@ -9,10 +9,12 @@ const (
 	DeliveryStatusSent
 	DeliveryStatusDelivered
 	DeliveryStatusCanceled
+	DeliveryStatusError
+	DeliveryStatusNone
 )
 
 func (ds DeliveryStatus) ToString() string {
-	return [...]string{"PENDING", "SENT", "DELIVERED", "CANCELED"}[ds]
+	return [...]string{"PENDING", "SENT", "DELIVERED", "CANCELED", "ERROR", "NONE"}[ds]
 }
 
 func (ds DeliveryStatus) ToDeliveryStatus(status string) DeliveryStatus {
@@ -25,8 +27,10 @@ func (ds DeliveryStatus) ToDeliveryStatus(status string) DeliveryStatus {
 		return DeliveryStatusDelivered
 	case "CANCELED":
 		return DeliveryStatusCanceled
+	case "ERROR":
+		return DeliveryStatusError
 	default:
-		return DeliveryStatusPending
+		return DeliveryStatusNone
 	}
 }
 

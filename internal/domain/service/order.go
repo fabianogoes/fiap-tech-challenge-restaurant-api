@@ -14,6 +14,7 @@ type OrderService struct {
 	paymentUseCase      port.PaymentUseCasePort
 	paymentClient       port.PaymentClientPort
 	deliveryClient      port.DeliveryClientPort
+	deliveryRepository  port.DeliveryRepositoryPort
 }
 
 func NewOrderService(
@@ -23,6 +24,7 @@ func NewOrderService(
 	paymentUC port.PaymentUseCasePort,
 	paymentClient port.PaymentClientPort,
 	deliveryClient port.DeliveryClientPort,
+	deliveryRepo port.DeliveryRepositoryPort,
 ) *OrderService {
 	return &OrderService{
 		orderRepository:     orderRepo,
@@ -31,6 +33,7 @@ func NewOrderService(
 		paymentUseCase:      paymentUC,
 		paymentClient:       paymentClient,
 		deliveryClient:      deliveryClient,
+		deliveryRepository:  deliveryRepo,
 	}
 }
 
@@ -102,6 +105,28 @@ func (os *OrderService) PaymentOrder(order *entity.Order, paymentMethod string) 
 	return os.orderRepository.UpdateOrder(order)
 }
 
+func (os *OrderService) DeliveredOrder(order *entity.Order) (*entity.Order, error) {
+	delivery, err := os.deliveryRepository.GetDeliveryById(order.Delivery.ID)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := os.deliveryClient.Deliver(order); err != nil {
+		order.Status = entity.OrderStatusDeliveryError
+		delivery.Status = entity.DeliveryStatusError
+	} else {
+		order.Status = entity.OrderStatusDelivered
+		delivery.Status = entity.DeliveryStatusDelivered
+	}
+
+	_, err = os.deliveryRepository.UpdateDelivery(delivery)
+	if err != nil {
+		return nil, err
+	}
+
+	return os.orderRepository.UpdateOrder(order)
+}
+
 func (os *OrderService) InPreparationOrder(order *entity.Order) (*entity.Order, error) {
 	order.Status = entity.OrderStatusInPreparation
 	return os.orderRepository.UpdateOrder(order)
@@ -113,16 +138,18 @@ func (os *OrderService) ReadyForDeliveryOrder(order *entity.Order) (*entity.Orde
 }
 
 func (os *OrderService) SentForDeliveryOrder(order *entity.Order) (*entity.Order, error) {
-	order.Status = entity.OrderStatusSentForDelivery
-	return os.orderRepository.UpdateOrder(order)
-}
-
-func (os *OrderService) DeliveredOrder(order *entity.Order) (*entity.Order, error) {
-	if err := os.deliveryClient.Deliver(order); err != nil {
-		order.Status = entity.OrderStatusDeliveryError
-	} else {
-		order.Status = entity.OrderStatusDelivered
+	delivery, err := os.deliveryRepository.GetDeliveryById(order.Delivery.ID)
+	if err != nil {
+		return nil, err
 	}
+
+	delivery.Status = entity.DeliveryStatusSent
+	_, err = os.deliveryRepository.UpdateDelivery(delivery)
+	if err != nil {
+		return nil, err
+	}
+
+	order.Status = entity.OrderStatusSentForDelivery
 	return os.orderRepository.UpdateOrder(order)
 }
 

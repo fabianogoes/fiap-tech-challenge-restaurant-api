@@ -9,6 +9,7 @@ type Order struct {
 	Date      time.Time
 	Status    OrderStatus
 	Payment   *Payment
+	Delivery  *Delivery
 	Items     []*OrderItem
 	CreatedAt time.Time
 	UpdatedAt time.Time
@@ -24,6 +25,9 @@ func NewOrder(customer *Customer, attendant *Attendant) (*Order, error) {
 		Payment: &Payment{
 			Status: PaymentStatusPending,
 			Method: PaymentMethodNone,
+		},
+		Delivery: &Delivery{
+			Status: DeliveryStatusPending,
 		},
 	}, nil
 }

@@ -19,6 +19,8 @@ type Order struct {
 	PaymentID   uint
 	Payment     Payment `gorm:"ForeignKey:PaymentID"`
 	Amount      float64
+	DeliveryID  uint
+	Delivery    Delivery `gorm:"ForeignKey:DeliveryID"`
 	Items       []*OrderItem
 }
 
@@ -46,6 +48,7 @@ func (o *Order) ToEntity() *entity.Order {
 		Date:      o.Date,
 		Status:    o.toOrderStatus(),
 		Payment:   o.Payment.ToEntity(),
+		Delivery:  o.Delivery.ToEntity(),
 		Items:     items,
 		CreatedAt: o.CreatedAt,
 		UpdatedAt: o.UpdatedAt,

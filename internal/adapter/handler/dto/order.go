@@ -7,16 +7,17 @@ import (
 )
 
 type OrderResponse struct {
-	ID            uint                 `json:"id"`
-	CustomerID    uint                 `json:"customerID"`
-	CustomerCPF   string               `json:"customerCPF"`
-	CustomerName  string               `json:"customerName"`
-	AttendantID   uint                 `json:"attendantID"`
-	AttendantName string               `json:"attendantName"`
-	Amount        string               `json:"amount"`
-	ItemsTotal    int                  `json:"itemsTotal"`
-	Status        string               `json:"status"`
-	Payment       OrderPaymentResponse `json:"payment"`
+	ID            uint                  `json:"id"`
+	CustomerID    uint                  `json:"customerID"`
+	CustomerCPF   string                `json:"customerCPF"`
+	CustomerName  string                `json:"customerName"`
+	AttendantID   uint                  `json:"attendantID"`
+	AttendantName string                `json:"attendantName"`
+	Amount        string                `json:"amount"`
+	ItemsTotal    int                   `json:"itemsTotal"`
+	Status        string                `json:"status"`
+	Payment       OrderPaymentResponse  `json:"payment"`
+	Delivery      OrderDeliveryResponse `json:"delivery"`
 	Items         []OrderItemResponse
 	CreatedAt     string `json:"createdAt"`
 	UpdatedAt     string `json:"updatedAt"`
@@ -35,6 +36,9 @@ func ToOrderResponse(order *entity.Order) OrderResponse {
 		Payment: OrderPaymentResponse{
 			Status: order.Payment.Status.ToString(),
 			Method: order.Payment.Method.ToString(),
+		},
+		Delivery: OrderDeliveryResponse{
+			Status: order.Delivery.Status.ToString(),
 		},
 		Items:     []OrderItemResponse{},
 		CreatedAt: order.CreatedAt.Format("2006-01-02 15:04:05"),
@@ -64,6 +68,10 @@ func ToOrderResponses(orders []*entity.Order) []OrderResponse {
 type OrderPaymentResponse struct {
 	Status string `json:"status"`
 	Method string `json:"method"`
+}
+
+type OrderDeliveryResponse struct {
+	Status string `json:"status"`
 }
 
 type OrderItemResponse struct {
