@@ -235,6 +235,12 @@ curl --request POST \
   --data '{ "productID": 22, "quantity": 1 }'
 ```
 
+Removendo Item
+
+```shell
+curl --request DELETE --url http://localhost:8080/orders/1/item/1
+```
+
 Confirmando Pedido
 
 ```shell
