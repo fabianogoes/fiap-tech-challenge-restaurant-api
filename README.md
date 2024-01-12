@@ -1,10 +1,11 @@
 # FIAP challenge food
 
-> FIAP pós Software Architecture - Tech Challenge projeto Food
+> FIAP pós Software Architecture - Tech Challenge projeto de um Restaurante `gofood`
 >
 > - [Documentação DDD Miro](https://miro.com/app/board/uXjVNNl_0q0=/)
 > - [Tech Challenge - Entregáveis fase 1](./doc/EntragaFase1.md)
-> - [Como Testar](./doc/ComoTestar.md)
+> - [Como Testar usando `curl`](./doc/ComoTestar.md)
+> - [Como Testar usando Insomnia](Insomnia_collection_test.json)
 
 ## Arquitetura do projeto
 
