@@ -58,7 +58,6 @@ go version
 docker-compose up -d && go run cmd/web/main.go
 ```
 
----
 [0]: https://go.dev/
 [1]: https://gin-gonic.com/
 [2]: https://gorm.io/index.html
