@@ -90,6 +90,10 @@ func (or *OrderRepository) RemoveItemFromOrder(idItem uint) error {
 	return or.itemRepository.Delete(idItem)
 }
 
+func (or *OrderRepository) GetOrderItemById(id uint) (*entity.OrderItem, error) {
+	return or.itemRepository.GetOrderItemById(id)
+}
+
 type OrderItemRepository struct {
 	db *gorm.DB
 }
@@ -112,4 +116,14 @@ func (oir *OrderItemRepository) Delete(idItem uint) error {
 	}
 
 	return nil
+}
+
+func (oir *OrderItemRepository) GetOrderItemById(id uint) (*entity.OrderItem, error) {
+	orderItem := &dbo.OrderItem{}
+
+	if err := oir.db.Preload("Product").First(orderItem, id).Error; err != nil {
+		return nil, fmt.Errorf("error to find order item with id %d - %v", id, err)
+	}
+
+	return orderItem.ToEntity(), nil
 }

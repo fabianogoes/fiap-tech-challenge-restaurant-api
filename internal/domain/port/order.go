@@ -27,4 +27,5 @@ type OrderRepositoryPort interface {
 	GetOrderById(id uint) (*entity.Order, error)
 	UpdateOrder(order *entity.Order) (*entity.Order, error)
 	RemoveItemFromOrder(idItem uint) error
+	GetOrderItemById(id uint) (*entity.OrderItem, error)
 }

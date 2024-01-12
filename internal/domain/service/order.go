@@ -7,6 +7,11 @@ import (
 	"github.com/fiap/challenge-gofood/internal/domain/port"
 )
 
+const (
+	NOT_POSSIBLE_WITHOUT_PAYMENT = "It is not possible to %s order: %d not paid"
+	NOT_POSSIBLE_WITHOUT_ITEMS   = "It is not possible to %s the order: %d without items"
+)
+
 type OrderService struct {
 	orderRepository     port.OrderRepositoryPort
 	customerRepository  port.CustomerRepositoryPort
@@ -70,6 +75,33 @@ func (os *OrderService) AddItemToOrder(order *entity.Order, product *entity.Prod
 }
 
 func (os *OrderService) RemoveItemFromOrder(order *entity.Order, idItem uint) (*entity.Order, error) {
+	_, err := os.orderRepository.GetOrderItemById(idItem)
+	if err != nil {
+		return nil, fmt.Errorf("item not found with id %d - %v", idItem, err)
+	}
+
+	switch order.Status {
+	case entity.OrderStatusSentForDelivery,
+		entity.OrderStatusDelivered:
+		return nil, fmt.Errorf("It is not possible to REMOVE ITEM the order: %d with status in [SentForDelivery, Delivered]", order.ID)
+	}
+
+	if order.Payment.Status == entity.PaymentStatusPaid {
+		payment, _ := os.paymentUseCase.GetPaymentById(order.Payment.ID)
+		if err := os.paymentClient.Reverse(order); err != nil {
+			order.Status = entity.OrderStatusPaymentError
+			payment.Status = entity.PaymentStatusError
+		} else {
+			payment.Status = entity.PaymentStatusReversed
+			_, err = os.paymentUseCase.UpdatePayment(payment)
+			if err != nil {
+				return nil, err
+			}
+
+			order.Payment = payment
+		}
+	}
+
 	os.orderRepository.RemoveItemFromOrder(idItem)
 
 	order.Status = entity.OrderStatusAddingItems
@@ -77,11 +109,23 @@ func (os *OrderService) RemoveItemFromOrder(order *entity.Order, idItem uint) (*
 }
 
 func (os *OrderService) ConfirmationOrder(order *entity.Order) (*entity.Order, error) {
+	if len(order.Items) == 0 {
+		return nil, fmt.Errorf(NOT_POSSIBLE_WITHOUT_ITEMS, "CONFIRM", order.ID)
+	}
+
 	order.Status = entity.OrderStatusConfirmed
 	return os.orderRepository.UpdateOrder(order)
 }
 
 func (os *OrderService) PaymentOrder(order *entity.Order, paymentMethod string) (*entity.Order, error) {
+	if len(order.Items) == 0 {
+		return nil, fmt.Errorf(NOT_POSSIBLE_WITHOUT_ITEMS, "PAY", order.ID)
+	}
+
+	if order.Status != entity.OrderStatusConfirmed {
+		return nil, fmt.Errorf("It is not possible to PAY the order: %d without CONFIRMED", order.ID)
+	}
+
 	payment, err := os.paymentUseCase.GetPaymentById(order.Payment.ID)
 	if err != nil {
 		return nil, err
@@ -106,6 +150,14 @@ func (os *OrderService) PaymentOrder(order *entity.Order, paymentMethod string) 
 }
 
 func (os *OrderService) DeliveredOrder(order *entity.Order) (*entity.Order, error) {
+	if order.Payment.Status != entity.PaymentStatusPaid {
+		return nil, fmt.Errorf(NOT_POSSIBLE_WITHOUT_PAYMENT, "DELIVERY", order.ID)
+	}
+
+	if order.Status != entity.OrderStatusSentForDelivery {
+		return nil, fmt.Errorf("It is not possible to DELIVERY the order: %d without SENT FOR DELIVERY", order.ID)
+	}
+
 	delivery, err := os.deliveryRepository.GetDeliveryById(order.Delivery.ID)
 	if err != nil {
 		return nil, err
@@ -128,16 +180,48 @@ func (os *OrderService) DeliveredOrder(order *entity.Order) (*entity.Order, erro
 }
 
 func (os *OrderService) InPreparationOrder(order *entity.Order) (*entity.Order, error) {
+	if len(order.Items) == 0 {
+		return nil, fmt.Errorf(NOT_POSSIBLE_WITHOUT_ITEMS, "PREPARE", order.ID)
+	}
+
+	if order.Status != entity.OrderStatusPaid {
+		return nil, fmt.Errorf(NOT_POSSIBLE_WITHOUT_PAYMENT, "PREPARE", order.ID)
+	}
+
 	order.Status = entity.OrderStatusInPreparation
 	return os.orderRepository.UpdateOrder(order)
 }
 
 func (os *OrderService) ReadyForDeliveryOrder(order *entity.Order) (*entity.Order, error) {
+	if len(order.Items) == 0 {
+		return nil, fmt.Errorf(NOT_POSSIBLE_WITHOUT_PAYMENT, "DELIVERY", order.ID)
+	}
+
+	if order.Payment.Status != entity.PaymentStatusPaid {
+		return nil, fmt.Errorf(NOT_POSSIBLE_WITHOUT_PAYMENT, "DELIVERY", order.ID)
+	}
+
+	if order.Status != entity.OrderStatusInPreparation {
+		return nil, fmt.Errorf("It is not possible to DELIVERY the order: %d without PREPARE", order.ID)
+	}
+
 	order.Status = entity.OrderStatusReadyForDelivery
 	return os.orderRepository.UpdateOrder(order)
 }
 
 func (os *OrderService) SentForDeliveryOrder(order *entity.Order) (*entity.Order, error) {
+	if len(order.Items) == 0 {
+		return nil, fmt.Errorf(NOT_POSSIBLE_WITHOUT_ITEMS, "DELIVERY", order.ID)
+	}
+
+	if order.Payment.Status != entity.PaymentStatusPaid {
+		return nil, fmt.Errorf(NOT_POSSIBLE_WITHOUT_PAYMENT, "DELIVERY", order.ID)
+	}
+
+	if order.Status != entity.OrderStatusReadyForDelivery {
+		return nil, fmt.Errorf("It is not possible to DELIVERY the order: %d without READY FOR DELIVERY", order.ID)
+	}
+
 	delivery, err := os.deliveryRepository.GetDeliveryById(order.Delivery.ID)
 	if err != nil {
 		return nil, err
@@ -154,7 +238,12 @@ func (os *OrderService) SentForDeliveryOrder(order *entity.Order) (*entity.Order
 }
 
 func (os *OrderService) CancelOrder(order *entity.Order) (*entity.Order, error) {
-	fmt.Printf("CancelOrder Payment Status: %s\n", order.Payment.Status.ToString())
+	switch order.Status {
+	case entity.OrderStatusSentForDelivery,
+		entity.OrderStatusDelivered:
+		return nil, fmt.Errorf("It is not possible to cancel the order: %d with status in [SentForDelivery, Delivered]", order.ID)
+	}
+
 	if order.Payment.Status == entity.PaymentStatusPaid {
 		payment, _ := os.paymentUseCase.GetPaymentById(order.Payment.ID)
 		if err := os.paymentClient.Reverse(order); err != nil {
