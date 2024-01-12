@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -36,6 +37,7 @@ func (h *OrderHandler) StartOrder(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
 		})
+		return
 	}
 
 	if _, err := h.attendantUseCase.GetAttendantById(uint(request.AttendantID)); err != nil {
@@ -71,6 +73,7 @@ func (h *OrderHandler) AddItemToOrder(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
 		})
+		return
 	}
 
 	var request dto.AddItemToOrderRequest
@@ -107,12 +110,50 @@ func (h *OrderHandler) AddItemToOrder(c *gin.Context) {
 	c.JSON(http.StatusCreated, dto.ToOrderResponse(orderUpdated))
 }
 
+func (h *OrderHandler) RemoveItemFromOrder(c *gin.Context) {
+	orderID, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		message := fmt.Errorf("error to convert order id to int - %v", err)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": message.Error(),
+		})
+		return
+	}
+
+	itemID, err := strconv.Atoi(c.Param("iditem"))
+	if err != nil {
+		message := fmt.Errorf("error to convert item id to int - %v", err)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": message.Error(),
+		})
+		return
+	}
+
+	order, err := h.OrderUseCase.GetOrderById(uint(orderID))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+	orderUpdated, err := h.OrderUseCase.RemoveItemFromOrder(order, uint(itemID))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusCreated, dto.ToOrderResponse(orderUpdated))
+}
+
 func (h *OrderHandler) GetOrderById(c *gin.Context) {
 	orderID, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
 		})
+		return
 	}
 
 	order, err := h.OrderUseCase.GetOrderById(uint(orderID))
@@ -133,6 +174,7 @@ func (h *OrderHandler) ConfirmationOrder(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
 		})
+		return
 	}
 
 	order, err := h.OrderUseCase.GetOrderById(uint(orderID))
@@ -161,6 +203,7 @@ func (h *OrderHandler) PaymentOrder(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
 		})
+		return
 	}
 
 	order, err := h.OrderUseCase.GetOrderById(uint(orderID))
@@ -196,6 +239,7 @@ func (h *OrderHandler) InPreparationOrder(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
 		})
+		return
 	}
 
 	order, err := h.OrderUseCase.GetOrderById(uint(orderID))
@@ -224,6 +268,7 @@ func (h *OrderHandler) ReadyForDeliveryOrder(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
 		})
+		return
 	}
 
 	order, err := h.OrderUseCase.GetOrderById(uint(orderID))
@@ -252,6 +297,7 @@ func (h *OrderHandler) SentForDeliveryOrder(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
 		})
+		return
 	}
 
 	order, err := h.OrderUseCase.GetOrderById(uint(orderID))
@@ -280,6 +326,7 @@ func (h *OrderHandler) DeliveredOrder(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
 		})
+		return
 	}
 
 	order, err := h.OrderUseCase.GetOrderById(uint(orderID))
@@ -308,6 +355,7 @@ func (h *OrderHandler) CancelOrder(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
 		})
+		return
 	}
 
 	order, err := h.OrderUseCase.GetOrderById(uint(orderID))

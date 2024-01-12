@@ -81,6 +81,10 @@ func (or *OrderRepository) UpdateOrder(order *entity.Order) (*entity.Order, erro
 	return or.GetOrderById(order.ID)
 }
 
+func (or *OrderRepository) RemoveItemFromOrder(idItem uint) error {
+	return or.itemRepository.Delete(idItem)
+}
+
 type OrderItemRepository struct {
 	db *gorm.DB
 }
@@ -91,6 +95,14 @@ func NewOrderItemRepository(db *gorm.DB) *OrderItemRepository {
 
 func (oir *OrderItemRepository) CreateOrderItem(orderItem *dbo.OrderItem) error {
 	if err := oir.db.Create(orderItem).Error; err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (oir *OrderItemRepository) Delete(idItem uint) error {
+	if err := oir.db.Delete(&dbo.OrderItem{}, idItem).Error; err != nil {
 		return err
 	}
 

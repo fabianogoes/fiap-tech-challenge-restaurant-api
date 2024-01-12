@@ -43,6 +43,7 @@ func ToOrderResponse(order *entity.Order) OrderResponse {
 
 	for _, item := range order.Items {
 		response.Items = append(response.Items, OrderItemResponse{
+			ID:          item.ID,
 			ProductID:   item.Product.ID,
 			ProductName: item.Product.Name,
 			Quantity:    item.Quantity,
@@ -66,6 +67,7 @@ type OrderPaymentResponse struct {
 }
 
 type OrderItemResponse struct {
+	ID          uint    `json:"id"`
 	ProductID   uint    `json:"productID"`
 	ProductName string  `json:"productName"`
 	Quantity    int     `json:"quantity"`

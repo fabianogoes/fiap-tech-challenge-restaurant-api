@@ -66,6 +66,13 @@ func (os *OrderService) AddItemToOrder(order *entity.Order, product *entity.Prod
 	return os.orderRepository.UpdateOrder(order)
 }
 
+func (os *OrderService) RemoveItemFromOrder(order *entity.Order, idItem uint) (*entity.Order, error) {
+	os.orderRepository.RemoveItemFromOrder(idItem)
+
+	order.Status = entity.OrderStatusAddingItems
+	return os.orderRepository.UpdateOrder(order)
+}
+
 func (os *OrderService) ConfirmationOrder(order *entity.Order) (*entity.Order, error) {
 	order.Status = entity.OrderStatusConfirmed
 	return os.orderRepository.UpdateOrder(order)

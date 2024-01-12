@@ -58,6 +58,7 @@ func NewRouter(
 	{
 		orders.POST("/", orderHandler.StartOrder)
 		orders.POST("/:id/item", orderHandler.AddItemToOrder)
+		orders.DELETE("/:id/item/:iditem", orderHandler.RemoveItemFromOrder)
 		orders.GET("/:id", orderHandler.GetOrderById)
 		orders.PUT("/:id/confirmation", orderHandler.ConfirmationOrder)
 		orders.PUT("/:id/payment", orderHandler.PaymentOrder)
