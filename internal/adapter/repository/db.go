@@ -24,6 +24,9 @@ func InitDB(ctx context.Context) (*gorm.DB, error) {
 		loc,
 	)
 
+	fmt.Printf("DB_HOST = %s\n", os.Getenv("DB_HOST"))
+	fmt.Printf("DB_PORT = %s\n", os.Getenv("DB_PORT"))
+
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Fatal("Error connecting to database", err)

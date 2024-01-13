@@ -23,13 +23,20 @@ func init() {
 
 	if env == "production" {
 		logHandler = slog.NewJSONHandler(os.Stdout, nil)
+
+		// Load .env file
+		err := godotenv.Load()
+		if err != nil {
+			slog.Error("Error loading .env file", "error", err)
+			os.Exit(1)
+		}
 	} else {
 		logHandler = slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{
 			Level: slog.LevelDebug,
 		})
 
 		// Load .env file
-		err := godotenv.Load()
+		err := godotenv.Load(".env.development")
 		if err != nil {
 			slog.Error("Error loading .env file", "error", err)
 			os.Exit(1)
