@@ -53,11 +53,25 @@ go version
 - Entrar na pasta e rodar o comando para baixar as dependências `go mod tidy`
 - Fazer uma cópia do arquivo .env.example e renomear para .env `cp .env.example .env`
 
-## Para Rodar o projeto
+Para Rodar o projeto em development
 
 ```shell
-docker-compose up -d && go run cmd/web/main.go
+docker-compose up -d postgres && go run cmd/web/main.go
 ```
+
+## Para Testar a aplicação usando Docker
+
+```shell
+docker-compose up -d
+
+curl --request GET --url http://localhost:8080/health
+
+## resposta esperada
+{"status":"UP"}
+```
+
+> Após rodar a aplicação usando docker-compose e verificar a aplicação UP
+> Pode ser testado o fluxo completo usando a collection insomnia `Insomnia_collection_test.json`
 
 [0]: https://go.dev/
 [1]: https://gin-gonic.com/
