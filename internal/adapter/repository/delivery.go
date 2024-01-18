@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/fiap/challenge-gofood/internal/adapter/repository/dbo"
-	"github.com/fiap/challenge-gofood/internal/domain/entity"
+	"github.com/fiap/challenge-gofood/internal/core/domain"
 	"gorm.io/gorm"
 )
 
@@ -16,7 +16,7 @@ func NewDeliveryRepository(db *gorm.DB) *DeliveryRepository {
 	return &DeliveryRepository{db}
 }
 
-func (d *DeliveryRepository) GetDeliveryById(id uint) (*entity.Delivery, error) {
+func (d *DeliveryRepository) GetDeliveryById(id uint) (*domain.Delivery, error) {
 	var delivery dbo.Delivery
 
 	if err := d.db.Where("id = ?", id).First(&delivery).Error; err != nil {
@@ -26,7 +26,7 @@ func (d *DeliveryRepository) GetDeliveryById(id uint) (*entity.Delivery, error) 
 	return delivery.ToEntity(), nil
 }
 
-func (d *DeliveryRepository) CreateDelivery(delivery *entity.Delivery) (*entity.Delivery, error) {
+func (d *DeliveryRepository) CreateDelivery(delivery *domain.Delivery) (*domain.Delivery, error) {
 	deliveryEntity := dbo.ToDeliveryDBO(delivery)
 
 	if err := d.db.Create(&deliveryEntity).Error; err != nil {
@@ -36,7 +36,7 @@ func (d *DeliveryRepository) CreateDelivery(delivery *entity.Delivery) (*entity.
 	return deliveryEntity.ToEntity(), nil
 }
 
-func (d *DeliveryRepository) UpdateDelivery(delivery *entity.Delivery) (*entity.Delivery, error) {
+func (d *DeliveryRepository) UpdateDelivery(delivery *domain.Delivery) (*domain.Delivery, error) {
 	deliveryEntity := dbo.ToDeliveryDBO(delivery)
 
 	if err := d.db.Save(&deliveryEntity).Error; err != nil {

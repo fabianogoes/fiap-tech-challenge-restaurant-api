@@ -1,7 +1,7 @@
 package dbo
 
 import (
-	"github.com/fiap/challenge-gofood/internal/domain/entity"
+	"github.com/fiap/challenge-gofood/internal/core/domain"
 	"gorm.io/gorm"
 )
 
@@ -13,9 +13,9 @@ type Customer struct {
 	CPF   string `gorm:"unique"`
 }
 
-// ToEntity converts Customer DBO to entity.Customer
-func (c *Customer) ToEntity() *entity.Customer {
-	return &entity.Customer{
+// ToEntity converts Customer DBO to domain.Customer
+func (c *Customer) ToEntity() *domain.Customer {
+	return &domain.Customer{
 		ID:        c.ID,
 		CreatedAt: c.CreatedAt,
 		UpdatedAt: c.UpdatedAt,
@@ -25,8 +25,8 @@ func (c *Customer) ToEntity() *entity.Customer {
 	}
 }
 
-// ToDBO converts entity.Customer to Customer DBO
-func ToCustomerDBO(c *entity.Customer) *Customer {
+// ToDBO converts domain.Customer to Customer DBO
+func ToCustomerDBO(c *domain.Customer) *Customer {
 	return &Customer{
 		Model: gorm.Model{
 			ID:        c.ID,

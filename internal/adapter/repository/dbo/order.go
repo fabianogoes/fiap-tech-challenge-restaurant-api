@@ -3,7 +3,7 @@ package dbo
 import (
 	"time"
 
-	"github.com/fiap/challenge-gofood/internal/domain/entity"
+	"github.com/fiap/challenge-gofood/internal/core/domain"
 	"gorm.io/gorm"
 )
 
@@ -24,9 +24,9 @@ type Order struct {
 	Items       []*OrderItem
 }
 
-// ToEntity converts Order DBO to entity.Order
-func (o *Order) ToEntity() *entity.Order {
-	var items []*entity.OrderItem
+// ToEntity converts Order DBO to domain.Order
+func (o *Order) ToEntity() *domain.Order {
+	var items []*domain.OrderItem
 	var itemsTotal int
 
 	for _, item := range o.Items {
@@ -34,14 +34,14 @@ func (o *Order) ToEntity() *entity.Order {
 		itemsTotal += int(item.Quantity)
 	}
 
-	return &entity.Order{
+	return &domain.Order{
 		ID: o.ID,
-		Customer: &entity.Customer{
+		Customer: &domain.Customer{
 			ID:   o.Customer.ID,
 			Name: o.Customer.Name,
 			CPF:  o.Customer.CPF,
 		},
-		Attendant: &entity.Attendant{
+		Attendant: &domain.Attendant{
 			ID:   o.Attendant.ID,
 			Name: o.Attendant.Name,
 		},
@@ -55,35 +55,35 @@ func (o *Order) ToEntity() *entity.Order {
 	}
 }
 
-// ToDBO converts entity.Order to Order DBO
-func (o *Order) toOrderStatus() entity.OrderStatus {
+// ToDBO converts domain.Order to Order DBO
+func (o *Order) toOrderStatus() domain.OrderStatus {
 	switch o.Status {
 	case "STARTED":
-		return entity.OrderStatusStarted
+		return domain.OrderStatusStarted
 	case "ADDING_ITEMS":
-		return entity.OrderStatusAddingItems
+		return domain.OrderStatusAddingItems
 	case "CONFIRMED":
-		return entity.OrderStatusConfirmed
+		return domain.OrderStatusConfirmed
 	case "PAID":
-		return entity.OrderStatusPaid
+		return domain.OrderStatusPaid
 	case "PAYMENT_REVERSED":
-		return entity.OrderStatusPaymentReversed
+		return domain.OrderStatusPaymentReversed
 	case "IN_PREPARATION":
-		return entity.OrderStatusInPreparation
+		return domain.OrderStatusInPreparation
 	case "READY_FOR_DELIVERY":
-		return entity.OrderStatusReadyForDelivery
+		return domain.OrderStatusReadyForDelivery
 	case "SENT_FOR_DELIVERY":
-		return entity.OrderStatusSentForDelivery
+		return domain.OrderStatusSentForDelivery
 	case "DELIVERED":
-		return entity.OrderStatusDelivered
+		return domain.OrderStatusDelivered
 	case "CANCELED":
-		return entity.OrderStatusCanceled
+		return domain.OrderStatusCanceled
 	default:
-		return entity.OrderStatusStarted
+		return domain.OrderStatusStarted
 	}
 }
 
-// ToDBO converts entity.Order to Order DBO
+// ToDBO converts domain.Order to Order DBO
 type OrderItem struct {
 	gorm.Model
 	OrderID   uint
@@ -94,9 +94,9 @@ type OrderItem struct {
 	UnitPrice float64
 }
 
-// ToEntity converts OrderItem DBO to entity.OrderItem
-func (i *OrderItem) ToEntity() *entity.OrderItem {
-	return &entity.OrderItem{
+// ToEntity converts OrderItem DBO to domain.OrderItem
+func (i *OrderItem) ToEntity() *domain.OrderItem {
+	return &domain.OrderItem{
 		ID:        i.ID,
 		Product:   i.Product.ToEntity(),
 		Quantity:  int(i.Quantity),
@@ -104,8 +104,8 @@ func (i *OrderItem) ToEntity() *entity.OrderItem {
 	}
 }
 
-// ToDBO converts entity.OrderItem to OrderItem DBO
-func ToOrderItemDBO(i *entity.OrderItem) *OrderItem {
+// ToDBO converts domain.OrderItem to OrderItem DBO
+func ToOrderItemDBO(i *domain.OrderItem) *OrderItem {
 	return &OrderItem{
 		Model: gorm.Model{
 			ID:        i.ID,

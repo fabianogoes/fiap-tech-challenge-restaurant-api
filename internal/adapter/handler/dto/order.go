@@ -3,7 +3,7 @@ package dto
 import (
 	"fmt"
 
-	"github.com/fiap/challenge-gofood/internal/domain/entity"
+	"github.com/fiap/challenge-gofood/internal/core/domain"
 )
 
 type OrderResponse struct {
@@ -23,7 +23,7 @@ type OrderResponse struct {
 	UpdatedAt     string `json:"updatedAt"`
 }
 
-func ToOrderResponse(order *entity.Order) OrderResponse {
+func ToOrderResponse(order *domain.Order) OrderResponse {
 	response := OrderResponse{
 		ID:            order.ID,
 		CustomerCPF:   order.Customer.CPF,
@@ -57,7 +57,7 @@ func ToOrderResponse(order *entity.Order) OrderResponse {
 	return response
 }
 
-func ToOrderResponses(orders []*entity.Order) []OrderResponse {
+func ToOrderResponses(orders []*domain.Order) []OrderResponse {
 	var response []OrderResponse
 	for _, entity := range orders {
 		response = append(response, ToOrderResponse(entity))
@@ -91,7 +91,7 @@ type StartOrderResponse struct {
 	ID uint `json:"id"`
 }
 
-func ToStartOrderResponse(order *entity.Order) StartOrderResponse {
+func ToStartOrderResponse(order *domain.Order) StartOrderResponse {
 	return StartOrderResponse{
 		ID: order.ID,
 	}

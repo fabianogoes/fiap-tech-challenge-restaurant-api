@@ -2,7 +2,7 @@ package repository
 
 import (
 	"github.com/fiap/challenge-gofood/internal/adapter/repository/dbo"
-	"github.com/fiap/challenge-gofood/internal/domain/entity"
+	"github.com/fiap/challenge-gofood/internal/core/domain"
 	"gorm.io/gorm"
 )
 
@@ -14,7 +14,7 @@ func NewPaymentRepository(db *gorm.DB) *PaymentRepository {
 	return &PaymentRepository{db}
 }
 
-func (p *PaymentRepository) GetPaymentById(id uint) (*entity.Payment, error) {
+func (p *PaymentRepository) GetPaymentById(id uint) (*domain.Payment, error) {
 	var payment dbo.Payment
 
 	if err := p.db.Where("id = ?", id).First(&payment).Error; err != nil {
@@ -24,7 +24,7 @@ func (p *PaymentRepository) GetPaymentById(id uint) (*entity.Payment, error) {
 	return payment.ToEntity(), nil
 }
 
-func (p *PaymentRepository) UpdatePayment(payment *entity.Payment) (*entity.Payment, error) {
+func (p *PaymentRepository) UpdatePayment(payment *domain.Payment) (*domain.Payment, error) {
 	var err error
 	paymentEntity := dbo.ToPaymentDBO(payment)
 

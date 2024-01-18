@@ -3,28 +3,28 @@ package dbo
 import (
 	"time"
 
-	"github.com/fiap/challenge-gofood/internal/domain/entity"
+	"github.com/fiap/challenge-gofood/internal/core/domain"
 	"gorm.io/gorm"
 )
 
 // Delivery is a Database Object for delivery
 type Delivery struct {
 	gorm.Model
-	Date    time.Time
-	Status  string
+	Date   time.Time
+	Status string
 }
 
-// ToEntity converts Delivery DBO to entity.Delivery
-func (d *Delivery) ToEntity() *entity.Delivery {
-	return &entity.Delivery{
+// ToEntity converts Delivery DBO to domain.Delivery
+func (d *Delivery) ToEntity() *domain.Delivery {
+	return &domain.Delivery{
 		ID:     d.ID,
 		Date:   d.Date,
 		Status: d.toDeliveryStatus(),
 	}
 }
 
-// ToDBO converts entity.Delivery to Delivery DBO
-func ToDeliveryDBO(d *entity.Delivery) Delivery {
+// ToDBO converts domain.Delivery to Delivery DBO
+func ToDeliveryDBO(d *domain.Delivery) Delivery {
 	return Delivery{
 		Model: gorm.Model{
 			ID:        d.ID,
@@ -36,18 +36,18 @@ func ToDeliveryDBO(d *entity.Delivery) Delivery {
 	}
 }
 
-// toDeliveryStatus converts string to entity.DeliveryStatus
-func (d *Delivery) toDeliveryStatus() entity.DeliveryStatus {
+// toDeliveryStatus converts string to domain.DeliveryStatus
+func (d *Delivery) toDeliveryStatus() domain.DeliveryStatus {
 	switch d.Status {
 	case "PENDING":
-		return entity.DeliveryStatusPending
+		return domain.DeliveryStatusPending
 	case "SENT":
-		return entity.DeliveryStatusSent
+		return domain.DeliveryStatusSent
 	case "DELIVERED":
-		return entity.DeliveryStatusDelivered
+		return domain.DeliveryStatusDelivered
 	case "CANCELED":
-		return entity.DeliveryStatusCanceled
+		return domain.DeliveryStatusCanceled
 	default:
-		return entity.DeliveryStatusPending
+		return domain.DeliveryStatusPending
 	}
 }

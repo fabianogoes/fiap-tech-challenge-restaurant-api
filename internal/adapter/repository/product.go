@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/fiap/challenge-gofood/internal/adapter/repository/dbo"
-	"github.com/fiap/challenge-gofood/internal/domain/entity"
+	"github.com/fiap/challenge-gofood/internal/core/domain"
 	"gorm.io/gorm"
 )
 
@@ -18,7 +18,7 @@ func NewProductRepository(db *gorm.DB) *ProductRepository {
 	}
 }
 
-func (p *ProductRepository) CreateProduct(name string, price float64, categoryID uint) (*entity.Product, error) {
+func (p *ProductRepository) CreateProduct(name string, price float64, categoryID uint) (*domain.Product, error) {
 	var err error
 	product := &dbo.Product{
 		Name:       name,
@@ -33,7 +33,7 @@ func (p *ProductRepository) CreateProduct(name string, price float64, categoryID
 	return p.GetProductByName(name)
 }
 
-func (p *ProductRepository) GetProductByName(name string) (*entity.Product, error) {
+func (p *ProductRepository) GetProductByName(name string) (*domain.Product, error) {
 	var result dbo.Product
 	if err := p.db.Where("name = ?", name).First(&result).Error; err != nil {
 		return nil, fmt.Errorf("error to find product with name %s - %v", name, err)
@@ -42,7 +42,7 @@ func (p *ProductRepository) GetProductByName(name string) (*entity.Product, erro
 	return result.ToEntity(), nil
 }
 
-func (p *ProductRepository) GetProductById(id uint) (*entity.Product, error) {
+func (p *ProductRepository) GetProductById(id uint) (*domain.Product, error) {
 	var result dbo.Product
 	if err := p.db.Model(&dbo.Product{}).Preload("Category").First(&result, id).Error; err != nil {
 		return nil, fmt.Errorf("error to find product with id %d - %v", id, err)
@@ -51,13 +51,13 @@ func (p *ProductRepository) GetProductById(id uint) (*entity.Product, error) {
 	return result.ToEntity(), nil
 }
 
-func (p *ProductRepository) GetProducts() ([]*entity.Product, error) {
+func (p *ProductRepository) GetProducts() ([]*domain.Product, error) {
 	var results []*dbo.Product
 	if err := p.db.Model(&dbo.Product{}).Preload("Category").Find(&results).Error; err != nil {
 		return nil, err
 	}
 
-	var products []*entity.Product
+	var products []*domain.Product
 	for _, result := range results {
 		products = append(products, result.ToEntity())
 	}
@@ -65,7 +65,7 @@ func (p *ProductRepository) GetProducts() ([]*entity.Product, error) {
 	return products, nil
 }
 
-func (p *ProductRepository) UpdateProduct(product *entity.Product) (*entity.Product, error) {
+func (p *ProductRepository) UpdateProduct(product *domain.Product) (*domain.Product, error) {
 	var result dbo.Product
 	if err := p.db.First(&result, product.ID).Error; err != nil {
 		return nil, err

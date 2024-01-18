@@ -10,7 +10,7 @@ import (
 	"github.com/fiap/challenge-gofood/internal/adapter/handler"
 	"github.com/fiap/challenge-gofood/internal/adapter/payment"
 	"github.com/fiap/challenge-gofood/internal/adapter/repository"
-	"github.com/fiap/challenge-gofood/internal/domain/service"
+	"github.com/fiap/challenge-gofood/internal/core/service"
 	"github.com/joho/godotenv"
 )
 

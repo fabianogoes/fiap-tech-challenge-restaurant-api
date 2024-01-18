@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/fiap/challenge-gofood/internal/adapter/repository/dbo"
-	"github.com/fiap/challenge-gofood/internal/domain/entity"
+	"github.com/fiap/challenge-gofood/internal/core/domain"
 	"gorm.io/gorm"
 )
 
@@ -18,7 +18,7 @@ func NewOrderRepository(db *gorm.DB, itemRepo *OrderItemRepository) *OrderReposi
 	return &OrderRepository{db, itemRepo}
 }
 
-func (or *OrderRepository) CreateOrder(entity *entity.Order) (*entity.Order, error) {
+func (or *OrderRepository) CreateOrder(entity *domain.Order) (*domain.Order, error) {
 	order := &dbo.Order{
 		CustomerID:  entity.Customer.ID,
 		AttendantID: entity.Attendant.ID,
@@ -36,7 +36,7 @@ func (or *OrderRepository) CreateOrder(entity *entity.Order) (*entity.Order, err
 	return order.ToEntity(), nil
 }
 
-func (or *OrderRepository) GetOrderById(id uint) (*entity.Order, error) {
+func (or *OrderRepository) GetOrderById(id uint) (*domain.Order, error) {
 	order := &dbo.Order{}
 
 	if err := or.db.Preload("Customer").
@@ -59,7 +59,7 @@ func (or *OrderRepository) GetOrderById(id uint) (*entity.Order, error) {
 	return order.ToEntity(), nil
 }
 
-func (or *OrderRepository) UpdateOrder(order *entity.Order) (*entity.Order, error) {
+func (or *OrderRepository) UpdateOrder(order *domain.Order) (*domain.Order, error) {
 	orderToUpdate := &dbo.Order{}
 
 	if err := or.db.Preload("Customer").Preload("Attendant").Preload("Payment").Preload("Items").
@@ -90,7 +90,7 @@ func (or *OrderRepository) RemoveItemFromOrder(idItem uint) error {
 	return or.itemRepository.Delete(idItem)
 }
 
-func (or *OrderRepository) GetOrderItemById(id uint) (*entity.OrderItem, error) {
+func (or *OrderRepository) GetOrderItemById(id uint) (*domain.OrderItem, error) {
 	return or.itemRepository.GetOrderItemById(id)
 }
 
@@ -118,7 +118,7 @@ func (oir *OrderItemRepository) Delete(idItem uint) error {
 	return nil
 }
 
-func (oir *OrderItemRepository) GetOrderItemById(id uint) (*entity.OrderItem, error) {
+func (oir *OrderItemRepository) GetOrderItemById(id uint) (*domain.OrderItem, error) {
 	orderItem := &dbo.OrderItem{}
 
 	if err := oir.db.Preload("Product").First(orderItem, id).Error; err != nil {

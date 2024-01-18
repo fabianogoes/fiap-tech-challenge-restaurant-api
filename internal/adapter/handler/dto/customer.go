@@ -1,6 +1,8 @@
 package dto
 
-import "github.com/fiap/challenge-gofood/internal/domain/entity"
+import (
+	"github.com/fiap/challenge-gofood/internal/core/domain"
+)
 
 type GetCustomerResponse struct {
 	ID        uint   `json:"id"`
@@ -11,7 +13,7 @@ type GetCustomerResponse struct {
 	UpdatedAt string `json:"updatedAt"`
 }
 
-func ToCustomerResponse(entity *entity.Customer) GetCustomerResponse {
+func ToCustomerResponse(entity *domain.Customer) GetCustomerResponse {
 	return GetCustomerResponse{
 		ID:        entity.ID,
 		Nome:      entity.Name,
@@ -22,7 +24,7 @@ func ToCustomerResponse(entity *entity.Customer) GetCustomerResponse {
 	}
 }
 
-func ToCustomerResponses(entities []*entity.Customer) []GetCustomerResponse {
+func ToCustomerResponses(entities []*domain.Customer) []GetCustomerResponse {
 	var response []GetCustomerResponse
 	for _, entity := range entities {
 		response = append(response, ToCustomerResponse(entity))

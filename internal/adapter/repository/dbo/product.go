@@ -1,7 +1,7 @@
 package dbo
 
 import (
-	"github.com/fiap/challenge-gofood/internal/domain/entity"
+	"github.com/fiap/challenge-gofood/internal/core/domain"
 	"gorm.io/gorm"
 )
 
@@ -14,12 +14,12 @@ type Product struct {
 	Category   Category `gorm:"ForeignKey:CategoryID"`
 }
 
-func (p *Product) ToEntity() *entity.Product {
-	return &entity.Product{
+func (p *Product) ToEntity() *domain.Product {
+	return &domain.Product{
 		ID:    p.ID,
 		Name:  p.Name,
 		Price: p.Price,
-		Category: &entity.Category{
+		Category: &domain.Category{
 			ID:   p.Category.ID,
 			Name: p.Category.Name,
 		},
@@ -28,7 +28,7 @@ func (p *Product) ToEntity() *entity.Product {
 	}
 }
 
-func (p *Product) ToDBO(product *entity.Product) *Product {
+func (p *Product) ToDBO(product *domain.Product) *Product {
 	return &Product{
 		Model: gorm.Model{
 			ID:        product.ID,
@@ -47,14 +47,14 @@ type Category struct {
 	Name string
 }
 
-func (c *Category) ToModel() *entity.Category {
-	return &entity.Category{
+func (c *Category) ToModel() *domain.Category {
+	return &domain.Category{
 		ID:   c.ID,
 		Name: c.Name,
 	}
 }
 
-func (c *Category) ToDBO(category *entity.Category) *Category {
+func (c *Category) ToDBO(category *domain.Category) *Category {
 	return &Category{
 		Model: gorm.Model{
 			ID:        category.ID,

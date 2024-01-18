@@ -3,7 +3,7 @@ package dbo
 import (
 	"time"
 
-	"github.com/fiap/challenge-gofood/internal/domain/entity"
+	"github.com/fiap/challenge-gofood/internal/core/domain"
 	"gorm.io/gorm"
 )
 
@@ -16,8 +16,8 @@ type Payment struct {
 	Value  float64
 }
 
-func (p *Payment) ToEntity() *entity.Payment {
-	return &entity.Payment{
+func (p *Payment) ToEntity() *domain.Payment {
+	return &domain.Payment{
 		ID:     p.ID,
 		Date:   p.Date,
 		Method: p.toPaymentMethod(),
@@ -26,7 +26,7 @@ func (p *Payment) ToEntity() *entity.Payment {
 	}
 }
 
-func ToPaymentDBO(payment *entity.Payment) Payment {
+func ToPaymentDBO(payment *domain.Payment) Payment {
 	return Payment{
 		Model: gorm.Model{
 			ID:        payment.ID,
@@ -40,34 +40,34 @@ func ToPaymentDBO(payment *entity.Payment) Payment {
 	}
 }
 
-func (p *Payment) toPaymentStatus() entity.PaymentStatus {
+func (p *Payment) toPaymentStatus() domain.PaymentStatus {
 	switch p.Status {
 	case "PENDING":
-		return entity.PaymentStatusPending
+		return domain.PaymentStatusPending
 	case "PAID":
-		return entity.PaymentStatusPaid
+		return domain.PaymentStatusPaid
 	case "REVERSED":
-		return entity.PaymentStatusReversed
+		return domain.PaymentStatusReversed
 	case "CANCELED":
-		return entity.PaymentStatusCanceled
+		return domain.PaymentStatusCanceled
 	case "PAYMENT_ERROR":
-		return entity.PaymentStatusError
+		return domain.PaymentStatusError
 	default:
-		return entity.PaymentStatusNone
+		return domain.PaymentStatusNone
 	}
 }
 
-func (p *Payment) toPaymentMethod() entity.PaymentMethod {
+func (p *Payment) toPaymentMethod() domain.PaymentMethod {
 	switch p.Method {
 	case "CREDIT_CARD":
-		return entity.PaymentMethodCreditCard
+		return domain.PaymentMethodCreditCard
 	case "DEBIT_CARD":
-		return entity.PaymentMethodDebitCard
+		return domain.PaymentMethodDebitCard
 	case "MONEY":
-		return entity.PaymentMethodMoney
+		return domain.PaymentMethodMoney
 	case "PIX":
-		return entity.PaymentMethodPIX
+		return domain.PaymentMethodPIX
 	default:
-		return entity.PaymentMethodNone
+		return domain.PaymentMethodNone
 	}
 }

@@ -6,7 +6,7 @@ import (
 	"strconv"
 
 	"github.com/fiap/challenge-gofood/internal/adapter/handler/dto"
-	"github.com/fiap/challenge-gofood/internal/domain/port"
+	"github.com/fiap/challenge-gofood/internal/core/port"
 	"github.com/gin-gonic/gin"
 )
 

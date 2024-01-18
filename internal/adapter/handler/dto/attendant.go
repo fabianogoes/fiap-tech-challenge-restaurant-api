@@ -1,6 +1,6 @@
 package dto
 
-import "github.com/fiap/challenge-gofood/internal/domain/entity"
+import "github.com/fiap/challenge-gofood/internal/core/domain"
 
 type CreateAttendantRequest struct {
 	Name string `json:"name"`
@@ -17,7 +17,7 @@ type GetAttendantResponse struct {
 	UpdatedAt string `json:"updatedAt"`
 }
 
-func ToAttendantResponse(entity *entity.Attendant) GetAttendantResponse {
+func ToAttendantResponse(entity *domain.Attendant) GetAttendantResponse {
 	return GetAttendantResponse{
 		ID:        entity.ID,
 		Name:      entity.Name,
@@ -26,7 +26,7 @@ func ToAttendantResponse(entity *entity.Attendant) GetAttendantResponse {
 	}
 }
 
-func ToAttendantResponses(entities []*entity.Attendant) []GetAttendantResponse {
+func ToAttendantResponses(entities []*domain.Attendant) []GetAttendantResponse {
 	var response []GetAttendantResponse
 	for _, entity := range entities {
 		response = append(response, ToAttendantResponse(entity))

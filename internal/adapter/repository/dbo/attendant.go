@@ -1,7 +1,7 @@
 package dbo
 
 import (
-	"github.com/fiap/challenge-gofood/internal/domain/entity"
+	"github.com/fiap/challenge-gofood/internal/core/domain"
 	"gorm.io/gorm"
 )
 
@@ -12,8 +12,8 @@ type Attendant struct {
 }
 
 // ToEntity converts Attendant DBO to entity.Attendant
-func (a *Attendant) ToEntity() *entity.Attendant {
-	return &entity.Attendant{
+func (a *Attendant) ToEntity() *domain.Attendant {
+	return &domain.Attendant{
 		ID:        a.ID,
 		CreatedAt: a.CreatedAt,
 		UpdatedAt: a.UpdatedAt,
@@ -22,7 +22,7 @@ func (a *Attendant) ToEntity() *entity.Attendant {
 }
 
 // ToDBO converts entity.Attendant to Attendant DBO
-func ToAttendantDBO(a *entity.Attendant) *Attendant {
+func ToAttendantDBO(a *domain.Attendant) *Attendant {
 	return &Attendant{
 		Model: gorm.Model{
 			ID:        a.ID,

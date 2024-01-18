@@ -1,8 +1,8 @@
 package service
 
 import (
-	"github.com/fiap/challenge-gofood/internal/domain/entity"
-	"github.com/fiap/challenge-gofood/internal/domain/port"
+	"github.com/fiap/challenge-gofood/internal/core/domain"
+	"github.com/fiap/challenge-gofood/internal/core/port"
 )
 
 type CustomerService struct {
@@ -15,8 +15,8 @@ func NewCustomerService(cr port.CustomerRepositoryPort) *CustomerService {
 	}
 }
 
-func (c *CustomerService) CreateCustomer(nome string, email string, cpf string) (*entity.Customer, error) {
-	customer, err := entity.NewCustomer(nome, email, cpf)
+func (c *CustomerService) CreateCustomer(nome string, email string, cpf string) (*domain.Customer, error) {
+	customer, err := domain.NewCustomer(nome, email, cpf)
 	if err != nil {
 		panic(err)
 	}
@@ -24,19 +24,19 @@ func (c *CustomerService) CreateCustomer(nome string, email string, cpf string) 
 	return c.customerRepository.CreateCustomer(customer)
 }
 
-func (c *CustomerService) GetCustomerById(id uint) (*entity.Customer, error) {
+func (c *CustomerService) GetCustomerById(id uint) (*domain.Customer, error) {
 	return c.customerRepository.GetCustomerById(id)
 }
 
-func (c *CustomerService) GetCustomerByCPF(cpf string) (*entity.Customer, error) {
+func (c *CustomerService) GetCustomerByCPF(cpf string) (*domain.Customer, error) {
 	return c.customerRepository.GetCustomerByCPF(cpf)
 }
 
-func (c *CustomerService) GetCustomers() ([]*entity.Customer, error) {
+func (c *CustomerService) GetCustomers() ([]*domain.Customer, error) {
 	return c.customerRepository.GetCustomers()
 }
 
-func (c *CustomerService) UpdateCustomer(customer *entity.Customer) (*entity.Customer, error) {
+func (c *CustomerService) UpdateCustomer(customer *domain.Customer) (*domain.Customer, error) {
 	return c.customerRepository.UpdateCustomer(customer)
 }
 

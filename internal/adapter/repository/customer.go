@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/fiap/challenge-gofood/internal/adapter/repository/dbo"
-	"github.com/fiap/challenge-gofood/internal/domain/entity"
+	"github.com/fiap/challenge-gofood/internal/core/domain"
 	"gorm.io/gorm"
 )
 
@@ -18,7 +18,7 @@ func NewCustomerRepository(db *gorm.DB) *CustomerRepository {
 	}
 }
 
-func (c *CustomerRepository) CreateCustomer(customer *entity.Customer) (*entity.Customer, error) {
+func (c *CustomerRepository) CreateCustomer(customer *domain.Customer) (*domain.Customer, error) {
 	var err error
 
 	if err = c.db.Create(customer).Error; err != nil {
@@ -28,7 +28,7 @@ func (c *CustomerRepository) CreateCustomer(customer *entity.Customer) (*entity.
 	return c.GetCustomerByCPF(customer.CPF)
 }
 
-func (c *CustomerRepository) GetCustomerByCPF(cpf string) (*entity.Customer, error) {
+func (c *CustomerRepository) GetCustomerByCPF(cpf string) (*domain.Customer, error) {
 	var result dbo.Customer
 
 	if err := c.db.Where("cpf = ?", cpf).First(&result).Error; err != nil {
@@ -38,7 +38,7 @@ func (c *CustomerRepository) GetCustomerByCPF(cpf string) (*entity.Customer, err
 	return result.ToEntity(), nil
 }
 
-func (c *CustomerRepository) GetCustomerById(id uint) (*entity.Customer, error) {
+func (c *CustomerRepository) GetCustomerById(id uint) (*domain.Customer, error) {
 	var result dbo.Customer
 	if err := c.db.First(&result, id).Error; err != nil {
 		return nil, fmt.Errorf("error to find customer with id %d - %v", id, err)
@@ -47,13 +47,13 @@ func (c *CustomerRepository) GetCustomerById(id uint) (*entity.Customer, error) 
 	return result.ToEntity(), nil
 }
 
-func (c *CustomerRepository) GetCustomers() ([]*entity.Customer, error) {
+func (c *CustomerRepository) GetCustomers() ([]*domain.Customer, error) {
 	var results []*dbo.Customer
 	if err := c.db.Find(&results).Error; err != nil {
 		return nil, err
 	}
 
-	var customers []*entity.Customer
+	var customers []*domain.Customer
 	for _, result := range results {
 		customers = append(customers, result.ToEntity())
 	}
@@ -61,7 +61,7 @@ func (c *CustomerRepository) GetCustomers() ([]*entity.Customer, error) {
 	return customers, nil
 }
 
-func (c *CustomerRepository) UpdateCustomer(customer *entity.Customer) (*entity.Customer, error) {
+func (c *CustomerRepository) UpdateCustomer(customer *domain.Customer) (*domain.Customer, error) {
 	var result dbo.Customer
 	if err := c.db.First(&result, customer.ID).Error; err != nil {
 		return nil, err
