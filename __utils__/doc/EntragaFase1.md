@@ -1,8 +1,8 @@
 # Tech Challenge - Entregáveis fase 1
 
-![Entrega 1](../assets/fase1-entrega1.jpg)
-![Entrega 2](../assets/fase1-entrega2.jpg)
-![Entrega 3](../assets/fase1-entrega3.jpg)
+![Entrega 1](../__utils__/assets/fase1-entrega1.jpg)
+![Entrega 2](../__utils__/assets/fase1-entrega2.jpg)
+![Entrega 3](../__utils__/assets/fase1-entrega3.jpg)
 
 ## Entregável 1
 

@@ -4,8 +4,8 @@
 >
 > - [Documentação DDD Miro](https://miro.com/app/board/uXjVNNl_0q0=/)
 > - [Tech Challenge - Entregáveis fase 1](./doc/EntragaFase1.md)
-> - [Como Testar usando `curl`](./doc/ComoTestar.md)
-> - [Como Testar usando Insomnia](Insomnia_collection_test.json)
+> - [Como Testar usando `curl`](./__utils__/doc/ComoTestar.md)
+> - [Como Testar usando `Insomnia`](Insomnia_collection_test.json)
 
 ## Arquitetura do projeto
 
