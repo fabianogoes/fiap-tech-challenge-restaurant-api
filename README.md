@@ -2,10 +2,10 @@
 
 > FIAP pós Software Architecture - Tech Challenge projeto de um Restaurante `gofood`
 >
-> - [Documentação DDD Miro](https://miro.com/app/board/uXjVNNl_0q0=/)
+> - [Documentação DDD Miro](https://miro.com/app/board/uXjVN8Gnn2s=/)
 > - [Tech Challenge - Entregáveis fase 1](./doc/EntragaFase1.md)
 > - [Como Testar usando `curl`](./__utils__/doc/ComoTestar.md)
-> - [Como Testar usando `Insomnia`](Insomnia_collection_test.json)
+> - [Como Testar usando `Insomnia`](./Insomnia_collection_test.json)
 
 ## Arquitetura do projeto
 
@@ -59,7 +59,7 @@ Para Rodar o projeto em development
 docker-compose up -d postgres && go run cmd/web/main.go
 ```
 
-## Para Testar a aplicação usando Docker
+## Para Testar a aplicação usando Docker/Docker Compose
 
 ```shell
 docker-compose up -d
@@ -70,7 +70,124 @@ curl --request GET --url http://localhost:8080/health
 {"status":"UP"}
 ```
 
-> Após rodar a aplicação usando docker-compose e verificar a aplicação UP
+> Quando a app subir será inserido dados necessários para testar a criação de pedidos 
+
+| Atentente ID  | Cliente CPF | Produto ID        |
+|---------------|-------------|-------------------|
+| 1             | 15204180001 | 1 (Big Lanche)    |
+|               |             | 6 (Coca-Cola)     |
+|               |             | 22 (Batata Frita) |
+
+> - Para verificar a **lista de produtos** pode ser usado a API: `http://localhost:8080/products`
+> - Para verificar a **lista de clientes** pode ser usado a API: `http://localhost:8080/customers`
+> - Para verificar a **lista de Atendentes** pode ser usado a API: `http://localhost:8080/attendants`
+
+## Sequencia para criar um Pedido usando `curl`
+
+> Iniciando um novo Pedido
+
+```shell
+curl --request POST \
+  --url http://localhost:8080/orders \
+  --header 'Content-Type: application/json' \
+  --data '{ "customerCPF": "15204180001", "attendantID": 1 }'
+```
+
+> Adicionando Items ao Pedido
+
+Adicionando 1 `X-Burguer`
+
+```shell
+curl --request POST \
+  --url http://localhost:8080/orders/1/item \
+  --header 'Content-Type: application/json' \
+  --data '{ "productID": 2, "quantity": 1 }'
+```
+
+Adicionando 1 `X-Bacon`
+
+```shell
+curl --request POST \
+  --url http://localhost:8080/orders/1/item \
+  --header 'Content-Type: application/json' \
+  --data '{ "productID": 3, "quantity": 1 }'
+```
+
+Adicionando 2 `Coca-Cola`
+
+```shell
+curl --request POST \
+  --url http://localhost:8080/orders/1/item \
+  --header 'Content-Type: application/json' \
+  --data '{ "productID": 6, "quantity": 1 }'
+```
+
+Adicionando 2 `Batata Frita`
+
+```shell
+curl --request POST \
+  --url http://localhost:8080/orders/1/item \
+  --header 'Content-Type: application/json' \
+  --data '{ "productID": 22, "quantity": 1 }'
+```
+
+> Removendo Item
+
+```shell
+curl --request DELETE --url http://localhost:8080/orders/1/item/1
+```
+
+> Confirmando Pedido
+
+```shell
+curl --request PUT --url http://localhost:8080/orders/1/confirmation
+}'
+```
+
+> Pagando Pedido
+
+métodos de pagamento possiveis:
+
+- CREDIT_CARD
+- DEBIT_CARD
+- MONEY
+- PIX
+
+```shell
+curl --request PUT \
+  --url http://localhost:8080/orders/1/payment \
+  --header 'Content-Type: application/json' \
+  --data '{ "paymentMethod": "CREDIT_CARD" }'
+```
+
+> Enviando Pedido para preparação
+
+```shell
+curl --request PUT \
+  --url http://localhost:8080/orders/1/in-preparation 
+```
+
+> Marcando Pedido como Pronto para Entrega
+
+```shell
+curl --request PUT \
+  --url http://localhost:8080/orders/1/ready-for-delivery
+```
+
+> Enviando Pedido para Entrega
+
+```shell
+curl --request PUT \
+  --url http://localhost:8080/orders/1/sent-for-delivery 
+```
+
+> Marcando Pedido como Entregue
+
+```shell
+curl --request PUT \
+  --url http://localhost:8080/orders/1/delivered 
+```
+
 > Pode ser testado o fluxo completo usando a collection insomnia `Insomnia_collection_test.json`
 
 [0]: https://go.dev/
