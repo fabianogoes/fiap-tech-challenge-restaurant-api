@@ -1,11 +1,6 @@
 # FIAP challenge food
 
 > FIAP pós Software Architecture - Tech Challenge projeto de um Restaurante `gofood`
->
-> - [Documentação DDD Miro](https://miro.com/app/board/uXjVN8Gnn2s=/)
-> - [Tech Challenge - Entregáveis fase 1](./doc/EntragaFase1.md)
-> - [Como Testar usando `curl`](./__utils__/doc/ComoTestar.md)
-> - [Como Testar usando `Insomnia`](./Insomnia_collection_test.json)
 
 ## Arquitetura do projeto
 
@@ -189,6 +184,14 @@ curl --request PUT \
 ```
 
 > Pode ser testado o fluxo completo usando a collection insomnia `Insomnia_collection_test.json`
+
+
+## Referencias importantes
+
+- [Documentação DDD Miro](https://miro.com/app/board/uXjVN8Gnn2s=/)
+- [Tech Challenge - Entregáveis fase 1](./doc/EntragaFase1.md)
+- [Como Testar usando `curl`](./__utils__/doc/ComoTestar.md)
+- [Como Testar usando `Insomnia`](./Insomnia_collection_test.json)
 
 [0]: https://go.dev/
 [1]: https://gin-gonic.com/
