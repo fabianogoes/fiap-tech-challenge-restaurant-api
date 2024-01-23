@@ -183,15 +183,16 @@ curl --request PUT \
   --url http://localhost:8080/orders/1/delivered 
 ```
 
-> Pode ser testado o fluxo completo usando a collection insomnia `Insomnia_collection_test.json`
+### Pode ser testado o fluxo completo usando a collection insomnia
 
+[Collection de Teste que pode ser importada no Insomnia ou Postman](./Insomnia_collection_test.json)
 
 ## Referencias importantes
 
 - [Documentação DDD Miro](https://miro.com/app/board/uXjVN8Gnn2s=/)
 - [Tech Challenge - Entregáveis fase 1](./doc/EntragaFase1.md)
 - [Como Testar usando `curl`](./__utils__/doc/ComoTestar.md)
-- [Como Testar usando `Insomnia`](./Insomnia_collection_test.json)
+- [Collection de Teste que pode ser importada no Insomnia ou Postman](./Insomnia_collection_test.json)
 
 [0]: https://go.dev/
 [1]: https://gin-gonic.com/
