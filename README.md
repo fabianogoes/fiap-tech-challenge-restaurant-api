@@ -12,6 +12,8 @@ Tabela de Contexto
     - [Pode ser testado o fluxo completo usando a collection insomnia](#pode-ser-testado-o-fluxo-completo-usando-a-collection-insomnia)
   - [Referencias importantes](#referencias-importantes)
 
+---
+
 ## Arquitetura do projeto
 
 - `cmd`: diretório para os principais pontos de entrada, injeção dependência ou comandos do aplicativo. O subdiretório web contém o ponto de entrada principal a API REST.
