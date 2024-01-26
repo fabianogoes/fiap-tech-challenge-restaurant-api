@@ -6,17 +6,17 @@
 
 - `cmd`: diretório para os principais pontos de entrada, injeção dependência ou comandos do aplicativo. O subdiretório web contém o ponto de entrada principal a API REST.
 - `internal`: diretório para conter o código do aplicativo que não deve ser exposto a pacotes externos.
-- `core`: diretório que contém a lógica de negócios central do aplicativo.
-  - `domain`: diretório que contém modelos/entidades de domínio que representam os principais conceitos de negócios.
-  - `port`: diretório que contém interfaces ou contratos definidos que os adaptadores devem seguir.
-  - `service`: diretório que contém Serviços de Domínio ou Use Cases.
-- `adapters`: diretório para conter serviços externos que irão interagir com o core do aplicativo.
-  - `handler`: diretório que contém os controllers e manipulador de requisições REST.
-  - `handler\dto`: diretório que contém objetos/modelo de request e response.
-  - `repository`: diretório que contém adaptadores de banco de dados exemplo para PostgreSQL.
-  - `repository\dbo`: diretório que contém objetos/entidades de banco de dados.
-  - `payment`: adaptador para meio de pagamento externo.
-  - `delivery`: adaptador para meio de entrega externo.
+  - `core`: diretório que contém a lógica de negócios central do aplicativo.
+    - `domain`: diretório que contém modelos/entidades de domínio que representam os principais conceitos de negócios.
+    - `port`: diretório que contém interfaces ou contratos definidos que os adaptadores devem seguir.
+    - `service`: diretório que contém Serviços de Domínio ou Use Cases.
+  - `adapters`: diretório para conter serviços externos que irão interagir com o core do aplicativo.
+    - `handler`: diretório que contém os controllers e manipulador de requisições REST.
+    - `handler\dto`: diretório que contém objetos/modelo de request e response.
+    - `repository`: diretório que contém adaptadores de banco de dados exemplo para PostgreSQL.
+    - `repository\dbo`: diretório que contém objetos/entidades de banco de dados.
+    - `payment`: adaptador para meio de pagamento externo.
+    - `delivery`: adaptador para meio de entrega externo.
 
 ## Stack
 
@@ -77,111 +77,9 @@ curl --request GET --url http://localhost:8080/health
 > - Para verificar a **lista de clientes** pode ser usado a API: `http://localhost:8080/customers`
 > - Para verificar a **lista de Atendentes** pode ser usado a API: `http://localhost:8080/attendants`
 
-## Sequencia para criar um Pedido usando `curl`
+### Como testar usando o `curl`
 
-> Iniciando um novo Pedido
-
-```shell
-curl --request POST \
-  --url http://localhost:8080/orders \
-  --header 'Content-Type: application/json' \
-  --data '{ "customerCPF": "15204180001", "attendantID": 1 }'
-```
-
-> Adicionando Items ao Pedido
-
-Adicionando 1 `X-Burguer`
-
-```shell
-curl --request POST \
-  --url http://localhost:8080/orders/1/item \
-  --header 'Content-Type: application/json' \
-  --data '{ "productID": 2, "quantity": 1 }'
-```
-
-Adicionando 1 `X-Bacon`
-
-```shell
-curl --request POST \
-  --url http://localhost:8080/orders/1/item \
-  --header 'Content-Type: application/json' \
-  --data '{ "productID": 3, "quantity": 1 }'
-```
-
-Adicionando 2 `Coca-Cola`
-
-```shell
-curl --request POST \
-  --url http://localhost:8080/orders/1/item \
-  --header 'Content-Type: application/json' \
-  --data '{ "productID": 6, "quantity": 1 }'
-```
-
-Adicionando 2 `Batata Frita`
-
-```shell
-curl --request POST \
-  --url http://localhost:8080/orders/1/item \
-  --header 'Content-Type: application/json' \
-  --data '{ "productID": 22, "quantity": 1 }'
-```
-
-> Removendo Item
-
-```shell
-curl --request DELETE --url http://localhost:8080/orders/1/item/1
-```
-
-> Confirmando Pedido
-
-```shell
-curl --request PUT --url http://localhost:8080/orders/1/confirmation
-}'
-```
-
-> Pagando Pedido
-
-métodos de pagamento possiveis:
-
-- CREDIT_CARD
-- DEBIT_CARD
-- MONEY
-- PIX
-
-```shell
-curl --request PUT \
-  --url http://localhost:8080/orders/1/payment \
-  --header 'Content-Type: application/json' \
-  --data '{ "paymentMethod": "CREDIT_CARD" }'
-```
-
-> Enviando Pedido para preparação
-
-```shell
-curl --request PUT \
-  --url http://localhost:8080/orders/1/in-preparation 
-```
-
-> Marcando Pedido como Pronto para Entrega
-
-```shell
-curl --request PUT \
-  --url http://localhost:8080/orders/1/ready-for-delivery
-```
-
-> Enviando Pedido para Entrega
-
-```shell
-curl --request PUT \
-  --url http://localhost:8080/orders/1/sent-for-delivery 
-```
-
-> Marcando Pedido como Entregue
-
-```shell
-curl --request PUT \
-  --url http://localhost:8080/orders/1/delivered 
-```
+[Veja o documento](./__utils__/doc/entregavel-how-to-test-challenge.md)
 
 ### Pode ser testado o fluxo completo usando a collection insomnia
 
@@ -189,6 +87,7 @@ curl --request PUT \
 
 ## Referencias importantes
 
+- [Documento PDF entegável de como testar a API](./__utils__/doc/entregavel-how-to-test-challenge.pdf)
 - [Documentação DDD Miro](https://miro.com/app/board/uXjVN8Gnn2s=/)
 - [Tech Challenge - Entregáveis fase 1](./doc/EntragaFase1.md)
 - [Como Testar usando `curl`](./__utils__/doc/ComoTestar.md)
