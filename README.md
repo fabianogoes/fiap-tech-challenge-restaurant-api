@@ -2,6 +2,16 @@
 
 > FIAP pós Software Architecture - Tech Challenge projeto de um Restaurante `gofood`
 
+
+- [FIAP challenge food](#fiap-challenge-food)
+  - [Arquitetura do projeto](#arquitetura-do-projeto)
+  - [Stack](#stack)
+  - [Para Desenvolver](#para-desenvolver)
+  - [Para Testar a aplicação usando Docker/Docker Compose](#para-testar-a-aplicação-usando-dockerdocker-compose)
+    - [Como testar usando o `curl`](#como-testar-usando-o-curl)
+    - [Pode ser testado o fluxo completo usando a collection insomnia](#pode-ser-testado-o-fluxo-completo-usando-a-collection-insomnia)
+  - [Referencias importantes](#referencias-importantes)
+
 ## Arquitetura do projeto
 
 - `cmd`: diretório para os principais pontos de entrada, injeção dependência ou comandos do aplicativo. O subdiretório web contém o ponto de entrada principal a API REST.
