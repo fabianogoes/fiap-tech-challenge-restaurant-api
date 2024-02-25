@@ -3,8 +3,9 @@
 > Este documento descreve os passos necessários para testar o projeto 
 
 Entregáveis:
-- Miro com a Documentação DDD: https://miro.com/app/board/uXjVN8Gnn2s=/
-- Repositório GitHub com o código: https://github.com/fabianogoes/fiap-challenge-gofood
+
+- Miro com a Documentação DDD: [https://miro.com/app/board/uXjVN8Gnn2s=/](https://miro.com/app/board/uXjVN8Gnn2s=/)
+- Repositório GitHub com o código: [https://github.com/fabianogoes/fiap-challenge-gofood](https://github.com/fabianogoes/fiap-challenge-gofood)
 
 ---
 
