@@ -20,7 +20,7 @@ services:
 
   gofood:
     build:
-      context: __devops__/docker
+      context: .
     container_name: gofood_app
     restart: always
     environment:

@@ -97,6 +97,15 @@ curl --request GET --url http://localhost:8080/health
 
 [Collection de Teste que pode ser importada no Insomnia ou Postman](./Insomnia_collection_test.json)
 
+## Docker Commands
+
+```shell
+docker login -u=fabianogoes
+docker build -t fabianogoes/fiap-challenge:2.0
+docker tag fabianogoes/fiap-challenge:2.0 fabianogoes/fiap-challenge:2.0
+docker push fabianogoes/fiap-challenge:2.0
+```
+
 ## Referencias importantes
 
 - [Documento PDF entegável de como testar a API](./__utils__/doc/entregavel-how-to-test-challenge.pdf)
