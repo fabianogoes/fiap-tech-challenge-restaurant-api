@@ -1,7 +1,7 @@
 package dbo
 
 import (
-	"github.com/fiap/challenge-gofood/entities"
+	"github.com/fabianogoes/fiap-challenge/entities"
 	"gorm.io/gorm"
 )
 

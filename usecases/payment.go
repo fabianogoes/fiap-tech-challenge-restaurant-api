@@ -1,8 +1,8 @@
 package usecases
 
 import (
-	"github.com/fiap/challenge-gofood/entities"
-	"github.com/fiap/challenge-gofood/interfaces"
+	"github.com/fabianogoes/fiap-challenge/entities"
+	"github.com/fabianogoes/fiap-challenge/interfaces"
 )
 
 type PaymentService struct {

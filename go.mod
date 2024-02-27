@@ -1,4 +1,4 @@
-module github.com/fiap/challenge-gofood
+module github.com/fabianogoes/fiap-challenge
 
 go 1.21.3
 

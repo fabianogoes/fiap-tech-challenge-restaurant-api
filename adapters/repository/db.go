@@ -7,7 +7,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/fiap/challenge-gofood/adapters/repository/dbo"
+	"github.com/fabianogoes/fiap-challenge/adapters/repository/dbo"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )

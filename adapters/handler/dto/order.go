@@ -2,7 +2,7 @@ package dto
 
 import (
 	"fmt"
-	"github.com/fiap/challenge-gofood/entities"
+	"github.com/fabianogoes/fiap-challenge/entities"
 )
 
 type OrderResponse struct {

@@ -3,14 +3,14 @@ package main
 import (
 	"context"
 	"fmt"
-	service2 "github.com/fiap/challenge-gofood/usecases"
+	service2 "github.com/fabianogoes/fiap-challenge/usecases"
 	"log/slog"
 	"os"
 
-	"github.com/fiap/challenge-gofood/adapters/delivery"
-	"github.com/fiap/challenge-gofood/adapters/handler"
-	"github.com/fiap/challenge-gofood/adapters/payment"
-	"github.com/fiap/challenge-gofood/adapters/repository"
+	"github.com/fabianogoes/fiap-challenge/adapters/delivery"
+	"github.com/fabianogoes/fiap-challenge/adapters/handler"
+	"github.com/fabianogoes/fiap-challenge/adapters/payment"
+	"github.com/fabianogoes/fiap-challenge/adapters/repository"
 	"github.com/joho/godotenv"
 )
 
@@ -118,5 +118,8 @@ func main() {
 	fmt.Println("DB connected")
 	fmt.Println(db)
 
-	router.Run(os.Getenv("HTTP_PORT"))
+	err = router.Run(os.Getenv("HTTP_PORT"))
+	if err != nil {
+		panic(err)
+	}
 }

@@ -2,10 +2,10 @@ package repository
 
 import (
 	"fmt"
-	"github.com/fiap/challenge-gofood/entities"
+	"github.com/fabianogoes/fiap-challenge/entities"
 	"time"
 
-	"github.com/fiap/challenge-gofood/adapters/repository/dbo"
+	"github.com/fabianogoes/fiap-challenge/adapters/repository/dbo"
 	"gorm.io/gorm"
 )
 

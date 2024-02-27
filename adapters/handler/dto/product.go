@@ -1,6 +1,6 @@
 package dto
 
-import "github.com/fiap/challenge-gofood/entities"
+import "github.com/fabianogoes/fiap-challenge/entities"
 
 type GetProductResponse struct {
 	ID        uint              `json:"id"`

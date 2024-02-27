@@ -2,11 +2,11 @@ package handler
 
 import (
 	"fmt"
-	port2 "github.com/fiap/challenge-gofood/interfaces"
+	port2 "github.com/fabianogoes/fiap-challenge/interfaces"
 	"net/http"
 	"strconv"
 
-	"github.com/fiap/challenge-gofood/adapters/handler/dto"
+	"github.com/fabianogoes/fiap-challenge/adapters/handler/dto"
 	"github.com/gin-gonic/gin"
 )
 

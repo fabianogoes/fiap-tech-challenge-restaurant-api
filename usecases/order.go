@@ -2,8 +2,8 @@ package usecases
 
 import (
 	"fmt"
-	"github.com/fiap/challenge-gofood/entities"
-	port2 "github.com/fiap/challenge-gofood/interfaces"
+	"github.com/fabianogoes/fiap-challenge/entities"
+	port2 "github.com/fabianogoes/fiap-challenge/interfaces"
 )
 
 const (

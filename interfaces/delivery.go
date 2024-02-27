@@ -1,6 +1,6 @@
 package interfaces
 
-import "github.com/fiap/challenge-gofood/entities"
+import "github.com/fabianogoes/fiap-challenge/entities"
 
 type DeliveryClientPort interface {
 	Deliver(order *entities.Order) error

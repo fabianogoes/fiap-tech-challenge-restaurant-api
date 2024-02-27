@@ -1,8 +1,8 @@
 package repository
 
 import (
-	"github.com/fiap/challenge-gofood/adapters/repository/dbo"
-	"github.com/fiap/challenge-gofood/entities"
+	"github.com/fabianogoes/fiap-challenge/adapters/repository/dbo"
+	"github.com/fabianogoes/fiap-challenge/entities"
 	"gorm.io/gorm"
 )
 
