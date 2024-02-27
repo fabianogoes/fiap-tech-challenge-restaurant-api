@@ -63,7 +63,7 @@ go version
 Para Rodar o projeto em development
 
 ```shell
-docker-compose up -d postgres && go run cmd/web/main.go
+docker-compose up -d postgres && go run app/web/main.go
 ```
 
 ## Para Testar a aplicação usando Docker/Docker Compose
