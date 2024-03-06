@@ -12,6 +12,12 @@ kubectl delete --all cm
 kubectl delete --all pvc
 kubectl delete --all pv
 
+# Running Metrics
+echo "-------------------"
+echo "Running Metrics..."
+echo "-------------------"
+kubectl apply -f metrics.yaml
+
 # Running Postgres
 echo "-------------------"
 echo "Running Postgres..."
@@ -27,6 +33,7 @@ echo "Running API..."
 echo "--------------"
 kubectl apply -f app-secret.yaml
 kubectl apply -f app-deployment.yaml
+kubectl apply -f app-hpa.yaml
 kubectl apply -f app-service.yaml
 
 kubectl get deploy --watch

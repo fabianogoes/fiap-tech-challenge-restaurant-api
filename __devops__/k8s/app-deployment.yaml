@@ -1,24 +1,39 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: gofood
+  name: gofood-app
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
-      app: gofood
+      app: gofood-app
   template:
     metadata:
       labels:
-        app: gofood
+        app: gofood-app
     spec:
       containers:
         - name: gofood-app
           image: fabianogoes/fiap-challenge:2.0
           ports:
             - containerPort: 8080
-              # hostPort: 8080
-              # protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            periodSeconds: 10
+            failureThreshold: 3
+            initialDelaySeconds: 20
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            periodSeconds: 10
+            failureThreshold: 5
+            initialDelaySeconds: 3
+          resources:
+            requests:
+              cpu: 1m
           envFrom:
             - secretRef:
                 name: app-secret
@@ -39,3 +54,4 @@ spec:
                   name: postgres-secret
                   key: POSTGRES_PASSWORD                  
       restartPolicy: Always
+
