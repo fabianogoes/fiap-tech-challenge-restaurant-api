@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: gofood-app
-          image: fabianogoes/fiap-challenge-gofood_gofood:latest
+          image: fabianogoes/fiap-challenge:2.0
           ports:
             - containerPort: 8080
               # hostPort: 8080
