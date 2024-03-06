@@ -13,7 +13,7 @@ RUN go mod download
 # Copy the source code into the container
 COPY . .
 
-#Expose interfaces
+#Expose ports
 EXPOSE 8080
 
 # Build the Go application

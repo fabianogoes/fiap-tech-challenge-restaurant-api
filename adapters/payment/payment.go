@@ -2,7 +2,7 @@ package payment
 
 import (
 	"fmt"
-	"github.com/fabianogoes/fiap-challenge/entities"
+	"github.com/fabianogoes/fiap-challenge/domain/entities"
 )
 
 type ClientAdapter struct {

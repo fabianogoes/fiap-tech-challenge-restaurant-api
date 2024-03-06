@@ -3,14 +3,14 @@ package main
 import (
 	"context"
 	"fmt"
-	service2 "github.com/fabianogoes/fiap-challenge/usecases"
+	"github.com/fabianogoes/fiap-challenge/domain/usecases"
+	repository2 "github.com/fabianogoes/fiap-challenge/frameworks/repository"
+	controllers2 "github.com/fabianogoes/fiap-challenge/frameworks/rest"
 	"log/slog"
 	"os"
 
 	"github.com/fabianogoes/fiap-challenge/adapters/delivery"
-	"github.com/fabianogoes/fiap-challenge/adapters/handler"
 	"github.com/fabianogoes/fiap-challenge/adapters/payment"
-	"github.com/fabianogoes/fiap-challenge/adapters/repository"
 	"github.com/joho/godotenv"
 )
 
@@ -65,31 +65,31 @@ func main() {
 	ctx := context.Background()
 	var err error
 
-	db, err := repository.InitDB(ctx)
+	db, err := repository2.InitDB(ctx)
 	if err != nil {
 		panic(err)
 	}
 
-	attendantRepository := repository.NewAttendantRepository(db)
-	attendantUseCase := service2.NewAttendantService(attendantRepository)
-	attendantHandler := handler.NewAttendantHandler(attendantUseCase)
+	attendantRepository := repository2.NewAttendantRepository(db)
+	attendantUseCase := usecases.NewAttendantService(attendantRepository)
+	attendantHandler := controllers2.NewAttendantHandler(attendantUseCase)
 
-	customerRepository := repository.NewCustomerRepository(db)
-	customerUseCase := service2.NewCustomerService(customerRepository)
-	customerHandler := handler.NewCustomerHandler(customerUseCase)
+	customerRepository := repository2.NewCustomerRepository(db)
+	customerUseCase := usecases.NewCustomerService(customerRepository)
+	customerHandler := controllers2.NewCustomerHandler(customerUseCase)
 
-	productRepository := repository.NewProductRepository(db)
-	productUseCase := service2.NewProductService(productRepository)
-	productHandler := handler.NewProductHandler(productUseCase)
+	productRepository := repository2.NewProductRepository(db)
+	productUseCase := usecases.NewProductService(productRepository)
+	productHandler := controllers2.NewProductHandler(productUseCase)
 
 	paymentClientAdapter := payment.NewPaymentClientAdapter()
-	paymentRepository := repository.NewPaymentRepository(db)
-	paymentUseCase := service2.NewPaymentService(paymentRepository)
-	orderItemRepository := repository.NewOrderItemRepository(db)
-	orderRepository := repository.NewOrderRepository(db, orderItemRepository)
+	paymentRepository := repository2.NewPaymentRepository(db)
+	paymentUseCase := usecases.NewPaymentService(paymentRepository)
+	orderItemRepository := repository2.NewOrderItemRepository(db)
+	orderRepository := repository2.NewOrderRepository(db, orderItemRepository)
 	deliveryClientAdapter := delivery.NewDeliveryClientAdapter()
-	deliveryRepository := repository.NewDeliveryRepository(db)
-	orderUseCase := service2.NewOrderService(
+	deliveryRepository := repository2.NewDeliveryRepository(db)
+	orderUseCase := usecases.NewOrderService(
 		orderRepository,
 		customerRepository,
 		attendantRepository,
@@ -98,14 +98,14 @@ func main() {
 		deliveryClientAdapter,
 		deliveryRepository,
 	)
-	orderHandler := handler.NewOrderHandler(
+	orderHandler := controllers2.NewOrderHandler(
 		orderUseCase,
 		customerUseCase,
 		attendantUseCase,
 		productUseCase,
 	)
 
-	router, err := handler.NewRouter(
+	router, err := controllers2.NewRouter(
 		customerHandler,
 		attendantHandler,
 		productHandler,

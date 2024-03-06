@@ -18,16 +18,15 @@ Table of context
 ## Project Architecture by Clean Architecture
 
 - `app/web`: diretório para os principais pontos de entrada, injeção dependência ou comandos do aplicativo. O subdiretório web contém o ponto de entrada principal a API REST.
-- `entities`: diretório que contém modelos/entidades de domínio que representam os principais conceitos de negócios.
-- `usecases`: diretório que contém Serviços de Domínio ou Use Cases.
-- `interfaces`: diretório que contém interfaces ou contratos definidos que os adaptadores devem seguir.
-- `adapters`: diretório para conter serviços externos que irão interagir com o core do aplicativo.
-  - `handler`: diretório que contém os controllers e manipulador de requisições REST.
-  - `handler\dto`: diretório que contém objetos/modelo de request e response.
-  - `repository`: diretório que contém adaptadores de banco de dados exemplo para PostgreSQL.
-  - `repository\dbo`: diretório que contém objetos/entidades de banco de dados.
-  - `payment`: adaptador para meio de pagamento externo.
-  - `delivery`: adaptador para meio de entrega externo.
+- `domain/entities`: diretório que contém modelos/entidades de domínio que representam os principais conceitos de negócios.
+- `domain/usecases`: diretório que contém Serviços de Domínio ou Use Cases.
+- `domain/ports`: diretório que contém interfaces ou contratos definidos que os adaptadores devem seguir.
+- `adapters/payment`: adaptador para meio de pagamento externo.
+- `adapters/delivery`: adaptador para meio de entrega externo.
+- `frameworks/rest`: diretório que contém os controllers e manipulador de requisições REST.
+- `frameworks/rest/dto`: diretório que contém objetos/modelo de request e response.
+- `frameworks/repository`: diretório que contém adaptadores de banco de dados exemplo para PostgreSQL.
+- `frameworks/repository/dbo`: diretório que contém objetos/entidades de banco de dados.
 
 ## Stack
 
