@@ -99,7 +99,7 @@ curl --request GET --url http://localhost:8080/health
 
 ```shell
 docker login -u=fabianogoes
-docker build -t fabianogoes/fiap-challenge:2.0
+docker build -t fabianogoes/fiap-challenge:2.0 .
 docker tag fabianogoes/fiap-challenge:2.0 fabianogoes/fiap-challenge:2.0
 docker push fabianogoes/fiap-challenge:2.0
 ```
