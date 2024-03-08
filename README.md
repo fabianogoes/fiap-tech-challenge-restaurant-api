@@ -2,33 +2,32 @@
 
 > FIAP pós Software Architecture - Tech Challenge projeto de um Restaurante `gofood`
 
-Tabela de Contexto
+Table of context
 - [FIAP challenge food](#fiap-challenge-food)
-  - [Arquitetura do projeto](#arquitetura-do-projeto)
+  - [Arquitetura do projeto](#project-architecture-by-clean-architecture)
   - [Stack](#stack)
-  - [Para Desenvolver](#para-desenvolver)
-  - [Para Testar a aplicação usando Docker/Docker Compose](#para-testar-a-aplicação-usando-dockerdocker-compose)
+  - [Para Desenvolver](#development)
+  - [Para Testar a aplicação usando Docker/Docker Compose](#testing-using-dockerdocker-compose)
     - [Como testar usando o `curl`](#como-testar-usando-o-curl)
-    - [Pode ser testado o fluxo completo usando a collection insomnia](#pode-ser-testado-o-fluxo-completo-usando-a-collection-insomnia)
+    - [Pode ser testado o fluxo completo usando a collection insomnia](#using-http-client-postman-or-insomnia)
+  - [Docker Commands](#docker-commands)
   - [Referencias importantes](#referencias-importantes)
 
 ---
 
-## Arquitetura do projeto
+## Project Architecture by Clean Architecture
 
-- `cmd`: diretório para os principais pontos de entrada, injeção dependência ou comandos do aplicativo. O subdiretório web contém o ponto de entrada principal a API REST.
-- `internal`: diretório para conter o código do aplicativo que não deve ser exposto a pacotes externos.
-  - `core`: diretório que contém a lógica de negócios central do aplicativo.
-    - `domain`: diretório que contém modelos/entidades de domínio que representam os principais conceitos de negócios.
-    - `port`: diretório que contém interfaces ou contratos definidos que os adaptadores devem seguir.
-    - `service`: diretório que contém Serviços de Domínio ou Use Cases.
-  - `adapters`: diretório para conter serviços externos que irão interagir com o core do aplicativo.
-    - `handler`: diretório que contém os controllers e manipulador de requisições REST.
-    - `handler\dto`: diretório que contém objetos/modelo de request e response.
-    - `repository`: diretório que contém adaptadores de banco de dados exemplo para PostgreSQL.
-    - `repository\dbo`: diretório que contém objetos/entidades de banco de dados.
-    - `payment`: adaptador para meio de pagamento externo.
-    - `delivery`: adaptador para meio de entrega externo.
+- `app/web`: diretório para os principais pontos de entrada, injeção dependência ou comandos do aplicativo. O subdiretório web contém o ponto de entrada principal a API REST.
+- `domain/entities`: diretório que contém modelos/entidades de domínio que representam os principais conceitos de negócios.
+- `domain/usecases`: diretório que contém Serviços de Domínio ou Use Cases.
+- `domain/ports`: diretório que contém interfaces ou contratos definidos que os adaptadores devem seguir.
+- `adapters/payment`: adaptador para meio de pagamento externo.
+- `adapters/delivery`: adaptador para meio de entrega externo.
+- `frameworks/rest`: diretório que contém os controllers e manipulador de requisições REST.
+- `frameworks/rest/dto`: diretório que contém objetos/modelo de request e response.
+- `frameworks/repository`: diretório que contém adaptadores de banco de dados exemplo para PostgreSQL.
+- `frameworks/repository/dbo`: diretório que contém objetos/entidades de banco de dados.
+- `k8s`: diretório com arquivos kubernetes
 
 ## Stack
 
@@ -44,36 +43,36 @@ Tabela de Contexto
 - [ ] [swag](https://github.com/swaggo/swag) - Swag converts Go annotations to Swagger Documentation 2.0
 - [ ] [CORS gin's middleware](https://github.com/gin-contrib/cors) - Gin middleware/handler to enable CORS support.
 
-## Para Desenvolver
+## Development
 
-Dependencias
+Dependencies
 
-- [Go Instalation](https://go.dev/doc/install)
+- [Go Installation](https://go.dev/doc/install)
 
-> Certifique-se de ter Go 1.21 ou superior
+> Check for go version 1.21.3
 
 ```shell
 go version
 ```
 
-- Clonar o repostório
-- Entrar na pasta e rodar o comando para baixar as dependências `go mod tidy`
-- Fazer uma cópia do arquivo .env.example e renomear para .env `cp .env.example .env`
+- `git clone https://github.com/fabianogoes/fiap-techchallenge-fase2.git`
+- `cd fiap-techchallenge-fase2`
+- `go mod tidy`
 
-Para Rodar o projeto em development
+### Running
 
 ```shell
-docker-compose up -d postgres && go run cmd/web/main.go
+docker-compose up -d postgres && go run app/web/main.go
 ```
 
-## Para Testar a aplicação usando Docker/Docker Compose
+## Testing using Docker/Docker Compose
 
 ```shell
 docker-compose up -d
 
 curl --request GET --url http://localhost:8080/health
 
-## resposta esperada
+## response 
 {"status":"UP"}
 ```
 
@@ -93,17 +92,26 @@ curl --request GET --url http://localhost:8080/health
 
 [Veja o documento](./__utils__/doc/entregavel-how-to-test-challenge.md)
 
-### Pode ser testado o fluxo completo usando a collection insomnia
+### Using HTTP Client Postman or Insomnia
 
-[Collection de Teste que pode ser importada no Insomnia ou Postman](./Insomnia_collection_test.json)
+[Collection de Teste que pode ser importada no Postman](./__utils__/FIAP-GoFood.postman_collection.json)
+
+## Docker Commands
+
+```shell
+docker login -u=fabianogoes
+docker build -t fabianogoes/fiap-challenge:2.0 .
+docker tag fabianogoes/fiap-challenge:2.0 fabianogoes/fiap-challenge:2.0
+docker push fabianogoes/fiap-challenge:2.0
+```
 
 ## Referencias importantes
 
 - [Documento PDF entegável de como testar a API](./__utils__/doc/entregavel-how-to-test-challenge.pdf)
-- [Documentação DDD Miro](https://miro.com/app/board/uXjVN8Gnn2s=/)
-- [Tech Challenge - Entregáveis fase 1](./doc/EntragaFase1.md)
+- [Documentação DDD Miro](https://miro.com/app/board/uXjVNpDpixg=/?share_link_id=459651604667)
+- [Tech Challenge - Entregáveis fase 1](./__utils__/doc/EntragaFase1.md)
 - [Como Testar usando `curl`](./__utils__/doc/ComoTestar.md)
-- [Collection de Teste que pode ser importada no Insomnia ou Postman](./Insomnia_collection_test.json)
+- [Collection de Teste que pode ser importada no Insomnia ou Postman](./__utils__/Insomnia_collection_test.json)
 
 [0]: https://go.dev/
 [1]: https://gin-gonic.com/

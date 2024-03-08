@@ -1,0 +1,46 @@
+version: "3.8"
+
+services:
+  postgres:
+    container_name: postgres_gofood
+    image: postgres:12.8
+    restart: always
+    env_file: ${ENV_FILE:-.env.development}
+    environment:
+      POSTGRES_USER: "${DB_USERNAME:-usr}"
+      POSTGRES_PASSWORD: "${DB_PASSWORD:-pwd}"
+      POSTGRES_DB: "${DB_DATABASE:-gofood}"
+      POSTGRES_HOST_AUTH_METHOD: "trust"
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./postgres/data:/var/lib/postgresql/data
+    networks:
+      - go-food-network
+
+  gofood:
+    build:
+      context: .
+    container_name: gofood_app
+    restart: always
+    environment:
+      APP_NAME: "${APP_NAME:-go-food}"
+      APP_ENV: "${APP_ENV:-development}"
+      HTTP_URL: "${HTTP_URL:-127.0.0.1}"
+      HTTP_PORT: "${HTTP_PORT:-:8080}"
+      DB_CONNECTION: "${DB_CONNECTION:-postgres}"
+      DB_HOST: "${DB_HOST:-localhost}"
+      DB_PORT: "${DB_PORT:-5432}"
+      DB_DATABASE: "${DB_DATABASE:-gofoog}"
+      DB_USERNAME: "${DB_USERNAME:-usr}"
+      DB_PASSWORD: "${DB_PASSWORD:-pwd}"
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+    networks:
+      - go-food-network
+
+networks:
+  go-food-network:
+    driver: bridge
