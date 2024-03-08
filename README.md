@@ -27,6 +27,7 @@ Table of context
 - `frameworks/rest/dto`: diretório que contém objetos/modelo de request e response.
 - `frameworks/repository`: diretório que contém adaptadores de banco de dados exemplo para PostgreSQL.
 - `frameworks/repository/dbo`: diretório que contém objetos/entidades de banco de dados.
+- `k8s`: diretório com arquivos kubernetes
 
 ## Stack
 
@@ -93,7 +94,7 @@ curl --request GET --url http://localhost:8080/health
 
 ### Using HTTP Client Postman or Insomnia
 
-[Collection de Teste que pode ser importada no Insomnia ou Postman](./__utils__/Insomnia_collection_test.json)
+[Collection de Teste que pode ser importada no Postman](./__utils__/FIAP-GoFood.postman_collection.json)
 
 ## Docker Commands
 
@@ -107,7 +108,7 @@ docker push fabianogoes/fiap-challenge:2.0
 ## Referencias importantes
 
 - [Documento PDF entegável de como testar a API](./__utils__/doc/entregavel-how-to-test-challenge.pdf)
-- [Documentação DDD Miro](https://miro.com/app/board/uXjVN8Gnn2s=/)
+- [Documentação DDD Miro](https://miro.com/app/board/uXjVNpDpixg=/?share_link_id=459651604667)
 - [Tech Challenge - Entregáveis fase 1](./__utils__/doc/EntragaFase1.md)
 - [Como Testar usando `curl`](./__utils__/doc/ComoTestar.md)
 - [Collection de Teste que pode ser importada no Insomnia ou Postman](./__utils__/Insomnia_collection_test.json)

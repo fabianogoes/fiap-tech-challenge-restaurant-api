@@ -1,11 +1,12 @@
-# Como testar o projeto
+# Como testar o projeto - Tech Challenge fase 2
 
 > Este documento descreve os passos necessários para testar o projeto 
 
 Entregáveis:
 
-- Miro com a Documentação DDD: [https://miro.com/app/board/uXjVN8Gnn2s=/](https://miro.com/app/board/uXjVN8Gnn2s=/)
-- Repositório GitHub com o código: [https://github.com/fabianogoes/fiap-challenge-gofood](https://github.com/fabianogoes/fiap-challenge-gofood)
+- Video demonstrando o Deploy na AWS: [https://youtu.be/csUlJxz9n_s?si=O82ImIL7bkgZ9zQ9](https://youtu.be/csUlJxz9n_s?si=O82ImIL7bkgZ9zQ9)
+- Miro com a Documentação DDD: [https://miro.com/app/board/uXjVNpDpixg=/?share_link_id=459651604667](https://miro.com/app/board/uXjVNpDpixg=/?share_link_id=459651604667)
+- Repositório GitHub com o código: [https://github.com/fabianogoes/fiap-techchallenge-fase2](https://github.com/fabianogoes/fiap-techchallenge-fase2)
 
 ---
 
@@ -33,13 +34,13 @@ Para rodar os testes será necessário ter instalado as seguintes ferramentas:
 ## Passo 1 - Clonar o repositório GitHub
 
 ```shell
-git clone https://github.com/fabianogoes/fiap-challenge-gofood.git
+git clone https://github.com/fabianogoes/fiap-techchallenge-fase2.git
 ```
 
 ## Passo 2 - Rodar a aplicação usando Docker e Docker Compose
 
 ```shell
-cd fiap-challenge-gofood
+cd fiap-techchallenge-fase2
 docker-compose up -d
 ```
 
@@ -86,11 +87,12 @@ Quando a app subir será inserido dados necessários para testar a criação de 
 2. Adicionando Items ao Pedido
 3. Removendo Item (se necessário) 
 4. Confirmando Pedido
-5. Pagando Pedido
-6. Enviando Pedido para preparação
-7. Marcando Pedido como Pronto para Entrega
-8. Enviando Pedido para Entrega
-9. Marcando Pedido como Entregue
+5. Enviando Pedido para Pagamento
+6. Recebendo Callback do Pagamento via Webhook
+7. Enviando Pedido para preparação
+8. Marcando Pedido como Pronto para Entrega
+9. Enviando Pedido para Entrega
+10. Marcando Pedido como Entregue
 
 ### Teste usando o `curl`
 
@@ -138,7 +140,7 @@ curl --request DELETE --url http://localhost:8080/orders/1/item/1
 curl --request PUT --url http://localhost:8080/orders/1/confirmation
 ```
 
-> Pagando Pedido
+> Enviando Pedido para Pagamento
 
 métodos de pagamento possíveis:
 
@@ -149,6 +151,16 @@ métodos de pagamento possíveis:
 
 ```shell
 curl --request PUT --url http://localhost:8080/orders/1/payment --header 'Content-Type: application/json' --data '{ "paymentMethod": "CREDIT_CARD" }'
+```
+
+> Recebendo callback do Pagamento via Webhook
+
+```shell
+curl --request PUT 'http://localhost:8080/orders/1/payment/webhook' --header 'Content-Type: application/json' --data '{
+    "status": "SUCCESS",
+    "paymentMethod": "DEBIT_CARD",
+    "errorReason": ""
+}'
 ```
 
 > Enviando Pedido para preparação
