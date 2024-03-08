@@ -12,6 +12,7 @@ How to deploy and test the application into AWS using EKS
 
 ## Deploying the Application
 
+- [ ] `kubectl cluster-info`
 - [ ] `kubectl apply -f metrics.yaml`
 - [ ] `kubectl apply -f postgres-persistentvolumeclaim.yaml`
 - [ ] `kubectl apply -f postgres-secret.yaml`
