@@ -167,6 +167,23 @@ func (h *OrderHandler) GetOrderById(c *gin.Context) {
 	c.JSON(http.StatusOK, dto.ToOrderResponse(order))
 }
 
+func (h *OrderHandler) GetOrders(c *gin.Context) {
+	orders, err := h.OrderUseCase.GetOrders()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+	}
+
+	if len(orders) == 0 {
+		c.JSON(http.StatusNoContent, gin.H{
+			"message": "No orders found",
+		})
+	}
+
+	c.JSON(http.StatusOK, dto.ToOrderResponses(orders))
+}
+
 func (h *OrderHandler) ConfirmationOrder(c *gin.Context) {
 	var err error
 	orderID, err := strconv.Atoi(c.Param("id"))
