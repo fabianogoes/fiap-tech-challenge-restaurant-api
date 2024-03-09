@@ -60,6 +60,7 @@ func NewRouter(
 		orders.POST("/:id/item", orderHandler.AddItemToOrder)
 		orders.DELETE("/:id/item/:idItem", orderHandler.RemoveItemFromOrder)
 		orders.GET("/:id", orderHandler.GetOrderById)
+		orders.GET("/", orderHandler.GetOrders)
 		orders.PUT("/:id/confirmation", orderHandler.ConfirmationOrder)
 		orders.PUT("/:id/payment", orderHandler.PaymentOrder)
 		orders.PUT("/:id/payment/webhook", orderHandler.PaymentWebhook)

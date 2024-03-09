@@ -65,6 +65,10 @@ func (os *OrderService) GetOrderById(id uint) (*entities.Order, error) {
 	return os.orderRepository.GetOrderById(id)
 }
 
+func (os *OrderService) GetOrders() ([]*entities.Order, error) {
+	return os.orderRepository.GetOrders()
+}
+
 func (os *OrderService) AddItemToOrder(order *entities.Order, product *entities.Product, quantity int) (*entities.Order, error) {
 
 	order.AddItem(product, quantity)
