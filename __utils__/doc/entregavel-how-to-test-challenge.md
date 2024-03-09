@@ -7,10 +7,17 @@ Entregáveis:
 - Video demonstrando o Deploy na AWS: [https://youtu.be/csUlJxz9n_s?si=O82ImIL7bkgZ9zQ9](https://youtu.be/csUlJxz9n_s?si=O82ImIL7bkgZ9zQ9)
 - Miro com a Documentação DDD: [https://miro.com/app/board/uXjVNpDpixg=/?share_link_id=459651604667](https://miro.com/app/board/uXjVNpDpixg=/?share_link_id=459651604667)
 - Repositório GitHub com o código: [https://github.com/fabianogoes/fiap-techchallenge-fase2](https://github.com/fabianogoes/fiap-techchallenge-fase2)
+- [Collection Postman](https://github.com/fabianogoes/fiap-techchallenge-fase2/blob/4f240864f2b07fce43711821b8bc9c69a352231f/__utils__/FIAP-GoFood.postman_collection.json)
+
+
+## Desenho da Arquitetura
+
+![Arquitetura](./DesenhoArquitetura.png)
 
 ---
 
-- [Como testar o projeto](#como-testar-o-projeto)
+- [Como testar o projeto - Tech Challenge fase 2](#como-testar-o-projeto---tech-challenge-fase-2)
+  - [Desenho da Arquitetura](#desenho-da-arquitetura)
   - [Pré requisitos](#pré-requisitos)
   - [Passo 1 - Clonar o repositório GitHub](#passo-1---clonar-o-repositório-github)
   - [Passo 2 - Rodar a aplicação usando Docker e Docker Compose](#passo-2---rodar-a-aplicação-usando-docker-e-docker-compose)
@@ -134,7 +141,7 @@ curl --request POST --url http://localhost:8080/orders/1/item --header 'Content-
 curl --request DELETE --url http://localhost:8080/orders/1/item/1
 ```
 
-> Confirmando Pedido
+> Confirmando Pedido / Checkout
 
 ```shell
 curl --request PUT --url http://localhost:8080/orders/1/confirmation
@@ -185,4 +192,16 @@ curl --request PUT --url http://localhost:8080/orders/1/sent-for-delivery
 
 ```shell
 curl --request PUT --url http://localhost:8080/orders/1/delivered 
+```
+
+> Listar todos os Pedidos em andamento
+
+```shell
+curl --request 'http://localhost:8080/orders' 
+```
+
+> Consultar status do Pedido por ID
+
+```shell
+curl --request 'http://localhost:8080/orders/1'
 ```
