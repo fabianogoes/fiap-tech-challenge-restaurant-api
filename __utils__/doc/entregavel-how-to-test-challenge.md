@@ -7,7 +7,7 @@ Entregáveis:
 - Video demonstrando o Deploy na AWS: [https://youtu.be/csUlJxz9n_s?si=O82ImIL7bkgZ9zQ9](https://youtu.be/csUlJxz9n_s?si=O82ImIL7bkgZ9zQ9)
 - Miro com a Documentação DDD: [https://miro.com/app/board/uXjVNpDpixg=/?share_link_id=459651604667](https://miro.com/app/board/uXjVNpDpixg=/?share_link_id=459651604667)
 - Repositório GitHub com o código: [https://github.com/fabianogoes/fiap-techchallenge-fase2](https://github.com/fabianogoes/fiap-techchallenge-fase2)
-- [Collection Postman](https://github.com/fabianogoes/fiap-techchallenge-fase2/blob/4f240864f2b07fce43711821b8bc9c69a352231f/__utils__/FIAP-GoFood.postman_collection.json)
+- [Collection Postman](https://github.com/fabianogoes/fiap-techchallenge-fase2/blob/8b7548ccc2fcabef0e28ce35586139d7c23bafa2/__utils__/FIAP-GoFood.postman_collection.json)
 - [Desenho da Arquitetura](https://github.com/fabianogoes/fiap-techchallenge-fase2/blob/8b7548ccc2fcabef0e28ce35586139d7c23bafa2/__utils__/doc/DesenhoArquitetura.png)
 
 
