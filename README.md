@@ -4,13 +4,15 @@
 
 Table of context
 - [FIAP challenge food](#fiap-challenge-food)
-  - [Arquitetura do projeto](#project-architecture-by-clean-architecture)
+  - [Project Architecture by Clean Architecture](#project-architecture-by-clean-architecture)
   - [Stack](#stack)
-  - [Para Desenvolver](#development)
-  - [Para Testar a aplicação usando Docker/Docker Compose](#testing-using-dockerdocker-compose)
+  - [Development](#development)
+    - [Running](#running)
+  - [Testing using Docker/Docker Compose](#testing-using-dockerdocker-compose)
     - [Como testar usando o `curl`](#como-testar-usando-o-curl)
-    - [Pode ser testado o fluxo completo usando a collection insomnia](#using-http-client-postman-or-insomnia)
+    - [Using HTTP Client Postman or Insomnia](#using-http-client-postman-or-insomnia)
   - [Docker Commands](#docker-commands)
+  - [Run Go test](#run-go-test)
   - [Referencias importantes](#referencias-importantes)
 
 ---
@@ -103,6 +105,12 @@ docker login -u=fabianogoes
 docker build -t fabianogoes/fiap-challenge:2.0 .
 docker tag fabianogoes/fiap-challenge:2.0 fabianogoes/fiap-challenge:2.0
 docker push fabianogoes/fiap-challenge:2.0
+```
+
+## Run Go test
+
+```shell
+go test -v ./...
 ```
 
 ## Referencias importantes
