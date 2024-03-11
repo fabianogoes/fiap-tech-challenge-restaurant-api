@@ -14,17 +14,8 @@ func NewRouter(
 ) (*Router, error) {
 	router := gin.Default()
 
-	router.GET("/", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"message": "Welcome to the API GoFood",
-		})
-	})
-
-	router.GET("/health", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"status": "UP",
-		})
-	})
+	router.GET("/", Welcome)
+	router.GET("/health", Health)
 
 	customers := router.Group("/customers")
 	{
