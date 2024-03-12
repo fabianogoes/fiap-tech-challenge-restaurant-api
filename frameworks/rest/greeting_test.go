@@ -1,26 +1,20 @@
 package rest
 
 import (
+	"github.com/stretchr/testify/require"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 
-	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
 )
 
-func setup() *gin.Engine {
-	r := gin.Default()
-	r.Use(gin.Logger())
-	r.Use(gin.Recovery())
-
-	return r
-}
-
 func TestWelcome(t *testing.T) {
-	r := setup()
+	r := SetupTest()
 	r.GET("/", Welcome)
-	request, _ := http.NewRequest("GET", "/", nil)
+	request, err := http.NewRequest("GET", "/", nil)
+	require.NoError(t, err)
+
 	response := httptest.NewRecorder()
 
 	r.ServeHTTP(response, request)
@@ -28,9 +22,11 @@ func TestWelcome(t *testing.T) {
 }
 
 func TestHealth(t *testing.T) {
-	r := setup()
+	r := SetupTest()
 	r.GET("/health", Health)
-	request, _ := http.NewRequest("GET", "/health", nil)
+	request, err := http.NewRequest("GET", "/health", nil)
+	require.NoError(t, err)
+
 	response := httptest.NewRecorder()
 
 	r.ServeHTTP(response, request)
