@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"github.com/fabianogoes/fiap-challenge/domain/entities"
 	"github.com/fabianogoes/fiap-challenge/frameworks/repository/dbo"
-
 	"gorm.io/gorm"
+	"log"
 )
 
 type AttendantRepository struct {
@@ -84,4 +84,15 @@ func (c *AttendantRepository) DeleteAttendant(id uint) error {
 	}
 
 	return nil
+}
+
+func InitialDataAttendants(db *gorm.DB) {
+	if count := db.Find(&[]*dbo.Attendant{}).RowsAffected; count == 0 {
+		log.Print("Inserting Attendants...")
+		db.Create(&dbo.Attendant{Name: "Miguel"})
+		db.Create(&dbo.Attendant{Name: "Sophia"})
+		db.Create(&dbo.Attendant{Name: "Alice"})
+		db.Create(&dbo.Attendant{Name: "Pedro"})
+		db.Create(&dbo.Attendant{Name: "Manuela"})
+	}
 }

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/fabianogoes/fiap-challenge/domain/entities"
 	"github.com/fabianogoes/fiap-challenge/frameworks/repository/dbo"
+	"log"
 
 	"gorm.io/gorm"
 )
@@ -84,4 +85,15 @@ func (c *CustomerRepository) DeleteCustomer(id uint) error {
 	}
 
 	return nil
+}
+
+func InitialDataCustomers(db *gorm.DB) {
+	if count := db.Find(&[]*dbo.Customer{}).RowsAffected; count == 0 {
+		log.Print("Inserting Customers...")
+		db.Create(&dbo.Customer{Name: "Bernardo", Email: "bernardo@gmail.com", CPF: "29381510040"})
+		db.Create(&dbo.Customer{Name: "Laura", Email: "laura@hotmail.com", CPF: "15204180001"})
+		db.Create(&dbo.Customer{Name: "Lucas", Email: "lucas@gmail.com", CPF: "43300921074"})
+		db.Create(&dbo.Customer{Name: "Maria Eduarda", Email: "meduarda@uol.com.br", CPF: "85752055016"})
+		db.Create(&dbo.Customer{Name: "Guilherme", Email: "guilherme@microsoft.com", CPF: "17148604001"})
+	}
 }
