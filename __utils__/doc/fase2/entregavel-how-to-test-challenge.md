@@ -13,7 +13,7 @@ Entregáveis:
 
 ## Desenho da Arquitetura
 
-![Arquitetura](./DesenhoArquitetura.png)
+![Arquitetura](DesenhoArquitetura.png)
 
 ---
 
@@ -24,8 +24,6 @@ Entregáveis:
   - [Passo 2 - Rodar a aplicação usando Docker e Docker Compose](#passo-2---rodar-a-aplicação-usando-docker-e-docker-compose)
   - [Passo 3 - Testes se a App está Heath](#passo-3---testes-se-a-app-está-heath)
   - [Passo 4 - Testar a API de Pedidos](#passo-4---testar-a-api-de-pedidos)
-    - [Exemplo de alguns dados já inseridos para teste:](#exemplo-de-alguns-dados-já-inseridos-para-teste)
-    - [A API de pedido segue uma sequencia lógica para iniciar um  pedido e ir até a fase de entrega.](#a-api-de-pedido-segue-uma-sequencia-lógica-para-iniciar-um--pedido-e-ir-até-a-fase-de-entrega)
     - [Teste usando o `curl`](#teste-usando-o-curl)
 
 ---
@@ -89,7 +87,7 @@ Quando a app subir será inserido dados necessários para testar a criação de 
 > - Para verificar a **lista de Atendentes** pode ser usado a API: `http://localhost:8080/attendants`
 
 
-### A API de pedido segue uma sequencia lógica para iniciar um  pedido e ir até a fase de entrega.  
+### A API de pedido segue uma sequencia lógica para iniciar um pedido e ir até a fase de entrega.  
 
 1. Iniciando um novo Pedido
 2. Adicionando Items ao Pedido
@@ -150,7 +148,7 @@ curl --request PUT --url http://localhost:8080/orders/1/confirmation
 
 > Enviando Pedido para Pagamento
 
-métodos de pagamento possíveis:
+Métodos de pagamento possíveis:
 
 - CREDIT_CARD
 - DEBIT_CARD
