@@ -1,5 +1,5 @@
 # Use the official Go image as the base image
-FROM golang:latest
+FROM golang:1.21.8-alpine3.19
 
 # Set the working directory inside the container
 WORKDIR /app
@@ -19,5 +19,5 @@ EXPOSE 8080
 # Build the Go application
 RUN go build -o web app/web/main.go
 
-#Run the web usecases on container startup
+# Run build
 CMD ["./web"]

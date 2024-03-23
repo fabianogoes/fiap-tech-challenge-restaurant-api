@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: gofood-app
+  name: restaurant-api
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: gofood-app
+      app: restaurant-api
   template:
     metadata:
       labels:
-        app: gofood-app
+        app: restaurant-api
     spec:
       containers:
-        - name: gofood-app
-          image: fabianogoes/fiap-challenge:2.0
+        - name: restaurant-api
+          image: fabianogoes/restaurant-api:3.1
           ports:
             - containerPort: 8080
           livenessProbe:
