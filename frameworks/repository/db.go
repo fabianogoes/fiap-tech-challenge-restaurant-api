@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 	"fmt"
+	"github.com/fabianogoes/fiap-challenge/domain/entities"
 	dbo2 "github.com/fabianogoes/fiap-challenge/frameworks/repository/dbo"
 	"log"
 	"os"
@@ -12,20 +13,26 @@ import (
 	"gorm.io/gorm"
 )
 
-func InitDB(ctx context.Context) (*gorm.DB, error) {
+func InitDB(ctx context.Context, config *entities.Config) (*gorm.DB, error) {
 	loc, _ := time.LoadLocation("UTC")
 
-	dsn := fmt.Sprintf("user=%s password=%s host=%s port=%s dbname=%s sslmode=disable TimeZone=%s",
-		os.Getenv("DB_USERNAME"),
-		os.Getenv("DB_PASSWORD"),
-		os.Getenv("DB_HOST"),
-		os.Getenv("DB_PORT"),
-		os.Getenv("DB_DATABASE"),
+	var dsnTemplate string
+	if config.Environment == "production" {
+		dsnTemplate = "user=%s password=%s host=%s port=%s dbname=%s TimeZone=%s"
+	} else {
+		dsnTemplate = "user=%s password=%s host=%s port=%s dbname=%s sslmode=disable TimeZone=%s"
+	}
+
+	dsn := fmt.Sprintf(dsnTemplate,
+		config.DBUser,
+		config.DBPassword,
+		config.DBHost,
+		config.DBPort,
+		config.DBName,
 		loc,
 	)
 
 	fmt.Printf("DB_HOST = %s\n", os.Getenv("DB_HOST"))
-	fmt.Printf("DB_PORT = %s\n", os.Getenv("DB_PORT"))
 
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {

@@ -16,6 +16,7 @@ type Config struct {
 	DBName      string
 	DBUser      string
 	DBPassword  string
+	APIVersion  string
 }
 
 func NewConfig() (*Config, error) {
@@ -42,6 +43,7 @@ func NewConfig() (*Config, error) {
 	dbName := strings.Replace(os.Getenv("DB_DATABASE"), "\r", "", -1)
 	dbUser := strings.Replace(os.Getenv("DB_USERNAME"), "\r", "", -1)
 	dbPassword := strings.Replace(os.Getenv("DB_PASSWORD"), "\r", "", -1)
+	apiVersion := strings.Replace(os.Getenv("API_VERSION"), "\r", "", -1)
 
 	fmt.Println("APP_ENV=" + appEnv)
 	fmt.Println("APP_PORT=" + appPort)
@@ -50,6 +52,7 @@ func NewConfig() (*Config, error) {
 	fmt.Println("DB_DATABASE=" + dbName)
 	fmt.Println("DB_USERNAME=" + dbUser)
 	fmt.Println("DB_PASSWORD=" + dbPassword)
+	fmt.Println("API_VERSION=" + apiVersion)
 
 	return &Config{
 		Environment: appEnv,
@@ -59,5 +62,6 @@ func NewConfig() (*Config, error) {
 		DBName:      dbName,
 		DBUser:      dbUser,
 		DBPassword:  dbPassword,
+		APIVersion:  apiVersion,
 	}, nil
 }

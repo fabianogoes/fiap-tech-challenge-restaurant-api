@@ -1,0 +1,73 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: restaurant-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: restaurant-api
+  template:
+    metadata:
+      labels:
+        app: restaurant-api
+    spec:
+      containers:
+        - name: restaurant-api
+          image: fabianogoes/restaurant-api:3.20240426.4
+          ports:
+            - containerPort: 8080
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            periodSeconds: 10
+            failureThreshold: 3
+            initialDelaySeconds: 20
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            periodSeconds: 10
+            failureThreshold: 5
+            initialDelaySeconds: 3
+          resources:
+            requests:
+              cpu: 1m
+          # envFrom:
+          #   - secretRef:
+          #       name: app-secret
+          env:
+            # - name: DB_DATABASE
+            #   valueFrom:
+            #     secretKeyRef:
+            #       name: app-secret
+            #       key: POSTGRES_DB
+            # - name: DB_USERNAME
+            #   valueFrom:
+            #     secretKeyRef:
+            #       name: app-secret
+            #       key: POSTGRES_USER
+            # - name: DB_PASSWORD
+            #   valueFrom:
+            #     secretKeyRef:
+            #       name: app-secret
+            #       key: POSTGRES_PASSWORD
+            - name: DB_HOST
+              value: "tech-challenge-db.czj1nxgd8v9c.us-east-1.rds.amazonaws.com"
+            - name: DB_PORT
+              value: "5432"
+            - name: DB_DATABASE
+              value: "tech_challenge_db"
+            - name: DB_USERNAME
+              value: "tech_challenge_usr"
+            - name: DB_PASSWORD
+              value: "tech_challenge_pwd"
+            - name: API_VERSION
+              value: "2024.4.26.4"
+            - name: APP_ENV
+              value: "production"
+            - name: APP_PORT
+              value: ":8080"
+      restartPolicy: Always
+
