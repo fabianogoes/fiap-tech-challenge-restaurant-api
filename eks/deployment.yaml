@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: restaurant-api
-          image: fabianogoes/restaurant-api:3.20240426.4
+          image: fabianogoes/restaurant-api:3.20240428.2
           ports:
             - containerPort: 8080
           livenessProbe:
