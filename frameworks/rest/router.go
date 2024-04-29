@@ -28,6 +28,7 @@ func NewRouter(
 		customers.POST("/", customerHandler.CreateCustomer)
 		customers.PUT("/:id", customerHandler.UpdateCustomer)
 		customers.DELETE("/:id", customerHandler.DeleteCustomer)
+		customers.POST("/sign-in", customerHandler.SignIn)
 	}
 
 	attendants := router.Group("/attendants")

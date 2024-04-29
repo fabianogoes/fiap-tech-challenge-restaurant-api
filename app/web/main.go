@@ -54,7 +54,7 @@ func main() {
 
 	customerRepository := repository.NewCustomerRepository(db)
 	customerUseCase := usecases.NewCustomerService(customerRepository)
-	customerHandler := rest.NewCustomerHandler(customerUseCase)
+	customerHandler := rest.NewCustomerHandler(customerUseCase, config)
 
 	productRepository := repository.NewProductRepository(db)
 	productUseCase := usecases.NewProductService(productRepository)

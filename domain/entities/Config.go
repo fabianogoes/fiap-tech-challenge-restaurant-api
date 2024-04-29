@@ -17,6 +17,7 @@ type Config struct {
 	DBUser      string
 	DBPassword  string
 	APIVersion  string
+	TokenSecret string
 }
 
 func NewConfig() (*Config, error) {
@@ -44,6 +45,7 @@ func NewConfig() (*Config, error) {
 	dbUser := strings.Replace(os.Getenv("DB_USERNAME"), "\r", "", -1)
 	dbPassword := strings.Replace(os.Getenv("DB_PASSWORD"), "\r", "", -1)
 	apiVersion := strings.Replace(os.Getenv("API_VERSION"), "\r", "", -1)
+	tokenSecret := strings.Replace(os.Getenv("TOKEN_SECRET"), "\r", "", -1)
 
 	fmt.Println("APP_ENV=" + appEnv)
 	fmt.Println("APP_PORT=" + appPort)
@@ -53,6 +55,7 @@ func NewConfig() (*Config, error) {
 	fmt.Println("DB_USERNAME=" + dbUser)
 	fmt.Println("DB_PASSWORD=" + dbPassword)
 	fmt.Println("API_VERSION=" + apiVersion)
+	fmt.Println("TOKEN_SECRET=" + tokenSecret)
 
 	return &Config{
 		Environment: appEnv,
@@ -63,5 +66,6 @@ func NewConfig() (*Config, error) {
 		DBUser:      dbUser,
 		DBPassword:  dbPassword,
 		APIVersion:  apiVersion,
+		TokenSecret: tokenSecret,
 	}, nil
 }
