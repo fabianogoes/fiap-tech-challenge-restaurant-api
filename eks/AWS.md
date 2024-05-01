@@ -8,7 +8,7 @@ How to deploy and test the application into AWS using EKS
 - [ ] EKS - create cluster `tech-challenge-f2` - wait for status `active`
 - [ ] EKS - create nodes - wait for status `active`
 - [ ] AWS cli - `aws sts get-caller-identity`
-- [ ] AWS cli - `aws eks update-kubeconfig --region us-west-2 --name tech-challenge-f2`
+- [ ] AWS cli - `aws eks update-kubeconfig --region us-east-1 --name tech_challenge_eks_cluster`
 
 ## Deploying the Application
 
@@ -18,6 +18,9 @@ How to deploy and test the application into AWS using EKS
 - [ ] `kubectl apply -f postgres-secret.yaml`
 - [ ] `kubectl apply -f postgres-deployment.yaml`
 - [ ] `kubectl apply -f postgres-service.yaml`
+- [ ] Encripting database host secrets
+  - [ ] Host: `echo 'tech-challenge-db.czj1nxgd8v9c.us-east-1.rds.amazonaws.com' | base64`
+  - [ ] Update `app-secret.yaml` with `DB_HOST` value
 - [ ] `kubectl apply -f app-secret.yaml`
 - [ ] `kubectl apply -f app-deployment.yaml`
 - [ ] `kubectl apply -f app-hpa.yaml`
@@ -43,5 +46,8 @@ How to deploy and test the application into AWS using EKS
 - [ ] AWS EKS - Delete Cluster
 - [ ] AWS Academy `End Lab`
 
+## References
+
+- [Encrypting Confidential Data at Rest](https://kubernetes.io/docs/tasks/administer-cluster/encrypt-data/)
 
 

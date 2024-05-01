@@ -40,3 +40,13 @@ type UpdateCustomerRequest struct {
 	Nome  string `json:"name"`
 	Email string `json:"email"`
 }
+
+type TokenRequest struct {
+	CPF string `json:"cpf"`
+}
+
+type TokenResponse struct {
+	AccessToken string `json:"accessToken"`
+	Type        string `json:"type"`
+	ExpiresAt   int64  `json:"expiresAt"`
+}

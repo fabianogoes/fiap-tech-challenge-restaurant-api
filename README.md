@@ -57,8 +57,8 @@ go version
 Preparing app
 
 ```shell
-git clone git@github.com:fabianogoes/fiap-tech-challenge.git
-cd fiap-techchallenge-fase2
+git clone git@github.com:fabianogoes/fiap-tech-challenge-restaurant-api.git
+cd fiap-tech-challenge-restaurant-api
 go mod tidy
 ````
 
@@ -106,9 +106,9 @@ http://localhost:8080/attendants
 
 ```shell
 docker login -u=fabianogoes
-docker build -t fabianogoes/fiap-challenge:2.0 .
-docker tag fabianogoes/fiap-challenge:2.0 fabianogoes/fiap-challenge:2.0
-docker push fabianogoes/fiap-challenge:2.0
+docker build -t fabianogoes/restaurant-api:3.20240426.1 .
+docker tag fabianogoes/restaurant-api:3.20240426.1 fabianogoes/restaurant-api:3.20240426.1
+docker push fabianogoes/restaurant-api:3.20240426.1
 ```
 
 ## Run Go test

@@ -144,7 +144,7 @@ func (h *OrderHandler) RemoveItemFromOrder(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusCreated, dto.ToOrderResponse(orderUpdated))
+	c.JSON(http.StatusAccepted, dto.ToOrderResponse(orderUpdated))
 }
 
 func (h *OrderHandler) GetOrderById(c *gin.Context) {

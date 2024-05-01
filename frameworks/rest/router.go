@@ -1,6 +1,8 @@
 package rest
 
-import "github.com/gin-gonic/gin"
+import (
+	"github.com/gin-gonic/gin"
+)
 
 type Router struct {
 	*gin.Engine
@@ -16,6 +18,7 @@ func NewRouter(
 
 	router.GET("/", Welcome)
 	router.GET("/health", Health)
+	router.GET("/env", Environment)
 
 	customers := router.Group("/customers")
 	{
@@ -25,6 +28,7 @@ func NewRouter(
 		customers.POST("/", customerHandler.CreateCustomer)
 		customers.PUT("/:id", customerHandler.UpdateCustomer)
 		customers.DELETE("/:id", customerHandler.DeleteCustomer)
+		customers.POST("/sign-in", customerHandler.SignIn)
 	}
 
 	attendants := router.Group("/attendants")

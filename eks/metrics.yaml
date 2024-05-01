@@ -6,7 +6,7 @@ metadata:
   name: metrics-server
   namespace: kube-system
 ---
-apiVersion: rbac.authorization.k8s.io/v1
+apiVersion: rbac.authorization.eks.io/v1
 kind: ClusterRole
 metadata:
   labels:
@@ -17,7 +17,7 @@ metadata:
   name: system:aggregated-metrics-reader
 rules:
   - apiGroups:
-      - metrics.k8s.io
+      - metrics.eks.io
     resources:
       - pods
       - nodes
@@ -26,7 +26,7 @@ rules:
       - list
       - watch
 ---
-apiVersion: rbac.authorization.k8s.io/v1
+apiVersion: rbac.authorization.eks.io/v1
 kind: ClusterRole
 metadata:
   labels:
@@ -46,7 +46,7 @@ rules:
       - list
       - watch
 ---
-apiVersion: rbac.authorization.k8s.io/v1
+apiVersion: rbac.authorization.eks.io/v1
 kind: RoleBinding
 metadata:
   labels:
@@ -54,7 +54,7 @@ metadata:
   name: metrics-server-auth-reader
   namespace: kube-system
 roleRef:
-  apiGroup: rbac.authorization.k8s.io
+  apiGroup: rbac.authorization.eks.io
   kind: Role
   name: extension-apiserver-authentication-reader
 subjects:
@@ -62,14 +62,14 @@ subjects:
     name: metrics-server
     namespace: kube-system
 ---
-apiVersion: rbac.authorization.k8s.io/v1
+apiVersion: rbac.authorization.eks.io/v1
 kind: ClusterRoleBinding
 metadata:
   labels:
     k8s-app: metrics-server
   name: metrics-server:system:auth-delegator
 roleRef:
-  apiGroup: rbac.authorization.k8s.io
+  apiGroup: rbac.authorization.eks.io
   kind: ClusterRole
   name: system:auth-delegator
 subjects:
@@ -77,14 +77,14 @@ subjects:
     name: metrics-server
     namespace: kube-system
 ---
-apiVersion: rbac.authorization.k8s.io/v1
+apiVersion: rbac.authorization.eks.io/v1
 kind: ClusterRoleBinding
 metadata:
   labels:
     k8s-app: metrics-server
   name: system:metrics-server
 roleRef:
-  apiGroup: rbac.authorization.k8s.io
+  apiGroup: rbac.authorization.eks.io
   kind: ClusterRole
   name: system:metrics-server
 subjects:
@@ -134,7 +134,7 @@ spec:
             - --kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname
             - --kubelet-use-node-status-port
             - --kubelet-insecure-tls
-          image: k8s.gcr.io/metrics-server/metrics-server:v0.4.2
+          image: eks.gcr.io/metrics-server/metrics-server:v0.4.2
           imagePullPolicy: IfNotPresent
           livenessProbe:
             failureThreshold: 3
@@ -170,14 +170,14 @@ spec:
         - emptyDir: {}
           name: tmp-dir
 ---
-apiVersion: apiregistration.k8s.io/v1
+apiVersion: apiregistration.eks.io/v1
 kind: APIService
 metadata:
   labels:
     k8s-app: metrics-server
   name: v1beta1.metrics.k8s.io
 spec:
-  group: metrics.k8s.io
+  group: metrics.eks.io
   groupPriorityMinimum: 100
   insecureSkipTLSVerify: true
   service:
