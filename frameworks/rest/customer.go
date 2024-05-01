@@ -176,7 +176,7 @@ func (h *CustomerHandler) SignIn(c *gin.Context) {
 
 	customer, err := h.UseCase.GetCustomerByCPF(request.CPF)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
+		c.JSON(http.StatusUnprocessableEntity, gin.H{
 			"error": err.Error(),
 		})
 	}
@@ -198,14 +198,14 @@ func (h *CustomerHandler) SignIn(c *gin.Context) {
 func generateToken(customer *entities.Customer, secret string) (*dto.TokenResponse, error) {
 	secretKey := []byte(secret)
 
-	expiresAt := time.Now().Add(time.Hour * 1).Unix() // Token expira em 1 hora
+	expiresAt := time.Now().Add(time.Hour * 6).Unix() // Token expira em 1 hora
 	claims := jwt.MapClaims{
-		"sub":   customer.Email,
+		"sub":   customer.CPF,      // (subject) Entidade à quem o token pertence, normalmente o ID do usuário
+		"iss":   "Restaurant API",  // (issuer) Emissor do token
+		"exp":   expiresAt,         // (expiration) Timestamp de quando o token irá expirar
+		"iat":   time.Now().Unix(), // (issued at) Timestamp de quando o token foi criado
 		"user":  customer.Name,
 		"email": customer.Email,
-		"exp":   expiresAt,
-		"iat":   time.Now().Unix(),
-		"iss":   "Restaurant Sign-in",
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
