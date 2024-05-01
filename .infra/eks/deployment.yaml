@@ -42,27 +42,27 @@ spec:
             - name: DB_HOST
               valueFrom:
                 secretKeyRef:
-                  name: postgres-secret
+                  name: app-secret
                   key: DB_HOST
             - name: DB_DATABASE
               valueFrom:
                 secretKeyRef:
-                  name: postgres-secret
+                  name: app-secret
                   key: POSTGRES_DB
             - name: DB_USERNAME
               valueFrom:
                 secretKeyRef:
-                  name: postgres-secret
+                  name: app-secret
                   key: POSTGRES_USER
             - name: DB_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: postgres-secret
+                  name: app-secret
                   key: POSTGRES_PASSWORD
             - name: TOKEN_SECRET
               valueFrom:
                 secretKeyRef:
-                  name: postgres-secret
+                  name: app-secret
                   key: TOKEN_SECRET
             - name: DB_PORT
               value: "5432"
