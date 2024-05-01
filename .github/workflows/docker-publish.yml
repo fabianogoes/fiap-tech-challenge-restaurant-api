@@ -66,4 +66,8 @@ jobs:
       - name: Set up Kubectl
         uses: azure/k8s-set-context@v1
         with:
-          kubeconfig: ${{ secrets.KUBECONFIG }}          
+          kubeconfig: ${{ secrets.KUBECONFIG }}     
+      - name: Deploy
+        run: |
+          kubectl apply -f eks/deployment.yaml
+          # kubectl apply -f kubernetes/service.yaml
