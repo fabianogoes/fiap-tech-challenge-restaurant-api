@@ -47,7 +47,7 @@ jobs:
         run: |
           calculatedSha=$(git rev-parse --short ${{ github.sha }})
           echo "::set-output name=short_sha::$calculatedSha"
-          echo "::set-output name=docker_tag::${{ env.DOCKER_HUB_NAMESPACE }}/${{ env.DOCKER_HUB_REPOSITORY }}:${{ steps.vars.outputs.short_sha }}"
+          echo "::set-output name=docker_tag::${{ env.DOCKER_HUB_NAMESPACE }}/${{ env.DOCKER_HUB_REPOSITORY }}:$calculatedSha"
       
       - name: Confirm git commit SHA output
         run: |
@@ -62,5 +62,3 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: ${{ steps.vars.outputs.docker_tag }}
-          labels: ${{ steps.vars.outputs.docker_tag }}
-      
