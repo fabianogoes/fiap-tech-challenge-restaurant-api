@@ -62,3 +62,8 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: ${{ steps.vars.outputs.docker_tag }}
+
+      - name: Set up Kubectl
+        uses: azure/k8s-set-context@v1
+        with:
+          kubeconfig: ${{ secrets.KUBECONFIG }}          
