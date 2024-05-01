@@ -41,14 +41,14 @@ jobs:
         uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
         with:
           images: fabianogoes/restaurant-api
-
+      
       - name: Set short git commit SHA
         id: vars
         run: |
           calculatedSha=$(git rev-parse --short ${{ github.sha }})
           echo "::set-output name=short_sha::$calculatedSha"
           echo "::set-output name=docker_tag::${{ env.DOCKER_HUB_NAMESPACE }}/${{ env.DOCKER_HUB_REPOSITORY }}:$calculatedSha"
-
+      
       - name: Confirm git commit SHA output
         run: |
           echo ${{ steps.vars.outputs.short_sha }}
@@ -78,7 +78,7 @@ jobs:
       - name: Set up Kubectl
         uses: azure/k8s-set-context@v1
         with:
-          kubeconfig: ${{ secrets.KUBECONFIG }}
+          kubeconfig: ${{ secrets.KUBECONFIG }}     
       - name: Deploy
         run: |
           kubectl cluster-info
