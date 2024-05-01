@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: restaurant-api
-          image: fabianogoes/restaurant-api:latest
+          image: fabianogoes/restaurant-api:1.1.1
           imagePullPolicy: Always
           ports:
             - containerPort: 8080

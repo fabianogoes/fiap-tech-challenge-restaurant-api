@@ -81,8 +81,12 @@ jobs:
           kubeconfig: ${{ secrets.KUBECONFIG }}     
       - name: Deploy EKS
         run: |
-          kubectl cluster-info
-          kubectl set image deployment/restaurant-api restaurant-api=${{ steps.vars.outputs.docker_tag }}
+          kubectl cluster-info              
+          sed -i "s|image:.*|image: ${{ steps.vars.outputs.docker_tag }}|g" eks/deployment.yaml
           kubectl apply -f eks/deployment.yaml
-          # kubectl apply -f kubernetes/service.yaml
+
+### References
+# kubectl apply -f kubernetes/service.yaml
+# IMAGE_TAG_OLD=$(kubectl get deployment my-deployment -o=jsonpath='{.spec.template.spec.containers[0].image}')
+# echo "::set-output name=image_tag_old::IMAGE_TAG_OLD"
                           
