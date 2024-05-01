@@ -15,8 +15,8 @@ on:
       - main
 
 env:
-  REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
+  DOCKER_HUB_NAMESPACE: fabianogoes
+  DOCKER_HUB_REPOSITORY: restaurant-api
 
 jobs:
   push_to_registry:
@@ -47,9 +47,12 @@ jobs:
         run: |
           calculatedSha=$(git rev-parse --short ${{ github.sha }})
           echo "::set-output name=short_sha::$calculatedSha"
+          echo "::set-output name=docker_tag::${{ env.DOCKER_HUB_NAMESPACE }}/${{ env.DOCKER_HUB_REPOSITORY }}:${{ steps.vars.outputs.short_sha }}"
       
       - name: Confirm git commit SHA output
-        run: echo ${{ steps.vars.outputs.short_sha }}
+        run: |
+          echo ${{ steps.vars.outputs.short_sha }}
+          echo ${{ steps.vars.outputs.docker_tag }}
 
       - name: Build and push Docker image
         id: push
@@ -58,22 +61,6 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: fabianogoes/restaurant-api:${{ steps.vars.outputs.short_sha }}
-          # tags: ${{ steps.meta.outputs.tags }}
-          # labels: ${{ steps.meta.outputs.labels }}
-
-      - name: Set and Retrieve Github ENV variables
-        shell: bash
-        run: |   
-          # retrieve these GitHub ENV variables
-          export DOCKER_IMAGE_TAG=fabianogoes/restaurant-api:${{ steps.vars.outputs.short_sha }}
-          echo $DOCKER_IMAGE_TAG
-      
-      
-      # - name: Generate artifact attestation
-      #   uses: actions/attest-build-provenance@v1
-      #   with:
-      #     subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME}}
-      #     subject-digest: ${{ steps.push.outputs.digest }}
-      #     push-to-registry: true
+          tags: ${{ steps.vars.outputs.docker_tag }}
+          labels: ${{ steps.vars.outputs.docker_tag }}
       
