@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: restaurant-api
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: restaurant-api
@@ -71,6 +71,6 @@ spec:
             - name: APP_PORT
               value: ":8080"
             - name: API_VERSION
-              value: "2024.5.1.2"
+              value: "2024.5.1.3"
       restartPolicy: Always
 
