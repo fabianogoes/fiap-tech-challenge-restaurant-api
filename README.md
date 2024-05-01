@@ -1,6 +1,8 @@
 # FIAP challenge food
 
-> FIAP pós Software Architecture - Tech Challenge projeto de um Restaurante `gofood`
+> FIAP pós Software Architecture - Tech Challenge projeto de um Restaurante
+> 
+> [![CI/CD](https://github.com/fabianogoes/fiap-tech-challenge-restaurant-api/actions/workflows/deploy.yml/badge.svg)](https://github.com/fabianogoes/fiap-tech-challenge-restaurant-api/actions/workflows/deploy.yml)
 
 Table of context
 - [FIAP challenge food](#fiap-challenge-food)

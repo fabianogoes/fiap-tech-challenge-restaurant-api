@@ -8,7 +8,7 @@ repository_name = "fabianogoes/restaurant-api"
 max_tags = 3
 
 # Autenticação no Docker Hub
-client = docker.DockerClient(base_url='https://hub.docker.com/v2/')
+client = docker.DockerClient(base_url='unix://var/run/docker.sock')  # Use a API local do Docker
 client.login(username=os.environ['DOCKER_USERNAME'], password=os.environ['DOCKER_PASSWORD'])
 
 # Obter lista de tags do repositório
@@ -19,7 +19,7 @@ tags.sort(key=lambda x: datetime.strptime(x['last_updated'], "%Y-%m-%dT%H:%M:%S.
 
 # Excluir tags extras
 for tag in tags[max_tags:]:
-    client.api.delete(f"/repositories/{repository_name}/tags/{tag['name']}")
+    client.api.delete(f"/v2/repositories/{repository_name}/tags/{tag['name']}")
 
 print(f"As seguintes tags foram mantidas em {repository_name}:")
 for tag in tags[:max_tags]:
