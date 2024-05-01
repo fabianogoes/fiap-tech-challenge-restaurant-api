@@ -78,12 +78,13 @@ jobs:
       - name: Set up Kubectl
         uses: azure/k8s-set-context@v1
         with:
-          kubeconfig: ${{ secrets.KUBECONFIG }}     
+          kubeconfig: ${{ secrets.KUBECONFIG }}
+
       - name: Deploy EKS
         run: |
           kubectl cluster-info              
-          sed -i "s|image:.*|image: ${{ steps.vars.outputs.docker_tag }}|g" eks/deployment.yaml
-          kubectl apply -f eks/deployment.yaml
+          sed -i "s|image:.*|image: ${{ steps.vars.outputs.docker_tag }}|g" .infra/eks/deployment.yaml
+          kubectl apply -f .infra/eks/deployment.yaml
 
 ### References
 # kubectl apply -f kubernetes/service.yaml
