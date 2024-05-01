@@ -3,7 +3,7 @@ from datetime import datetime
 import os  # Importe a biblioteca os para acessar variáveis de ambiente
 
 # Nome do repositório no Docker Hub
-repository_name = "sua-conta/seu-repositorio"
+repository_name = "fabianogoes/restaurant-api"
 
 # Número máximo de tags a serem mantidas
 max_tags = 5
