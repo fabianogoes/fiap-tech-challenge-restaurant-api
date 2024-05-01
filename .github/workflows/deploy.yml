@@ -85,9 +85,9 @@ jobs:
         with:
           kubeconfig: ${{ secrets.KUBECONFIG }}
 
-      - name: EKS apply metrics
-        run: |
-          kubectl apply -f .infra/eks/metrics.yaml
+#      - name: EKS apply metrics
+#        run: |
+#          kubectl apply -f .infra/eks/metrics.yaml
 
       - name: EKS apply secrets
         run: |
