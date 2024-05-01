@@ -7,6 +7,11 @@
 # To get a newer version, you will need to update the SHA.
 # You can also reference a tag or branch, but the action may change without warning.
 
+### References
+# kubectl apply -f kubernetes/service.yaml
+# IMAGE_TAG_OLD=$(kubectl get deployment my-deployment -o=jsonpath='{.spec.template.spec.containers[0].image}')
+# echo "::set-output name=image_tag_old::IMAGE_TAG_OLD"
+
 name: Deploy
 
 on:
@@ -89,9 +94,3 @@ jobs:
           kubectl apply -f .infra/eks/deployment.yaml
 #          kubectl apply -f .infra/eks/hpa.yaml
           kubectl apply -f .infra/eks/service.yaml
-
-### References
-# kubectl apply -f kubernetes/service.yaml
-# IMAGE_TAG_OLD=$(kubectl get deployment my-deployment -o=jsonpath='{.spec.template.spec.containers[0].image}')
-# echo "::set-output name=image_tag_old::IMAGE_TAG_OLD"
-                          
