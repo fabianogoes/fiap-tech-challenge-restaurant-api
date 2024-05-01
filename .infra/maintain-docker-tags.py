@@ -1,4 +1,5 @@
 import docker
+import os
 from datetime import datetime
 
 # Nome do repositório no Docker Hub
