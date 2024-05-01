@@ -40,7 +40,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
         with:
-          images: fabianogoes/restaurant-api
+          images: "${{ env.DOCKER_HUB_NAMESPACE }}/${{ env.DOCKER_HUB_REPOSITORY }}"
       
       - name: Set short git commit SHA
         id: vars
@@ -82,9 +82,13 @@ jobs:
 
       - name: Deploy EKS
         run: |
-          kubectl cluster-info              
+          kubectl cluster-info             
+          kubectl apply -f .infra/eks/metrics.yaml
+          kubectl apply -f .infra/eks/secrets.yaml
           sed -i "s|image:.*|image: ${{ steps.vars.outputs.docker_tag }}|g" .infra/eks/deployment.yaml
           kubectl apply -f .infra/eks/deployment.yaml
+          kubectl apply -f .infra/eks/hpa.yaml
+          kubectl apply -f .infra/eks/service.yaml
 
 ### References
 # kubectl apply -f kubernetes/service.yaml
