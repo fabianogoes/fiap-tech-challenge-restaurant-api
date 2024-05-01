@@ -7,6 +7,11 @@
 # To get a newer version, you will need to update the SHA.
 # You can also reference a tag or branch, but the action may change without warning.
 
+### References
+# kubectl apply -f kubernetes/service.yaml
+# IMAGE_TAG_OLD=$(kubectl get deployment my-deployment -o=jsonpath='{.spec.template.spec.containers[0].image}')
+# echo "::set-output name=image_tag_old::IMAGE_TAG_OLD"
+
 name: Deploy
 
 on:
@@ -20,7 +25,7 @@ env:
 
 jobs:
   push_to_registry:
-    name: Push Docker image to Docker Hub
+    name: Push Docker image and Deploy to EKS
     runs-on: ubuntu-latest
     permissions:
       packages: write
@@ -40,7 +45,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
         with:
-          images: fabianogoes/restaurant-api
+          images: "${{ env.DOCKER_HUB_NAMESPACE }}/${{ env.DOCKER_HUB_REPOSITORY }}"
       
       - name: Set short git commit SHA
         id: vars
@@ -78,11 +83,25 @@ jobs:
       - name: Set up Kubectl
         uses: azure/k8s-set-context@v1
         with:
-          kubeconfig: ${{ secrets.KUBECONFIG }}     
-      - name: Deploy
+          kubeconfig: ${{ secrets.KUBECONFIG }}
+
+#      - name: EKS apply metrics
+#        run: |
+#          kubectl apply -f .infra/eks/metrics.yaml
+
+      - name: EKS apply secrets
         run: |
-          kubectl cluster-info
-          kubectl set image deployment/restaurant-api restaurant-api=${{ steps.vars.outputs.docker_tag }}
-          kubectl apply -f eks/deployment.yaml
-          # kubectl apply -f kubernetes/service.yaml
-                          
+          kubectl apply -f .infra/eks/secrets.yaml          
+
+      - name: EKS apply deployment
+        run: |
+          sed -i "s|image:.*|image: ${{ steps.vars.outputs.docker_tag }}|g" .infra/eks/deployment.yaml
+          kubectl apply -f .infra/eks/deployment.yaml
+
+      - name: EKS apply hpa
+        run: |
+          kubectl apply -f .infra/eks/hpa.yaml
+
+      - name: EKS apply service
+        run: |
+          kubectl apply -f .infra/eks/service.yaml
