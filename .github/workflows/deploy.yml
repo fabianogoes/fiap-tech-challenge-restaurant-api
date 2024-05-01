@@ -83,11 +83,11 @@ jobs:
       - name: Deploy EKS
         run: |
           kubectl cluster-info             
-          kubectl apply -f .infra/eks/metrics.yaml
+#          kubectl apply -f .infra/eks/metrics.yaml
           kubectl apply -f .infra/eks/secrets.yaml
           sed -i "s|image:.*|image: ${{ steps.vars.outputs.docker_tag }}|g" .infra/eks/deployment.yaml
           kubectl apply -f .infra/eks/deployment.yaml
-          kubectl apply -f .infra/eks/hpa.yaml
+#          kubectl apply -f .infra/eks/hpa.yaml
           kubectl apply -f .infra/eks/service.yaml
 
 ### References
