@@ -39,13 +39,13 @@ func NewConfig() (*Config, error) {
 
 	appEnv := strings.Replace(os.Getenv("APP_ENV"), "\r", "", -1)
 	appPort := strings.Replace(os.Getenv("APP_PORT"), "\r", "", -1)
-	dbHost := strings.Replace(os.Getenv("DB_HOST"), "\r", "", -1)
+	dbHost := strings.Replace(strings.Replace(os.Getenv("DB_HOST"), "\r", "", -1), "\n", "", -1)
 	dbPort := strings.Replace(os.Getenv("DB_PORT"), "\r", "", -1)
-	dbName := strings.Replace(os.Getenv("DB_DATABASE"), "\r", "", -1)
-	dbUser := strings.Replace(os.Getenv("DB_USERNAME"), "\r", "", -1)
-	dbPassword := strings.Replace(os.Getenv("DB_PASSWORD"), "\r", "", -1)
+	dbName := strings.Replace(strings.Replace(os.Getenv("DB_DATABASE"), "\r", "", -1), "\n", "", -1)
+	dbUser := strings.Replace(strings.Replace(os.Getenv("DB_USERNAME"), "\r", "", -1), "\n", "", -1)
+	dbPassword := strings.Replace(strings.Replace(os.Getenv("DB_PASSWORD"), "\r", "", -1), "\n", "", -1)
 	apiVersion := strings.Replace(os.Getenv("API_VERSION"), "\r", "", -1)
-	tokenSecret := strings.Replace(os.Getenv("TOKEN_SECRET"), "\r", "", -1)
+	tokenSecret := strings.Replace(strings.Replace(os.Getenv("TOKEN_SECRET"), "\r", "", -1), "\n", "", -1)
 
 	fmt.Println("APP_ENV=" + appEnv)
 	fmt.Println("APP_PORT=" + appPort)
