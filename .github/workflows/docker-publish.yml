@@ -61,6 +61,13 @@ jobs:
           tags: fabianogoes/restaurant-api:${{ steps.vars.outputs.short_sha }}
           # tags: ${{ steps.meta.outputs.tags }}
           # labels: ${{ steps.meta.outputs.labels }}
+
+      - name: Set and Retrieve Github ENV variables
+        shell: bash
+        run: |   
+          # retrieve these GitHub ENV variables
+          export DOCKER_IMAGE_TAG=fabianogoes/restaurant-api:${{ steps.vars.outputs.short_sha }}
+          echo $DOCKER_IMAGE_TAG
       
       
       # - name: Generate artifact attestation
