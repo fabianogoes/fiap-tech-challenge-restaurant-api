@@ -82,7 +82,7 @@ jobs:
       - name: Deploy
         run: |
           kubectl cluster-info
-          kubectl set image eks/deployment.yaml restaurant-api=${{ steps.vars.outputs.docker_tag }}
+          kubectl set image deployment/restaurant-api restaurant-api=${{ steps.vars.outputs.docker_tag }}
           kubectl apply -f eks/deployment.yaml
           # kubectl apply -f kubernetes/service.yaml
           
