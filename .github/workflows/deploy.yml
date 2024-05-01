@@ -20,7 +20,7 @@ env:
 
 jobs:
   push_to_registry:
-    name: Push Docker image to Docker Hub
+    name: Push Docker image and Deploy to EKS
     runs-on: ubuntu-latest
     permissions:
       packages: write
@@ -79,7 +79,7 @@ jobs:
         uses: azure/k8s-set-context@v1
         with:
           kubeconfig: ${{ secrets.KUBECONFIG }}     
-      - name: Deploy
+      - name: Deploy EKS
         run: |
           kubectl cluster-info
           kubectl set image deployment/restaurant-api restaurant-api=${{ steps.vars.outputs.docker_tag }}
