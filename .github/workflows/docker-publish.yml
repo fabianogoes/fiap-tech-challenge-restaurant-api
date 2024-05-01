@@ -51,14 +51,14 @@ jobs:
       - name: Confirm git commit SHA output
         run: echo ${{ steps.vars.outputs.short_sha }}
 
-      # - name: Build and push Docker image
-      #   id: push
-      #   uses: docker/build-push-action@v5
-      #   with:
-      #     context: .
-      #     file: ./Dockerfile
-      #     push: true
-      #     tags: fabianogoes/restaurant-api:latest
+      - name: Build and push Docker image
+        id: push
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: fabianogoes/restaurant-api:${{ steps.vars.outputs.short_sha }}
           # tags: ${{ steps.meta.outputs.tags }}
           # labels: ${{ steps.meta.outputs.labels }}
       
