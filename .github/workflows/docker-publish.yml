@@ -63,11 +63,25 @@ jobs:
           push: true
           tags: ${{ steps.vars.outputs.docker_tag }}
 
+      - name: Configure AWS Credentials for GitHub Actions
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: us-east-1
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+          lambda_layer_publish: true
+      - name: AWS get-caller-identity
+        run: |
+          aws sts get-caller-identity
+
       - name: Set up Kubectl
         uses: azure/k8s-set-context@v1
         with:
           kubeconfig: ${{ secrets.KUBECONFIG }}
       - name: Deploy
         run: |
+          kubectl cluster-info
+          kubectl set image eks/deployment.yaml restaurant-api=${{ steps.vars.outputs.docker_tag }}
           kubectl apply -f eks/deployment.yaml
           # kubectl apply -f kubernetes/service.yaml
