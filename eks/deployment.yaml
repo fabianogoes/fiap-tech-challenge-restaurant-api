@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: restaurant-api
-          image: fabianogoes/restaurant-api:3.20240429.1
+          image: fabianogoes/restaurant-api:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
@@ -65,7 +65,7 @@ spec:
             - name: DB_PASSWORD
               value: "tech_challenge_pwd"
             - name: API_VERSION
-              value: "2024.5.1.1"
+              value: "2024.5.1.2"
             - name: APP_ENV
               value: "production"
             - name: APP_PORT
