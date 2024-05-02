@@ -28,7 +28,7 @@ Table of context
 - `frameworks/rest/dto`: diretório que contém objetos/modelo de request e response.
 - `frameworks/repository`: diretório que contém adaptadores de banco de dados exemplo para PostgreSQL.
 - `frameworks/repository/dbo`: diretório que contém objetos/entidades de banco de dados.
-- `k8s`: diretório com arquivos kubernetes
+- `.infra`: diretório que contém arquivos de infrainstrutura
 
 ## Stack
 
@@ -102,7 +102,7 @@ Para verificar a **lista de Atendentes** pode ser usado a API:
 http://localhost:8080/attendants
 ```
 
-[Collection de Teste que pode ser importada no Postman](./__utils__/FIAP-GoFood.postman_collection.json)
+[Collection de Teste que pode ser importada no Postman](./__utils__/fiap-tech-challenge-Insomnia.json)
 
 ## Docker Commands
 
