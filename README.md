@@ -11,6 +11,7 @@ Table of context
   - [Development](#development)
     - [Running](#running)
   - [Testing using Docker/Docker Compose](#testing-using-dockerdocker-compose)
+    - [Pre-registered data](#pre-registered-data)
   - [Docker Commands](#docker-commands)
   - [Run Go test](#run-go-test)
 
@@ -29,6 +30,8 @@ Table of context
 - `frameworks/repository`: diretório que contém adaptadores de banco de dados exemplo para PostgreSQL.
 - `frameworks/repository/dbo`: diretório que contém objetos/entidades de banco de dados.
 - `.infra`: diretório que contém arquivos de infrainstrutura
+- `.infra/kubernetes`: diretório que contém os manifestos kubernetes
+- `.infra/terraform`: diretório que contém os arquivos terraform para provisionar a infra do projeto
 
 ## Stack
 
