@@ -31,7 +31,7 @@ func NewConfig() (*Config, error) {
 		DBName:      getEnv("DB_DATABASE", "db"),
 		DBUser:      getEnv("DB_USERNAME", "usr"),
 		DBPassword:  getEnv("DB_PASSWORD", "pwd"),
-		APIVersion:  getEnv("API_VERSION", "v1"),
+		APIVersion:  getEnv("API_VERSION", "2024.5.8.1"),
 		TokenSecret: getEnv("TOKEN_SECRET", "123"),
 	}
 
