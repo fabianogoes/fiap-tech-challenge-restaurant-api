@@ -25,7 +25,7 @@ env:
   EKS_DIRECTORY: .infra/kubernetes/
 
 jobs:
-  push_to_registry:
+  deploy:
     name: Push Docker image and Deploy to EKS
     runs-on: ubuntu-latest
     permissions:
