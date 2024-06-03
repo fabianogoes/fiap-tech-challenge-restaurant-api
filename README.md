@@ -1,6 +1,8 @@
 # FIAP challenge food
 
-> FIAP pós Software Architecture - Tech Challenge projeto de um Restaurante `gofood`
+> FIAP pós Software Architecture - Tech Challenge projeto de um Restaurante
+> 
+> [![CI/CD](https://github.com/fabianogoes/fiap-tech-challenge-restaurant-api/actions/workflows/deploy.yml/badge.svg)](https://github.com/fabianogoes/fiap-tech-challenge-restaurant-api/actions/workflows/deploy.yml)
 
 Table of context
 - [FIAP challenge food](#fiap-challenge-food)
@@ -9,27 +11,27 @@ Table of context
   - [Development](#development)
     - [Running](#running)
   - [Testing using Docker/Docker Compose](#testing-using-dockerdocker-compose)
-    - [Como testar usando o `curl`](#como-testar-usando-o-curl)
-    - [Using HTTP Client Postman or Insomnia](#using-http-client-postman-or-insomnia)
+    - [Pre-registered data](#pre-registered-data)
   - [Docker Commands](#docker-commands)
   - [Run Go test](#run-go-test)
-  - [Referencias importantes](#referencias-importantes)
 
 ---
 
 ## Project Architecture by Clean Architecture
 
-- `app/web`: diretório para os principais pontos de entrada, injeção dependência ou comandos do aplicativo. O subdiretório web contém o ponto de entrada principal a API REST.
+- `app/web`: diretório para os principais pontos de entrada, injeção dependência ou comandos do aplicativo. O subdiretório ‘web’ contém o ponto de entrada principal a API REST.
 - `domain/entities`: diretório que contém modelos/entidades de domínio que representam os principais conceitos de negócios.
 - `domain/usecases`: diretório que contém Serviços de Domínio ou Use Cases.
-- `domain/ports`: diretório que contém interfaces ou contratos definidos que os adaptadores devem seguir.
+- `domain/ports`: diretório que contém ‘interfaces’ ou contratos definidos que os adaptadores devem seguir.
 - `adapters/payment`: adaptador para meio de pagamento externo.
 - `adapters/delivery`: adaptador para meio de entrega externo.
 - `frameworks/rest`: diretório que contém os controllers e manipulador de requisições REST.
 - `frameworks/rest/dto`: diretório que contém objetos/modelo de request e response.
 - `frameworks/repository`: diretório que contém adaptadores de banco de dados exemplo para PostgreSQL.
 - `frameworks/repository/dbo`: diretório que contém objetos/entidades de banco de dados.
-- `k8s`: diretório com arquivos kubernetes
+- `.infra`: diretório que contém arquivos de infrainstrutura
+- `.infra/kubernetes`: diretório que contém os manifestos kubernetes
+- `.infra/terraform`: diretório que contém os arquivos terraform para provisionar a infra do projeto
 
 ## Stack
 
@@ -51,15 +53,19 @@ Dependencies
 
 - [Go Installation](https://go.dev/doc/install)
 
-> Check for go version 1.21.3
+Check for go version 1.21.3
 
 ```shell
 go version
 ```
 
-- `git clone https://github.com/fabianogoes/fiap-techchallenge-fase2.git`
-- `cd fiap-techchallenge-fase2`
-- `go mod tidy`
+Preparing app
+
+```shell
+git clone git@github.com:fabianogoes/fiap-tech-challenge-restaurant-api.git
+cd fiap-tech-challenge-restaurant-api
+go mod tidy
+````
 
 ### Running
 
@@ -78,33 +84,36 @@ curl --request GET --url http://localhost:8080/health
 {"status":"UP"}
 ```
 
-> Quando a app subir será inserido dados necessários para testar a criação de pedidos 
+### Pre-registered data
 
-| Atentente ID  | Cliente CPF | Produto ID        |
-|---------------|-------------|-------------------|
-| 1             | 15204180001 | 1 (Big Lanche)    |
-|               |             | 6 (Coca-Cola)     |
-|               |             | 22 (Batata Frita) |
+Quando a ‘app’ subir será inserido dados necessários para testar a criação de pedidos 
 
-> - Para verificar a **lista de produtos** pode ser usado a API: `http://localhost:8080/products`
-> - Para verificar a **lista de clientes** pode ser usado a API: `http://localhost:8080/customers`
-> - Para verificar a **lista de Atendentes** pode ser usado a API: `http://localhost:8080/attendants`
+Para verificar a **lista de produtos** pode ser usado a API:
 
-### Como testar usando o `curl`
+```shell
+http://localhost:8080/products
+```
 
-[Veja o documento](./__utils__/doc/entregavel-how-to-test-challenge.md)
+Para verificar a **lista de clientes** pode ser usado a API:
 
-### Using HTTP Client Postman or Insomnia
+```shell
+http://localhost:8080/customers
+```
 
-[Collection de Teste que pode ser importada no Postman](./__utils__/FIAP-GoFood.postman_collection.json)
+Para verificar a **lista de Atendentes** pode ser usado a API: 
+```shell
+http://localhost:8080/attendants
+```
+
+[Collection de Teste que pode ser importada no Postman](./__utils__/fiap-tech-challenge-Insomnia.json)
 
 ## Docker Commands
 
 ```shell
 docker login -u=fabianogoes
-docker build -t fabianogoes/fiap-challenge:2.0 .
-docker tag fabianogoes/fiap-challenge:2.0 fabianogoes/fiap-challenge:2.0
-docker push fabianogoes/fiap-challenge:2.0
+docker build -t fabianogoes/restaurant-api:3.20240426.1 .
+docker tag fabianogoes/restaurant-api:3.20240426.1 fabianogoes/restaurant-api:3.20240426.1
+docker push fabianogoes/restaurant-api:3.20240426.1
 ```
 
 ## Run Go test
@@ -112,14 +121,6 @@ docker push fabianogoes/fiap-challenge:2.0
 ```shell
 go test -v ./...
 ```
-
-## Referencias importantes
-
-- [Documento PDF entegável de como testar a API](./__utils__/doc/entregavel-how-to-test-challenge.pdf)
-- [Documentação DDD Miro](https://miro.com/app/board/uXjVNpDpixg=/?share_link_id=459651604667)
-- [Tech Challenge - Entregáveis fase 1](./__utils__/doc/EntragaFase1.md)
-- [Como Testar usando `curl`](./__utils__/doc/ComoTestar.md)
-- [Collection de Teste que pode ser importada no Insomnia ou Postman](./__utils__/Insomnia_collection_test.json)
 
 [0]: https://go.dev/
 [1]: https://gin-gonic.com/

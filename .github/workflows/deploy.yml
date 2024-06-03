@@ -1,0 +1,103 @@
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
+# GitHub recommends pinning actions to a commit SHA.
+# To get a newer version, you will need to update the SHA.
+# You can also reference a tag or branch, but the action may change without warning.
+
+### References
+# kubectl apply -f kubernetes/service.yaml
+# IMAGE_TAG_OLD=$(kubectl get deployment my-deployment -o=jsonpath='{.spec.template.spec.containers[0].image}')
+# echo "::set-output name=image_tag_old::IMAGE_TAG_OLD"
+
+name: Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  DOCKER_HUB_REPOSITORY: restaurant-api
+  INFRA_DIRECTORY: .infra/
+  EKS_DIRECTORY: .infra/kubernetes/
+
+jobs:
+  deploy:
+    name: Push Docker image and Deploy to EKS
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read
+      attestations: write
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v4
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@f4ef78c080cd8ba55a85445d5b36e214a81df20a
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
+        with:
+          images: "${{ secrets.DOCKER_USERNAME }}/${{ env.DOCKER_HUB_REPOSITORY }}"
+      
+      - name: Set short git commit SHA
+        id: vars
+        run: |
+          calculatedSha=$(git rev-parse --short ${{ github.sha }})
+          echo "::set-output name=docker_tag::${{ secrets.DOCKER_USERNAME }}/${{ env.DOCKER_HUB_REPOSITORY }}:$calculatedSha"
+      
+      - name: Confirm git commit SHA output
+        run: |
+          echo ${{ steps.vars.outputs.short_sha }}
+          echo ${{ steps.vars.outputs.docker_tag }}
+
+      - name: Build and push Docker image
+        id: push
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ${{ steps.vars.outputs.docker_tag }}
+
+      - name: Configure AWS Credentials for GitHub Actions
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: ${{ secrets.AWS_REGION }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+          lambda_layer_publish: true
+      - name: AWS get-caller-identity
+        run: |
+          aws sts get-caller-identity
+
+      - name: Set up Kubectl
+        uses: azure/k8s-set-context@v1
+        with:
+          kubeconfig: ${{ secrets.KUBECONFIG }}
+
+      - name: EKS apply secrets
+        run: |
+          kubectl apply -f ${{ env.EKS_DIRECTORY }}secrets.yaml          
+
+      - name: EKS apply deployment
+        run: |
+          sed -i "s|image:.*|image: ${{ steps.vars.outputs.docker_tag }}|g" ${{ env.EKS_DIRECTORY }}deployment.yaml
+          kubectl apply -f ${{ env.EKS_DIRECTORY }}deployment.yaml
+
+      - name: EKS apply hpa
+        run: |
+          kubectl apply -f ${{ env.EKS_DIRECTORY }}hpa.yaml
+
+      - name: EKS apply service
+        run: |
+          kubectl apply -f ${{ env.EKS_DIRECTORY }}service.yaml

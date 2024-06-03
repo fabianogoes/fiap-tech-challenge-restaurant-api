@@ -1,0 +1,37 @@
+name: CI/CD
+on:
+  push:
+    branches:
+      - main
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'       
+      - name: Configure AWS Credentials for GitHub Actions
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: us-east-1
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+          lambda_layer_publish: true
+      - name: AWS get-caller-identity
+        run: |
+          aws sts get-caller-identity
+      - name: Build
+        run: |
+          python3 -m venv .venv
+          source .venv/bin/activate
+          pip install -r requirements.txt
+          cp -r .venv/lib/python3.10/site-packages/jwt ./jwt          
+          cp -r .venv/lib/python3.10/site-packages/dotenv ./dotenv   
+          cp -r .venv/lib/python3.10/site-packages/dotenv ./boto3          
+          zip -r lambda_function.zip jwt/ dotenv/ boto3/ .env lambda_function.py
+      - name: Deploy
+        run: |
+          aws lambda update-function-code --function-name fiap-tech-challenge-authorizer-lambda --zip-file fileb://./lambda_function.zip          

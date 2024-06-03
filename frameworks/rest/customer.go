@@ -2,20 +2,27 @@ package rest
 
 import (
 	"fmt"
+	"github.com/fabianogoes/fiap-challenge/domain/entities"
 	"github.com/fabianogoes/fiap-challenge/domain/ports"
 	"github.com/fabianogoes/fiap-challenge/frameworks/rest/dto"
 	"net/http"
 	"strconv"
+	"time"
 
+	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 )
 
 type CustomerHandler struct {
 	UseCase ports.CustomerUseCasePort
+	Config  *entities.Config
 }
 
-func NewCustomerHandler(useCase ports.CustomerUseCasePort) *CustomerHandler {
-	return &CustomerHandler{useCase}
+func NewCustomerHandler(useCase ports.CustomerUseCasePort, config *entities.Config) *CustomerHandler {
+	return &CustomerHandler{
+		UseCase: useCase,
+		Config:  config,
+	}
 }
 
 func (h *CustomerHandler) GetCustomers(c *gin.Context) {
@@ -156,4 +163,61 @@ func (h *CustomerHandler) DeleteCustomer(c *gin.Context) {
 	c.JSON(http.StatusNoContent, gin.H{
 		"message": response,
 	})
+}
+
+func (h *CustomerHandler) SignIn(c *gin.Context) {
+	var err error
+	var request dto.TokenRequest
+	if err := c.ShouldBindJSON(&request); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+	}
+
+	customer, err := h.UseCase.GetCustomerByCPF(request.CPF)
+	if err != nil {
+		c.JSON(http.StatusUnprocessableEntity, gin.H{
+			"error": err.Error(),
+		})
+	}
+
+	tokenResponse, err := generateToken(customer, h.Config.TokenSecret)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"accessToken": tokenResponse.AccessToken,
+		"type":        tokenResponse.Type,
+		"exp":         tokenResponse.ExpiresAt,
+	})
+}
+
+func generateToken(customer *entities.Customer, secret string) (*dto.TokenResponse, error) {
+	secretKey := []byte(secret)
+
+	expiresAt := time.Now().Add(time.Hour * 6).Unix() // Token expira em 1 hora
+	claims := jwt.MapClaims{
+		"sub":   customer.CPF,      // (subject) Entidade à quem o token pertence, normalmente o ID do usuário
+		"iss":   "Restaurant API",  // (issuer) Emissor do token
+		"exp":   expiresAt,         // (expiration) Timestamp de quando o token irá expirar
+		"iat":   time.Now().Unix(), // (issued at) Timestamp de quando o token foi criado
+		"user":  customer.Name,
+		"email": customer.Email,
+	}
+
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	signedToken, err := token.SignedString(secretKey)
+	if err != nil {
+		fmt.Println("Erro ao assinar o token:", err)
+		return nil, err
+	}
+
+	return &dto.TokenResponse{
+		AccessToken: signedToken,
+		Type:        "Bearer",
+		ExpiresAt:   expiresAt,
+	}, nil
 }

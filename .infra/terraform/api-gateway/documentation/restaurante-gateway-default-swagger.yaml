@@ -1,0 +1,253 @@
+---
+swagger: "2.0"
+info:
+  version: "2024-05-01T14:16:51Z"
+  title: "restaurante-gateway"
+host: "4m5ipmqfdg.execute-api.us-east-1.amazonaws.com"
+basePath: "/default"
+schemes:
+- "https"
+paths:
+  /:
+    get:
+      produces:
+      - "application/json"
+      responses:
+        "200":
+          description: "200 response"
+          schema:
+            $ref: "#/definitions/Empty"
+  /env:
+    get:
+      produces:
+      - "application/json"
+      responses:
+        "200":
+          description: "200 response"
+          schema:
+            $ref: "#/definitions/Empty"
+      security:
+      - restaurant-gateway-auth: []
+  /health:
+    get:
+      produces:
+      - "application/json"
+      responses:
+        "200":
+          description: "200 response"
+          schema:
+            $ref: "#/definitions/Empty"
+  /orders:
+    post:
+      produces:
+      - "application/json"
+      responses:
+        "200":
+          description: "200 response"
+          schema:
+            $ref: "#/definitions/Empty"
+      security:
+      - restaurant-gateway-auth: []
+  /orders/{id}:
+    get:
+      produces:
+      - "application/json"
+      parameters:
+      - name: "authorizationToken"
+        in: "header"
+        required: true
+        type: "string"
+      - name: "id"
+        in: "path"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "200 response"
+          schema:
+            $ref: "#/definitions/Empty"
+      security:
+      - restaurant-gateway-auth: []
+  /orders/{id}/cancel:
+    put:
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "200 response"
+          schema:
+            $ref: "#/definitions/Empty"
+      security:
+      - restaurant-gateway-auth: []
+  /orders/{id}/confirmation:
+    put:
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "200 response"
+          schema:
+            $ref: "#/definitions/Empty"
+      security:
+      - restaurant-gateway-auth: []
+  /orders/{id}/delivered:
+    put:
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "200 response"
+          schema:
+            $ref: "#/definitions/Empty"
+      security:
+      - restaurant-gateway-auth: []
+  /orders/{id}/in-preparation:
+    put:
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "200 response"
+          schema:
+            $ref: "#/definitions/Empty"
+      security:
+      - restaurant-gateway-auth: []
+  /orders/{id}/item:
+    post:
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "200 response"
+          schema:
+            $ref: "#/definitions/Empty"
+      security:
+      - restaurant-gateway-auth: []
+  /orders/{id}/item/{idItem}:
+    delete:
+      produces:
+      - "application/json"
+      parameters:
+      - name: "idItem"
+        in: "path"
+        required: true
+        type: "string"
+      - name: "id"
+        in: "path"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "200 response"
+          schema:
+            $ref: "#/definitions/Empty"
+      security:
+      - restaurant-gateway-auth: []
+  /orders/{id}/payment:
+    put:
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "200 response"
+          schema:
+            $ref: "#/definitions/Empty"
+      security:
+      - restaurant-gateway-auth: []
+  /orders/{id}/payment/webhook:
+    put:
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "200 response"
+          schema:
+            $ref: "#/definitions/Empty"
+      security:
+      - restaurant-gateway-auth: []
+  /orders/{id}/ready-for-delivery:
+    put:
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "200 response"
+          schema:
+            $ref: "#/definitions/Empty"
+      security:
+      - restaurant-gateway-auth: []
+  /orders/{id}/sent-for-delivery:
+    put:
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "200 response"
+          schema:
+            $ref: "#/definitions/Empty"
+      security:
+      - restaurant-gateway-auth: []
+  /sign-in:
+    post:
+      produces:
+      - "application/json"
+      responses:
+        "200":
+          description: "200 response"
+          schema:
+            $ref: "#/definitions/Empty"
+securityDefinitions:
+  restaurant-gateway-auth:
+    type: "apiKey"
+    name: "authorizationToken"
+    in: "header"
+    x-amazon-apigateway-authtype: "custom"
+definitions:
+  Empty:
+    type: "object"
+    title: "Empty Schema"
