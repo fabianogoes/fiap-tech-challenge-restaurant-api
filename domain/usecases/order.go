@@ -130,7 +130,7 @@ func (os *OrderService) PaymentOrder(order *entities.Order, paymentMethod string
 		return nil, fmt.Errorf("it is not possible to PAY the order: %d without CONFIRMED", order.ID)
 	}
 
-	if err := os.paymentClient.Pay(order); err != nil {
+	if err := os.paymentClient.Pay(order, paymentMethod); err != nil {
 		order.Status = entities.OrderStatusPaymentError
 	} else {
 		order.Status = entities.OrderStatusPaymentSent

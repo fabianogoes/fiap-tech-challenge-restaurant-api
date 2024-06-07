@@ -3,7 +3,7 @@ package ports
 import "github.com/fabianogoes/fiap-challenge/domain/entities"
 
 type PaymentClientPort interface {
-	Pay(order *entities.Order) error
+	Pay(order *entities.Order, paymentMethod string) error
 	Reverse(order *entities.Order) error
 }
 

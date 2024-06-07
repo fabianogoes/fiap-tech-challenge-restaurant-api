@@ -1,21 +1,8 @@
 # FIAP challenge food
 
 > FIAP pós Software Architecture - Tech Challenge projeto de um Restaurante
-> 
-> [![CI/CD](https://github.com/fabianogoes/fiap-tech-challenge-restaurant-api/actions/workflows/deploy.yml/badge.svg)](https://github.com/fabianogoes/fiap-tech-challenge-restaurant-api/actions/workflows/deploy.yml)
-
-Table of context
-- [FIAP challenge food](#fiap-challenge-food)
-  - [Project Architecture by Clean Architecture](#project-architecture-by-clean-architecture)
-  - [Stack](#stack)
-  - [Development](#development)
-    - [Running](#running)
-  - [Testing using Docker/Docker Compose](#testing-using-dockerdocker-compose)
-    - [Pre-registered data](#pre-registered-data)
-  - [Docker Commands](#docker-commands)
-  - [Run Go test](#run-go-test)
-
----
+ 
+[![CI/CD](https://github.com/fabianogoes/fiap-tech-challenge-restaurant-api/actions/workflows/deploy.yml/badge.svg)](https://github.com/fabianogoes/fiap-tech-challenge-restaurant-api/actions/workflows/deploy.yml)
 
 ## Project Architecture by Clean Architecture
 
