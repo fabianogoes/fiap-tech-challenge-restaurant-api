@@ -275,7 +275,7 @@ func (h *OrderHandler) PaymentWebhook(c *gin.Context) {
 		return
 	}
 
-	if request.Status == "SUCCESS" {
+	if request.Status == "PAID" {
 		order, err = h.OrderUseCase.PaymentOrderConfirmed(order, request.PaymentMethod)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{
