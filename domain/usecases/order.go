@@ -19,6 +19,7 @@ type OrderService struct {
 	paymentClient       ports.PaymentClientPort
 	deliveryClient      ports.DeliveryClientPort
 	deliveryRepository  ports.DeliveryRepositoryPort
+	kitchenClient       ports.KitchenClientPort
 }
 
 func NewOrderService(
@@ -29,6 +30,7 @@ func NewOrderService(
 	paymentClient ports.PaymentClientPort,
 	deliveryClient ports.DeliveryClientPort,
 	deliveryRepo ports.DeliveryRepositoryPort,
+	kitchenClient ports.KitchenClientPort,
 ) *OrderService {
 	return &OrderService{
 		orderRepository:     orderRepo,
@@ -38,6 +40,7 @@ func NewOrderService(
 		paymentClient:       paymentClient,
 		deliveryClient:      deliveryClient,
 		deliveryRepository:  deliveryRepo,
+		kitchenClient:       kitchenClient,
 	}
 }
 
@@ -232,6 +235,11 @@ func (os *OrderService) InPreparationOrder(order *entities.Order) (*entities.Ord
 		return nil, fmt.Errorf(NotPossibleWithoutPayment, "PREPARE", order.ID)
 	}
 
+	err := os.kitchenClient.Preparation(order)
+	if err != nil {
+		return nil, err
+	}
+
 	order.Status = entities.OrderStatusInPreparation
 	return os.orderRepository.UpdateOrder(order)
 }
@@ -247,6 +255,11 @@ func (os *OrderService) ReadyForDeliveryOrder(order *entities.Order) (*entities.
 
 	if order.Status != entities.OrderStatusInPreparation {
 		return nil, fmt.Errorf("it is not possible to DELIVERY the order: %d without PREPARE", order.ID)
+	}
+
+	err := os.kitchenClient.ReadyDelivery(order.ID)
+	if err != nil {
+		return nil, err
 	}
 
 	order.Status = entities.OrderStatusReadyForDelivery
