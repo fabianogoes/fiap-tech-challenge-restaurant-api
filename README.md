@@ -94,7 +94,7 @@ Para verificar a **lista de Atendentes** pode ser usado a API:
 http://localhost:8080/attendants
 ```
 
-[Collection de Teste que pode ser importada no Postman](./__utils__/fiap-tech-challenge-Insomnia.json)
+[Collection](./.utils/fiap-tech-challenge-Insomnia.json)
 
 ## Docker Commands
 
