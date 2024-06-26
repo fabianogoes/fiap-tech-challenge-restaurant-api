@@ -5,7 +5,6 @@ import (
 	"github.com/joho/godotenv"
 	"log/slog"
 	"os"
-	"strings"
 )
 
 type Config struct {
@@ -24,15 +23,15 @@ func NewConfig() (*Config, error) {
 	loadEnvironment()
 
 	config := &Config{
-		Environment: getEnv("APP_ENV", "development"),
-		AppPort:     getEnv("APP_PORT", ":8080"),
-		DBHost:      getEnv("DB_HOST", "localhost"),
-		DBPort:      getEnv("DB_PORT", "5432"),
-		DBName:      getEnv("DB_DATABASE", "db"),
-		DBUser:      getEnv("DB_USERNAME", "usr"),
-		DBPassword:  getEnv("DB_PASSWORD", "pwd"),
-		APIVersion:  getEnv("API_VERSION", "2024.5.8.3"),
-		TokenSecret: getEnv("TOKEN_SECRET", "123"),
+		Environment: os.Getenv("APP_ENV"),
+		AppPort:     os.Getenv("APP_PORT"),
+		DBHost:      os.Getenv("DB_HOST"),
+		DBPort:      os.Getenv("DB_PORT"),
+		DBName:      os.Getenv("DB_DATABASE"),
+		DBUser:      os.Getenv("DB_USERNAME"),
+		DBPassword:  os.Getenv("DB_PASSWORD"),
+		APIVersion:  os.Getenv("API_VERSION"),
+		TokenSecret: os.Getenv("TOKEN_SECRET"),
 	}
 
 	printConfig(config)
@@ -47,22 +46,24 @@ func loadEnvironment() {
 			slog.Error("Error loading .env file", "error", err)
 			os.Exit(1)
 		}
-	} else {
+	} else if os.Getenv("APP_ENV") == "development" {
 		// Load .env.development file
 		err := godotenv.Load(".env.development")
 		if err != nil {
 			slog.Error("Error loading .env file", "error", err)
 			os.Exit(1)
 		}
+	} else {
+		_ = os.Setenv("APP_ENV", "default")
+		_ = os.Setenv("APP_PORT", ":8020")
+		_ = os.Setenv("DB_HOST", "localhost")
+		_ = os.Setenv("DB_PORT", "5432")
+		_ = os.Setenv("DB_DATABASE", "restaurant_db")
+		_ = os.Setenv("DB_USERNAME", "usr")
+		_ = os.Setenv("DB_PASSWORD", "pwd")
+		_ = os.Setenv("API_VERSION", "1.0")
+		_ = os.Setenv("TOKEN_SECRET", "123")
 	}
-}
-
-func getEnv(key, fallback string) string {
-	if envValue, ok := os.LookupEnv(key); ok {
-		return strings.TrimRight(envValue, "\n\r")
-	}
-
-	return fallback
 }
 
 func printConfig(config *Config) {
