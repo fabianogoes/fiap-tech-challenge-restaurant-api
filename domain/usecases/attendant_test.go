@@ -9,7 +9,7 @@ import (
 )
 
 var attendantIDSuccess = uint(1)
-var attendant = &entities.Attendant{
+var AttendantSuccess = &entities.Attendant{
 	ID:        attendantIDSuccess,
 	Name:      "Test Attendant",
 	CreatedAt: time.Now(),
@@ -19,28 +19,28 @@ var attendant = &entities.Attendant{
 func TestAttendantService_CreateAttendant(t *testing.T) {
 	repository := new(domain.AttendantRepositoryMock)
 
-	repository.On("CreateAttendant", attendant.Name).Return(attendant, nil)
+	repository.On("CreateAttendant", AttendantSuccess.Name).Return(AttendantSuccess, nil)
 	service := NewAttendantService(repository)
 
-	attendant, err := service.CreateAttendant(attendant.Name)
-	assert.Nil(t, err)
+	attendant, err := service.CreateAttendant(AttendantSuccess.Name)
+	assert.NoError(t, err)
 	assert.NotNil(t, attendant)
 }
 
 func TestAttendantService_GetAttendantById(t *testing.T) {
 	repository := new(domain.AttendantRepositoryMock)
-	repository.On("GetAttendantById", attendant.ID).Return(attendant, nil)
+	repository.On("GetAttendantById", AttendantSuccess.ID).Return(AttendantSuccess, nil)
 
 	service := NewAttendantService(repository)
 
-	attendant, err := service.GetAttendantById(attendant.ID)
+	attendant, err := service.GetAttendantById(AttendantSuccess.ID)
 	assert.NoError(t, err)
 	assert.NotNil(t, attendant)
 }
 
 func TestAttendantService_GetAttendants(t *testing.T) {
 	repository := new(domain.AttendantRepositoryMock)
-	repository.On("GetAttendants").Return([]*entities.Attendant{attendant}, nil)
+	repository.On("GetAttendants").Return([]*entities.Attendant{AttendantSuccess}, nil)
 
 	service := NewAttendantService(repository)
 
@@ -51,11 +51,11 @@ func TestAttendantService_GetAttendants(t *testing.T) {
 
 func TestAttendantService_UpdateAttendant(t *testing.T) {
 	repository := new(domain.AttendantRepositoryMock)
-	repository.On("UpdateAttendant", attendant).Return(attendant, nil)
+	repository.On("UpdateAttendant", AttendantSuccess).Return(AttendantSuccess, nil)
 
 	service := NewAttendantService(repository)
 
-	updateAttendant, err := service.UpdateAttendant(attendant)
+	updateAttendant, err := service.UpdateAttendant(AttendantSuccess)
 	assert.NoError(t, err)
 	assert.NotNil(t, updateAttendant)
 }
