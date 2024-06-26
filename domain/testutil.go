@@ -196,3 +196,12 @@ func (r *ProductRepositoryMock) DeleteProduct(id uint) error {
 	args := r.Called(id)
 	return args.Error(0)
 }
+
+type DeliveryClientMock struct {
+	mock.Mock
+}
+
+func (c *DeliveryClientMock) Deliver(order *entities.Order) error {
+	args := c.Called(order)
+	return args.Error(0)
+}
