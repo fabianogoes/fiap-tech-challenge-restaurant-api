@@ -1,6 +1,7 @@
 package usecases
 
 import (
+	"errors"
 	"github.com/fabianogoes/fiap-challenge/domain"
 	"github.com/fabianogoes/fiap-challenge/domain/entities"
 	"github.com/stretchr/testify/assert"
@@ -173,6 +174,90 @@ func TestOrderService_RemoveItemFromOrder(t *testing.T) {
 	orderRequest.Payment = &entities.Payment{
 		ID:     ProductSuccess.ID,
 		Status: entities.PaymentStatusPending,
+	}
+
+	order, err := service.RemoveItemFromOrder(orderRequest, 1)
+	assert.NoError(t, err)
+	assert.NotNil(t, order)
+}
+
+func TestOrderService_RemoveItemFromOrderPaid(t *testing.T) {
+	customerRepository := new(domain.CustomerRepositoryMock)
+	customerRepository.On("GetCustomerById", mock.Anything).Return(CustomerSuccess, nil)
+
+	attendantRepository := new(domain.AttendantRepositoryMock)
+	attendantRepository.On("GetAttendantById", mock.Anything).Return(AttendantSuccess, nil)
+
+	paymentRepository := new(domain.PaymentRepositoryMock)
+	paymentRepository.On("GetPaymentById", mock.Anything).Return(PaymentPending, nil)
+	paymentRepository.On("UpdatePayment", mock.Anything).Return(PaymentPending, nil)
+	paymentService := NewPaymentService(paymentRepository)
+
+	repository := new(domain.OrderRepositoryMock)
+	repository.On("GetOrderItemById", mock.Anything).Return(OrderItemSuccess, nil)
+	repository.On("RemoveItemFromOrder", mock.Anything).Return(nil)
+	repository.On("UpdateOrder", mock.Anything).Return(OrderStarted, nil)
+
+	paymentClient := new(domain.PaymentClientMock)
+	paymentClient.On("Reverse", mock.Anything).Return(nil)
+
+	service := NewOrderService(
+		repository,
+		customerRepository,
+		attendantRepository,
+		paymentService,
+		paymentClient,
+		new(domain.DeliveryClientMock),
+		new(domain.DeliveryRepositoryMock),
+		new(domain.KitchenClientMock),
+	)
+
+	orderRequest := OrderStarted
+	orderRequest.Payment = &entities.Payment{
+		ID:     ProductSuccess.ID,
+		Status: entities.PaymentStatusPaid,
+	}
+
+	order, err := service.RemoveItemFromOrder(orderRequest, 1)
+	assert.NoError(t, err)
+	assert.NotNil(t, order)
+}
+
+func TestOrderService_RemoveItemFromOrderPaidReverseError(t *testing.T) {
+	customerRepository := new(domain.CustomerRepositoryMock)
+	customerRepository.On("GetCustomerById", mock.Anything).Return(CustomerSuccess, nil)
+
+	attendantRepository := new(domain.AttendantRepositoryMock)
+	attendantRepository.On("GetAttendantById", mock.Anything).Return(AttendantSuccess, nil)
+
+	paymentRepository := new(domain.PaymentRepositoryMock)
+	paymentRepository.On("GetPaymentById", mock.Anything).Return(PaymentPending, nil)
+	paymentRepository.On("UpdatePayment", mock.Anything).Return(PaymentPending, nil)
+	paymentService := NewPaymentService(paymentRepository)
+
+	repository := new(domain.OrderRepositoryMock)
+	repository.On("GetOrderItemById", mock.Anything).Return(OrderItemSuccess, nil)
+	repository.On("RemoveItemFromOrder", mock.Anything).Return(nil)
+	repository.On("UpdateOrder", mock.Anything).Return(OrderStarted, nil)
+
+	paymentClient := new(domain.PaymentClientMock)
+	paymentClient.On("Reverse", mock.Anything).Return(errors.New("reverse error"))
+
+	service := NewOrderService(
+		repository,
+		customerRepository,
+		attendantRepository,
+		paymentService,
+		paymentClient,
+		new(domain.DeliveryClientMock),
+		new(domain.DeliveryRepositoryMock),
+		new(domain.KitchenClientMock),
+	)
+
+	orderRequest := OrderStarted
+	orderRequest.Payment = &entities.Payment{
+		ID:     ProductSuccess.ID,
+		Status: entities.PaymentStatusPaid,
 	}
 
 	order, err := service.RemoveItemFromOrder(orderRequest, 1)
@@ -495,6 +580,85 @@ func TestOrderService_CancelOrder(t *testing.T) {
 
 	OrderStarted.Items = []*entities.OrderItem{OrderItemSuccess}
 	OrderStarted.Payment = &entities.Payment{ID: 1}
+	OrderStarted.Status = entities.OrderStatusStarted
+	order, err := service.CancelOrder(OrderStarted)
+	assert.NoError(t, err)
+	assert.NotNil(t, order)
+}
+
+func TestOrderService_CancelOrderPaid(t *testing.T) {
+	customerRepository := new(domain.CustomerRepositoryMock)
+	customerRepository.On("GetCustomerById", mock.Anything).Return(CustomerSuccess, nil)
+
+	attendantRepository := new(domain.AttendantRepositoryMock)
+	attendantRepository.On("GetAttendantById", mock.Anything).Return(AttendantSuccess, nil)
+
+	paymentRepository := new(domain.PaymentRepositoryMock)
+	paymentRepository.On("GetPaymentById", mock.Anything).Return(&entities.Payment{}, nil)
+	paymentRepository.On("UpdatePayment", mock.Anything).Return(&entities.Payment{}, nil)
+	paymentService := NewPaymentService(paymentRepository)
+
+	repository := new(domain.OrderRepositoryMock)
+	repository.On("UpdateOrder", mock.Anything).Return(OrderStarted, nil)
+
+	kitchenClient := new(domain.KitchenClientMock)
+	deliveryRepository := new(domain.DeliveryRepositoryMock)
+
+	paymentClient := new(domain.PaymentClientMock)
+	paymentClient.On("Reverse", mock.Anything).Return(nil)
+
+	service := NewOrderService(
+		repository,
+		customerRepository,
+		attendantRepository,
+		paymentService,
+		paymentClient,
+		new(domain.DeliveryClientMock),
+		deliveryRepository,
+		kitchenClient,
+	)
+
+	OrderStarted.Items = []*entities.OrderItem{OrderItemSuccess}
+	OrderStarted.Payment = &entities.Payment{ID: 1, Status: entities.PaymentStatusPaid}
+	OrderStarted.Status = entities.OrderStatusStarted
+	order, err := service.CancelOrder(OrderStarted)
+	assert.NoError(t, err)
+	assert.NotNil(t, order)
+}
+
+func TestOrderService_CancelOrderPaidReverseError(t *testing.T) {
+	customerRepository := new(domain.CustomerRepositoryMock)
+	customerRepository.On("GetCustomerById", mock.Anything).Return(CustomerSuccess, nil)
+
+	attendantRepository := new(domain.AttendantRepositoryMock)
+	attendantRepository.On("GetAttendantById", mock.Anything).Return(AttendantSuccess, nil)
+
+	paymentRepository := new(domain.PaymentRepositoryMock)
+	paymentRepository.On("GetPaymentById", mock.Anything).Return(&entities.Payment{}, nil)
+	paymentService := NewPaymentService(paymentRepository)
+
+	repository := new(domain.OrderRepositoryMock)
+	repository.On("UpdateOrder", mock.Anything).Return(OrderStarted, nil)
+
+	kitchenClient := new(domain.KitchenClientMock)
+	deliveryRepository := new(domain.DeliveryRepositoryMock)
+
+	paymentClient := new(domain.PaymentClientMock)
+	paymentClient.On("Reverse", mock.Anything).Return(errors.New("reverse error"))
+
+	service := NewOrderService(
+		repository,
+		customerRepository,
+		attendantRepository,
+		paymentService,
+		paymentClient,
+		new(domain.DeliveryClientMock),
+		deliveryRepository,
+		kitchenClient,
+	)
+
+	OrderStarted.Items = []*entities.OrderItem{OrderItemSuccess}
+	OrderStarted.Payment = &entities.Payment{ID: 1, Status: entities.PaymentStatusPaid}
 	OrderStarted.Status = entities.OrderStatusStarted
 	order, err := service.CancelOrder(OrderStarted)
 	assert.NoError(t, err)
