@@ -10,7 +10,7 @@ import (
 )
 
 var customerIDSuccess = uint(1)
-var customer = &entities.Customer{
+var CustomerSuccess = &entities.Customer{
 	ID:        customerIDSuccess,
 	Name:      "Test Customer",
 	Email:     "test@test.com",
@@ -21,17 +21,17 @@ var customer = &entities.Customer{
 
 func TestCustomerService_CreateCustomer(t *testing.T) {
 	repository := new(domain.CustomerRepositoryMock)
-	repository.On("CreateCustomer", mock.Anything).Return(customer, nil)
+	repository.On("CreateCustomer", mock.Anything).Return(CustomerSuccess, nil)
 	service := NewCustomerService(repository)
 
-	createCustomer, err := service.CreateCustomer(customer.Name, customer.Email, customer.CPF)
+	createCustomer, err := service.CreateCustomer(CustomerSuccess.Name, CustomerSuccess.Email, CustomerSuccess.CPF)
 	assert.NoError(t, err)
 	assert.NotNil(t, createCustomer)
 }
 
 func TestCustomerService_GetCustomerById(t *testing.T) {
 	repository := new(domain.CustomerRepositoryMock)
-	repository.On("GetCustomerById", mock.Anything).Return(customer, nil)
+	repository.On("GetCustomerById", mock.Anything).Return(CustomerSuccess, nil)
 
 	service := NewCustomerService(repository)
 	customer, err := service.GetCustomerById(customerIDSuccess)
@@ -41,18 +41,18 @@ func TestCustomerService_GetCustomerById(t *testing.T) {
 
 func TestCustomerService_GetCustomerByCPF(t *testing.T) {
 	repository := new(domain.CustomerRepositoryMock)
-	repository.On("GetCustomerByCPF", mock.Anything).Return(customer, nil)
+	repository.On("GetCustomerByCPF", mock.Anything).Return(CustomerSuccess, nil)
 
 	service := NewCustomerService(repository)
 
-	customerResponse, err := service.GetCustomerByCPF(customer.CPF)
+	customerResponse, err := service.GetCustomerByCPF(CustomerSuccess.CPF)
 	assert.NoError(t, err)
 	assert.NotNil(t, customerResponse)
 }
 
 func TestCustomerService_GetCustomers(t *testing.T) {
 	repository := new(domain.CustomerRepositoryMock)
-	repository.On("GetCustomers").Return([]*entities.Customer{customer}, nil)
+	repository.On("GetCustomers").Return([]*entities.Customer{CustomerSuccess}, nil)
 
 	service := NewCustomerService(repository)
 	customers, err := service.GetCustomers()
@@ -62,10 +62,10 @@ func TestCustomerService_GetCustomers(t *testing.T) {
 
 func TestCustomerService_UpdateCustomer(t *testing.T) {
 	repository := new(domain.CustomerRepositoryMock)
-	repository.On("UpdateCustomer", mock.Anything).Return(customer, nil)
+	repository.On("UpdateCustomer", mock.Anything).Return(CustomerSuccess, nil)
 
 	service := NewCustomerService(repository)
-	updateCustomer, err := service.UpdateCustomer(customer)
+	updateCustomer, err := service.UpdateCustomer(CustomerSuccess)
 	assert.NoError(t, err)
 	assert.NotNil(t, updateCustomer)
 }
