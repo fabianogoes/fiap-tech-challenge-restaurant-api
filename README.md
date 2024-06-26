@@ -1,8 +1,10 @@
-# FIAP challenge food
+# FIAP Tech Challenge - Restaurant
 
-> FIAP pós Software Architecture - Tech Challenge projeto de um Restaurante
- 
-[![CI/CD](https://github.com/fabianogoes/fiap-tech-challenge-restaurant-api/actions/workflows/deploy.yml/badge.svg)](https://github.com/fabianogoes/fiap-tech-challenge-restaurant-api/actions/workflows/deploy.yml)
+[![CI](https://github.com/fabianogoes/fiap-tech-challenge-restaurant-api/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/fabianogoes/fiap-tech-challenge-restaurant-api/actions/workflows/ci-cd.yml)
+[![Coverage Percent](https://codecov.io/github/fabianogoes/fiap-tech-challenge-restaurant-api/graph/badge.svg?token=877UONKJDB)](https://codecov.io/github/fabianogoes/fiap-tech-challenge-restaurant-api)
+
+[![Coverage Graph](https://codecov.io/github/fabianogoes/fiap-tech-challenge-restaurant-api/graphs/sunburst.svg?token=877UONKJDB)](https://codecov.io/github/fabianogoes/fiap-tech-challenge-restaurant-api)
+
 
 ## Project Architecture by Clean Architecture
 
@@ -107,6 +109,12 @@ docker push fabianogoes/restaurant-api:3.20240426.1
 
 ```shell
 go test -v ./...
+```
+
+## Run Coverage
+
+```shell
+clear && go test -coverprofile=coverage.out ./... &&  go tool cover -func=coverage.out
 ```
 
 [0]: https://go.dev/
