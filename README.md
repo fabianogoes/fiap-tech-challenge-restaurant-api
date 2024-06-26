@@ -105,12 +105,6 @@ docker tag fabianogoes/restaurant-api:3.20240426.1 fabianogoes/restaurant-api:3.
 docker push fabianogoes/restaurant-api:3.20240426.1
 ```
 
-## Run Go test
-
-```shell
-go test -v ./...
-```
-
 ## Run Coverage
 
 ```shell
