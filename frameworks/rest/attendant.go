@@ -96,7 +96,7 @@ func (h *AttendantHandler) UpdateAttendant(c *gin.Context) {
 		})
 	}
 
-	attendant.Name = request.Nome
+	attendant.Name = request.Name
 	attendantUpdated, err := h.UseCase.UpdateAttendant(attendant)
 
 	c.JSON(http.StatusAccepted, dto.ToAttendantResponse(attendantUpdated))

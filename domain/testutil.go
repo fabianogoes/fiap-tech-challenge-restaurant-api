@@ -3,7 +3,16 @@ package domain
 import (
 	"github.com/fabianogoes/fiap-challenge/domain/entities"
 	"github.com/stretchr/testify/mock"
+	"time"
 )
+
+var attendantIDSuccess = uint(1)
+var AttendantSuccess = &entities.Attendant{
+	ID:        attendantIDSuccess,
+	Name:      "Test Attendant",
+	CreatedAt: time.Now(),
+	UpdatedAt: time.Now(),
+}
 
 type AttendantRepositoryMock struct {
 	mock.Mock
