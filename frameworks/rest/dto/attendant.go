@@ -9,7 +9,7 @@ type CreateAttendantRequest struct {
 }
 
 type UpdateAttendantRequest struct {
-	Nome string `json:"name"`
+	Name string `json:"name"`
 }
 
 type GetAttendantResponse struct {

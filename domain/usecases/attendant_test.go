@@ -5,42 +5,33 @@ import (
 	"github.com/fabianogoes/fiap-challenge/domain/entities"
 	"github.com/stretchr/testify/assert"
 	"testing"
-	"time"
 )
-
-var attendantIDSuccess = uint(1)
-var AttendantSuccess = &entities.Attendant{
-	ID:        attendantIDSuccess,
-	Name:      "Test Attendant",
-	CreatedAt: time.Now(),
-	UpdatedAt: time.Now(),
-}
 
 func TestAttendantService_CreateAttendant(t *testing.T) {
 	repository := new(domain.AttendantRepositoryMock)
 
-	repository.On("CreateAttendant", AttendantSuccess.Name).Return(AttendantSuccess, nil)
+	repository.On("CreateAttendant", domain.AttendantSuccess.Name).Return(domain.AttendantSuccess, nil)
 	service := NewAttendantService(repository)
 
-	attendant, err := service.CreateAttendant(AttendantSuccess.Name)
+	attendant, err := service.CreateAttendant(domain.AttendantSuccess.Name)
 	assert.NoError(t, err)
 	assert.NotNil(t, attendant)
 }
 
 func TestAttendantService_GetAttendantById(t *testing.T) {
 	repository := new(domain.AttendantRepositoryMock)
-	repository.On("GetAttendantById", AttendantSuccess.ID).Return(AttendantSuccess, nil)
+	repository.On("GetAttendantById", domain.AttendantSuccess.ID).Return(domain.AttendantSuccess, nil)
 
 	service := NewAttendantService(repository)
 
-	attendant, err := service.GetAttendantById(AttendantSuccess.ID)
+	attendant, err := service.GetAttendantById(domain.AttendantSuccess.ID)
 	assert.NoError(t, err)
 	assert.NotNil(t, attendant)
 }
 
 func TestAttendantService_GetAttendants(t *testing.T) {
 	repository := new(domain.AttendantRepositoryMock)
-	repository.On("GetAttendants").Return([]*entities.Attendant{AttendantSuccess}, nil)
+	repository.On("GetAttendants").Return([]*entities.Attendant{domain.AttendantSuccess}, nil)
 
 	service := NewAttendantService(repository)
 
@@ -51,11 +42,11 @@ func TestAttendantService_GetAttendants(t *testing.T) {
 
 func TestAttendantService_UpdateAttendant(t *testing.T) {
 	repository := new(domain.AttendantRepositoryMock)
-	repository.On("UpdateAttendant", AttendantSuccess).Return(AttendantSuccess, nil)
+	repository.On("UpdateAttendant", domain.AttendantSuccess).Return(domain.AttendantSuccess, nil)
 
 	service := NewAttendantService(repository)
 
-	updateAttendant, err := service.UpdateAttendant(AttendantSuccess)
+	updateAttendant, err := service.UpdateAttendant(domain.AttendantSuccess)
 	assert.NoError(t, err)
 	assert.NotNil(t, updateAttendant)
 }
