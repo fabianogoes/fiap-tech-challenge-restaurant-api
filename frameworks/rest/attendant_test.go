@@ -41,7 +41,7 @@ func TestAttendantHandler_GetAttendantsInternalServerError(t *testing.T) {
 	useCase := usecases.NewAttendantService(repository)
 	handler := NewAttendantHandler(useCase)
 
-	repository.On("GetAttendants").Return(nil, errors.New("empty"))
+	repository.On("GetAttendants").Return([]*entities.Attendant{}, errors.New("empty"))
 
 	setup := SetupTest()
 	setup.GET("/attendants", handler.GetAttendants)
@@ -101,7 +101,7 @@ func TestAttendantHandler_GetAttendantInternalServerError(t *testing.T) {
 	useCase := usecases.NewAttendantService(repository)
 	handler := NewAttendantHandler(useCase)
 
-	repository.On("GetAttendantById", mock.Anything).Return(nil, errors.New("not found"))
+	repository.On("GetAttendantById", mock.Anything).Return(&entities.Attendant{}, errors.New("not found"))
 
 	setup := SetupTest()
 	setup.GET("/attendants/:id", handler.GetAttendant)
@@ -181,7 +181,7 @@ func TestAttendantHandler_CreateAttendantInternalServerError(t *testing.T) {
 	useCase := usecases.NewAttendantService(repository)
 	handler := NewAttendantHandler(useCase)
 
-	repository.On("CreateAttendant", mock.Anything).Return(nil, errors.New("error"))
+	repository.On("CreateAttendant", mock.Anything).Return(&entities.Attendant{}, errors.New("error"))
 
 	payload := dto.CreateAttendantRequest{Name: "test"}
 	jsonRequest, _ := json.Marshal(payload)
@@ -266,7 +266,7 @@ func TestAttendantHandler_UpdateAttendantInternalServerError(t *testing.T) {
 	useCase := usecases.NewAttendantService(repository)
 	handler := NewAttendantHandler(useCase)
 
-	repository.On("GetAttendantById", mock.Anything).Return(nil, errors.New("not found"))
+	repository.On("GetAttendantById", mock.Anything).Return(&entities.Attendant{}, errors.New("not found"))
 
 	setup := SetupTest()
 	setup.PUT("/attendants/:id", handler.UpdateAttendant)
