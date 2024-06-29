@@ -17,7 +17,7 @@ func (ds DeliveryStatus) ToString() string {
 	return [...]string{"PENDING", "SENT", "DELIVERED", "CANCELED", "ERROR", "NONE"}[ds]
 }
 
-func (ds DeliveryStatus) ToDeliveryStatus(status string) DeliveryStatus {
+func ToDeliveryStatus(status string) DeliveryStatus {
 	switch status {
 	case "PENDING":
 		return DeliveryStatusPending

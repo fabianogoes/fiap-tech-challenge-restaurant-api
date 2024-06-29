@@ -15,10 +15,10 @@ const (
 )
 
 func (ps PaymentStatus) ToString() string {
-	return [...]string{"PENDING", "PAID", "REVERSED", "CANCELED", "ERROR", "NONE"}[ps]
+	return [...]string{"PENDING", "PAID", "REVERSED", "CANCELED", "ERROR", "NONE", "UNKNOWN"}[ps]
 }
 
-func (ps PaymentStatus) ToPaymentStatus(status string) PaymentStatus {
+func ToPaymentStatus(status string) PaymentStatus {
 	switch status {
 	case "PENDING":
 		return PaymentStatusPending
@@ -30,6 +30,8 @@ func (ps PaymentStatus) ToPaymentStatus(status string) PaymentStatus {
 		return PaymentStatusCanceled
 	case "ERROR":
 		return PaymentStatusError
+	case "NONE":
+		return PaymentStatusNone
 	default:
 		return PaymentStatusUnknown
 	}
