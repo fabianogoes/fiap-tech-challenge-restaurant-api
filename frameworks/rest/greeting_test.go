@@ -46,3 +46,16 @@ func TestHealth(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, "UP", healthResponse.Status)
 }
+
+func TestEnvironment(t *testing.T) {
+	r := SetupTest()
+	r.GET("/env", Environment)
+	request, err := http.NewRequest("GET", "/env", nil)
+	assert.NoError(t, err)
+
+	response := httptest.NewRecorder()
+
+	r.ServeHTTP(response, request)
+	assert.Equal(t, 200, response.Code, "OK response is expected")
+	assert.NoError(t, err)
+}
