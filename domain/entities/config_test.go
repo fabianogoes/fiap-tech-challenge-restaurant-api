@@ -7,15 +7,14 @@ import (
 )
 
 func Test_ConfigDefault(t *testing.T) {
-	config, err := NewConfig()
-	assert.NoError(t, err)
+	config := NewConfig()
 	assert.NotNil(t, config)
 	assert.Equal(t, "default", config.Environment)
 }
 
 func Test_ConfigDevelopment(t *testing.T) {
 	err := os.Setenv("APP_ENV", "development")
-	config, err := NewConfig()
+	config := NewConfig()
 	assert.NoError(t, err)
 	assert.NotNil(t, config)
 	assert.Equal(t, "development", config.Environment)
@@ -23,7 +22,7 @@ func Test_ConfigDevelopment(t *testing.T) {
 
 func Test_ConfigProduction(t *testing.T) {
 	err := os.Setenv("APP_ENV", "production")
-	config, err := NewConfig()
+	config := NewConfig()
 	assert.NoError(t, err)
 	assert.NotNil(t, config)
 	assert.Equal(t, "production", config.Environment)
