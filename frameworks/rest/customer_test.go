@@ -26,7 +26,7 @@ func TestCustomer_GetCustomers(t *testing.T) {
 
 	setup := SetupTest()
 	setup.GET("/customers", handler.GetCustomers)
-	request, err := http.NewRequest("GET", fmt.Sprintf("/customers"), nil)
+	request, err := http.NewRequest("GET", "/customers", nil)
 	assert.NoError(t, err)
 
 	response := httptest.NewRecorder()
@@ -152,7 +152,7 @@ func TestCustomer_GetCustomerByCPF(t *testing.T) {
 
 	setup := SetupTest()
 	setup.GET("/customers/cpf/:cpf", handler.GetCustomerByCPF)
-	request, err := http.NewRequest("GET", fmt.Sprintf("/customers/cpf/123"), nil)
+	request, err := http.NewRequest("GET", "/customers/cpf/123", nil)
 	assert.NoError(t, err)
 
 	response := httptest.NewRecorder()
@@ -173,7 +173,7 @@ func TestCustomer_GetCustomerByCPFInternalServerError(t *testing.T) {
 
 	setup := SetupTest()
 	setup.GET("/customers/cpf/:cpf", handler.GetCustomerByCPF)
-	request, err := http.NewRequest("GET", fmt.Sprintf("/customers/cpf/123"), nil)
+	request, err := http.NewRequest("GET", "/customers/cpf/123", nil)
 	assert.NoError(t, err)
 
 	response := httptest.NewRecorder()
@@ -199,7 +199,7 @@ func TestCustomer_CreateCustomer(t *testing.T) {
 
 	setup := SetupTest()
 	setup.POST("/customers/", handler.CreateCustomer)
-	request, err := http.NewRequest("POST", fmt.Sprintf("/customers/"), readerPayload)
+	request, err := http.NewRequest("POST", "/customers/", readerPayload)
 	assert.NoError(t, err)
 
 	response := httptest.NewRecorder()
@@ -221,7 +221,7 @@ func TestCustomer_CreateCustomerBadRequest(t *testing.T) {
 
 	setup := SetupTest()
 	setup.POST("/customers/", handler.CreateCustomer)
-	request, err := http.NewRequest("POST", fmt.Sprintf("/customers/"), nil)
+	request, err := http.NewRequest("POST", "/customers/", nil)
 	assert.NoError(t, err)
 
 	response := httptest.NewRecorder()
@@ -247,7 +247,7 @@ func TestCustomer_CreateCustomerInternalServerError(t *testing.T) {
 
 	setup := SetupTest()
 	setup.POST("/customers/", handler.CreateCustomer)
-	request, err := http.NewRequest("POST", fmt.Sprintf("/customers/"), readerPayload)
+	request, err := http.NewRequest("POST", "/customers/", readerPayload)
 	assert.NoError(t, err)
 
 	response := httptest.NewRecorder()
@@ -273,7 +273,7 @@ func TestCustomer_UpdateCustomer(t *testing.T) {
 
 	setup := SetupTest()
 	setup.PUT("/customers/:id", handler.UpdateCustomer)
-	request, err := http.NewRequest("PUT", fmt.Sprintf("/customers/1"), readerPayload)
+	request, err := http.NewRequest("PUT", "/customers/1", readerPayload)
 	assert.NoError(t, err)
 
 	response := httptest.NewRecorder()
@@ -299,7 +299,7 @@ func TestCustomer_UpdateCustomerInternalServerError(t *testing.T) {
 
 	setup := SetupTest()
 	setup.PUT("/customers/:id", handler.UpdateCustomer)
-	request, err := http.NewRequest("PUT", fmt.Sprintf("/customers/1"), readerPayload)
+	request, err := http.NewRequest("PUT", "/customers/1", readerPayload)
 	assert.NoError(t, err)
 
 	response := httptest.NewRecorder()
@@ -325,7 +325,7 @@ func TestCustomer_UpdateCustomerBadRequestId(t *testing.T) {
 
 	setup := SetupTest()
 	setup.PUT("/customers/:id", handler.UpdateCustomer)
-	request, err := http.NewRequest("PUT", fmt.Sprintf("/customers/x"), readerPayload)
+	request, err := http.NewRequest("PUT", "/customers/x", readerPayload)
 	assert.NoError(t, err)
 
 	response := httptest.NewRecorder()
@@ -347,7 +347,7 @@ func TestCustomer_UpdateCustomerBadRequestJson(t *testing.T) {
 
 	setup := SetupTest()
 	setup.PUT("/customers/:id", handler.UpdateCustomer)
-	request, err := http.NewRequest("PUT", fmt.Sprintf("/customers/x"), nil)
+	request, err := http.NewRequest("PUT", "/customers/x", nil)
 	assert.NoError(t, err)
 
 	response := httptest.NewRecorder()
@@ -368,7 +368,7 @@ func TestCustomer_DeleteCustomer(t *testing.T) {
 
 	setup := SetupTest()
 	setup.DELETE("/customers/:id", handler.DeleteCustomer)
-	request, err := http.NewRequest("DELETE", fmt.Sprintf("/customers/1"), nil)
+	request, err := http.NewRequest("DELETE", "/customers/1", nil)
 	assert.NoError(t, err)
 
 	response := httptest.NewRecorder()
@@ -410,7 +410,7 @@ func TestCustomer_DeleteCustomerBadRequest(t *testing.T) {
 
 	setup := SetupTest()
 	setup.DELETE("/customers/:id", handler.DeleteCustomer)
-	request, err := http.NewRequest("DELETE", fmt.Sprintf("/customers/x"), nil)
+	request, err := http.NewRequest("DELETE", "/customers/x", nil)
 	assert.NoError(t, err)
 
 	response := httptest.NewRecorder()
