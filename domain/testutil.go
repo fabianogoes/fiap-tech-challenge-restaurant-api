@@ -182,6 +182,21 @@ func (c *PaymentClientMock) Reverse(order *entities.Order) error {
 	return args.Error(0)
 }
 
+var productIDSuccess = uint(1)
+var ProductSuccess = &entities.Product{
+	ID:    productIDSuccess,
+	Name:  "Test Product",
+	Price: 100_00,
+	Category: &entities.Category{
+		ID:        1,
+		Name:      "Test Category",
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+	},
+	CreatedAt: time.Now(),
+	UpdatedAt: time.Now(),
+}
+
 type ProductRepositoryMock struct {
 	mock.Mock
 }

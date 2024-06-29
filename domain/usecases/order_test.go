@@ -14,7 +14,7 @@ var orderIDSuccess = uint(1)
 var orderItemIDSuccess = uint(1)
 var OrderItemSuccess = &entities.OrderItem{
 	ID:        orderItemIDSuccess,
-	Product:   ProductSuccess,
+	Product:   domain.ProductSuccess,
 	Quantity:  10,
 	UnitPrice: 10_00,
 	CreatedAt: time.Now(),
@@ -137,7 +137,7 @@ func TestOrderService_AddItemToOrder(t *testing.T) {
 		new(domain.KitchenClientMock),
 	)
 
-	order, err := service.AddItemToOrder(OrderStarted, ProductSuccess, 1)
+	order, err := service.AddItemToOrder(OrderStarted, domain.ProductSuccess, 1)
 	assert.NoError(t, err)
 	assert.NotNil(t, order)
 }
@@ -172,7 +172,7 @@ func TestOrderService_RemoveItemFromOrder(t *testing.T) {
 
 	orderRequest := OrderStarted
 	orderRequest.Payment = &entities.Payment{
-		ID:     ProductSuccess.ID,
+		ID:     domain.ProductSuccess.ID,
 		Status: entities.PaymentStatusPending,
 	}
 
@@ -214,7 +214,7 @@ func TestOrderService_RemoveItemFromOrderPaid(t *testing.T) {
 
 	orderRequest := OrderStarted
 	orderRequest.Payment = &entities.Payment{
-		ID:     ProductSuccess.ID,
+		ID:     domain.ProductSuccess.ID,
 		Status: entities.PaymentStatusPaid,
 	}
 
@@ -256,7 +256,7 @@ func TestOrderService_RemoveItemFromOrderPaidReverseError(t *testing.T) {
 
 	orderRequest := OrderStarted
 	orderRequest.Payment = &entities.Payment{
-		ID:     ProductSuccess.ID,
+		ID:     domain.ProductSuccess.ID,
 		Status: entities.PaymentStatusPaid,
 	}
 
