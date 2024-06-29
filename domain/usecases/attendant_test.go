@@ -4,6 +4,7 @@ import (
 	"github.com/fabianogoes/fiap-challenge/domain"
 	"github.com/fabianogoes/fiap-challenge/domain/entities"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
 	"testing"
 )
 
@@ -49,4 +50,14 @@ func TestAttendantService_UpdateAttendant(t *testing.T) {
 	updateAttendant, err := service.UpdateAttendant(domain.AttendantSuccess)
 	assert.NoError(t, err)
 	assert.NotNil(t, updateAttendant)
+}
+
+func TestAttendantService_DeleteAttendant(t *testing.T) {
+	repository := new(domain.AttendantRepositoryMock)
+	repository.On("DeleteAttendant", mock.Anything).Return(nil)
+
+	service := NewAttendantService(repository)
+
+	err := service.DeleteAttendant(1)
+	assert.NoError(t, err)
 }

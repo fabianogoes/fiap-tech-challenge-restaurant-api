@@ -1,6 +1,7 @@
 package usecases
 
 import (
+	"errors"
 	"github.com/fabianogoes/fiap-challenge/domain"
 	"github.com/fabianogoes/fiap-challenge/domain/entities"
 	"github.com/stretchr/testify/assert"
@@ -16,6 +17,15 @@ func TestCustomerService_CreateCustomer(t *testing.T) {
 	createCustomer, err := service.CreateCustomer(domain.CustomerSuccess.Name, domain.CustomerSuccess.Email, domain.CustomerSuccess.CPF)
 	assert.NoError(t, err)
 	assert.NotNil(t, createCustomer)
+}
+
+func TestCustomerService_CreateCustomerError(t *testing.T) {
+	repository := new(domain.CustomerRepositoryMock)
+	repository.On("CreateCustomer", mock.Anything).Return(domain.CustomerSuccess, errors.New("error"))
+	service := NewCustomerService(repository)
+
+	_, err := service.CreateCustomer(domain.CustomerSuccess.Name, domain.CustomerSuccess.Email, domain.CustomerSuccess.CPF)
+	assert.Error(t, err)
 }
 
 func TestCustomerService_GetCustomerById(t *testing.T) {
