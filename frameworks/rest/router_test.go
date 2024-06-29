@@ -9,7 +9,7 @@ import (
 )
 
 func Test_Router(t *testing.T) {
-	config, _ := entities.NewConfig()
+	config := entities.NewConfig()
 	customerRepository := new(domain.CustomerRepositoryMock)
 	customerHandler := NewCustomerHandler(usecases.NewCustomerService(customerRepository), config)
 	attendantRepository := new(domain.AttendantRepositoryMock)

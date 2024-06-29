@@ -21,7 +21,7 @@ func init() {
 
 	var logHandler *slog.JSONHandler
 
-	config, _ := entities.NewConfig()
+	config := entities.NewConfig()
 	if config.Environment == "production" {
 		logHandler = slog.NewJSONHandler(os.Stdout, nil)
 	} else {
@@ -40,10 +40,7 @@ func main() {
 	ctx := context.Background()
 	var err error
 
-	config, err := entities.NewConfig()
-	if err != nil {
-		panic(err)
-	}
+	config := entities.NewConfig()
 	db, err := repository.InitDB(ctx, config)
 	if err != nil {
 		panic(err)

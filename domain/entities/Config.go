@@ -19,7 +19,7 @@ type Config struct {
 	TokenSecret string
 }
 
-func NewConfig() (*Config, error) {
+func NewConfig() *Config {
 	loadEnvironment()
 
 	config := &Config{
@@ -35,7 +35,7 @@ func NewConfig() (*Config, error) {
 	}
 
 	printConfig(config)
-	return config, nil
+	return config
 }
 
 func loadEnvironment() {

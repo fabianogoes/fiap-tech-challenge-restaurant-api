@@ -19,7 +19,7 @@ import (
 func TestCustomer_GetCustomers(t *testing.T) {
 	repository := new(domain.CustomerRepositoryMock)
 	useCase := usecases.NewCustomerService(repository)
-	config, _ := entities.NewConfig()
+	config := entities.NewConfig()
 	handler := NewCustomerHandler(useCase, config)
 
 	repository.On("GetCustomers").Return([]*entities.Customer{domain.CustomerSuccess}, nil)
@@ -40,7 +40,7 @@ func TestCustomer_GetCustomers(t *testing.T) {
 func TestCustomer_GetCustomersInternalServerError(t *testing.T) {
 	repository := new(domain.CustomerRepositoryMock)
 	useCase := usecases.NewCustomerService(repository)
-	config, _ := entities.NewConfig()
+	config := entities.NewConfig()
 	handler := NewCustomerHandler(useCase, config)
 
 	repository.On("GetCustomers").Return([]*entities.Customer{domain.CustomerSuccess}, errors.New("not found"))
@@ -61,7 +61,7 @@ func TestCustomer_GetCustomersInternalServerError(t *testing.T) {
 func TestCustomer_GetCustomersNoContent(t *testing.T) {
 	repository := new(domain.CustomerRepositoryMock)
 	useCase := usecases.NewCustomerService(repository)
-	config, _ := entities.NewConfig()
+	config := entities.NewConfig()
 	handler := NewCustomerHandler(useCase, config)
 
 	repository.On("GetCustomers").Return([]*entities.Customer{}, nil)
@@ -82,7 +82,7 @@ func TestCustomer_GetCustomersNoContent(t *testing.T) {
 func TestCustomer_GetCustomer(t *testing.T) {
 	repository := new(domain.CustomerRepositoryMock)
 	useCase := usecases.NewCustomerService(repository)
-	config, _ := entities.NewConfig()
+	config := entities.NewConfig()
 	handler := NewCustomerHandler(useCase, config)
 
 	repository.On("GetCustomerById", mock.Anything).Return(domain.CustomerSuccess, nil)
@@ -103,7 +103,7 @@ func TestCustomer_GetCustomer(t *testing.T) {
 func TestCustomer_GetCustomerBadRequest(t *testing.T) {
 	repository := new(domain.CustomerRepositoryMock)
 	useCase := usecases.NewCustomerService(repository)
-	config, _ := entities.NewConfig()
+	config := entities.NewConfig()
 	handler := NewCustomerHandler(useCase, config)
 
 	repository.On("GetCustomerById", mock.Anything).Return(domain.CustomerSuccess, nil)
@@ -124,7 +124,7 @@ func TestCustomer_GetCustomerBadRequest(t *testing.T) {
 func TestCustomer_GetCustomerInternalServerError(t *testing.T) {
 	repository := new(domain.CustomerRepositoryMock)
 	useCase := usecases.NewCustomerService(repository)
-	config, _ := entities.NewConfig()
+	config := entities.NewConfig()
 	handler := NewCustomerHandler(useCase, config)
 
 	repository.On("GetCustomerById", mock.Anything).Return(domain.CustomerSuccess, errors.New("not found"))
@@ -145,7 +145,7 @@ func TestCustomer_GetCustomerInternalServerError(t *testing.T) {
 func TestCustomer_GetCustomerByCPF(t *testing.T) {
 	repository := new(domain.CustomerRepositoryMock)
 	useCase := usecases.NewCustomerService(repository)
-	config, _ := entities.NewConfig()
+	config := entities.NewConfig()
 	handler := NewCustomerHandler(useCase, config)
 
 	repository.On("GetCustomerByCPF", mock.Anything).Return(domain.CustomerSuccess, nil)
@@ -166,7 +166,7 @@ func TestCustomer_GetCustomerByCPF(t *testing.T) {
 func TestCustomer_GetCustomerByCPFInternalServerError(t *testing.T) {
 	repository := new(domain.CustomerRepositoryMock)
 	useCase := usecases.NewCustomerService(repository)
-	config, _ := entities.NewConfig()
+	config := entities.NewConfig()
 	handler := NewCustomerHandler(useCase, config)
 
 	repository.On("GetCustomerByCPF", mock.Anything).Return(domain.CustomerSuccess, errors.New("not found"))
@@ -187,7 +187,7 @@ func TestCustomer_GetCustomerByCPFInternalServerError(t *testing.T) {
 func TestCustomer_CreateCustomer(t *testing.T) {
 	repository := new(domain.CustomerRepositoryMock)
 	useCase := usecases.NewCustomerService(repository)
-	config, _ := entities.NewConfig()
+	config := entities.NewConfig()
 	handler := NewCustomerHandler(useCase, config)
 
 	repository.On("CreateCustomer", mock.Anything, mock.Anything, mock.Anything).
@@ -213,7 +213,7 @@ func TestCustomer_CreateCustomer(t *testing.T) {
 func TestCustomer_CreateCustomerBadRequest(t *testing.T) {
 	repository := new(domain.CustomerRepositoryMock)
 	useCase := usecases.NewCustomerService(repository)
-	config, _ := entities.NewConfig()
+	config := entities.NewConfig()
 	handler := NewCustomerHandler(useCase, config)
 
 	repository.On("CreateCustomer", mock.Anything, mock.Anything, mock.Anything).
@@ -235,7 +235,7 @@ func TestCustomer_CreateCustomerBadRequest(t *testing.T) {
 func TestCustomer_CreateCustomerInternalServerError(t *testing.T) {
 	repository := new(domain.CustomerRepositoryMock)
 	useCase := usecases.NewCustomerService(repository)
-	config, _ := entities.NewConfig()
+	config := entities.NewConfig()
 	handler := NewCustomerHandler(useCase, config)
 
 	repository.On("CreateCustomer", mock.Anything, mock.Anything, mock.Anything).
@@ -261,7 +261,7 @@ func TestCustomer_CreateCustomerInternalServerError(t *testing.T) {
 func TestCustomer_UpdateCustomer(t *testing.T) {
 	repository := new(domain.CustomerRepositoryMock)
 	useCase := usecases.NewCustomerService(repository)
-	config, _ := entities.NewConfig()
+	config := entities.NewConfig()
 	handler := NewCustomerHandler(useCase, config)
 
 	repository.On("GetCustomerById", mock.Anything).Return(domain.CustomerSuccess, nil)
@@ -287,7 +287,7 @@ func TestCustomer_UpdateCustomer(t *testing.T) {
 func TestCustomer_UpdateCustomerInternalServerError(t *testing.T) {
 	repository := new(domain.CustomerRepositoryMock)
 	useCase := usecases.NewCustomerService(repository)
-	config, _ := entities.NewConfig()
+	config := entities.NewConfig()
 	handler := NewCustomerHandler(useCase, config)
 
 	repository.On("GetCustomerById", mock.Anything).Return(domain.CustomerSuccess, errors.New("not found"))
@@ -313,7 +313,7 @@ func TestCustomer_UpdateCustomerInternalServerError(t *testing.T) {
 func TestCustomer_UpdateCustomerBadRequestId(t *testing.T) {
 	repository := new(domain.CustomerRepositoryMock)
 	useCase := usecases.NewCustomerService(repository)
-	config, _ := entities.NewConfig()
+	config := entities.NewConfig()
 	handler := NewCustomerHandler(useCase, config)
 
 	repository.On("GetCustomerById", mock.Anything).Return(domain.CustomerSuccess, errors.New("not found"))
@@ -339,7 +339,7 @@ func TestCustomer_UpdateCustomerBadRequestId(t *testing.T) {
 func TestCustomer_UpdateCustomerBadRequestJson(t *testing.T) {
 	repository := new(domain.CustomerRepositoryMock)
 	useCase := usecases.NewCustomerService(repository)
-	config, _ := entities.NewConfig()
+	config := entities.NewConfig()
 	handler := NewCustomerHandler(useCase, config)
 
 	repository.On("GetCustomerById", mock.Anything).Return(domain.CustomerSuccess, nil)
@@ -361,7 +361,7 @@ func TestCustomer_UpdateCustomerBadRequestJson(t *testing.T) {
 func TestCustomer_DeleteCustomer(t *testing.T) {
 	repository := new(domain.CustomerRepositoryMock)
 	useCase := usecases.NewCustomerService(repository)
-	config, _ := entities.NewConfig()
+	config := entities.NewConfig()
 	handler := NewCustomerHandler(useCase, config)
 
 	repository.On("DeleteCustomer", mock.Anything).Return(nil)
@@ -382,7 +382,7 @@ func TestCustomer_DeleteCustomer(t *testing.T) {
 func TestCustomer_DeleteCustomerInternalServerError(t *testing.T) {
 	repository := new(domain.CustomerRepositoryMock)
 	useCase := usecases.NewCustomerService(repository)
-	config, _ := entities.NewConfig()
+	config := entities.NewConfig()
 	handler := NewCustomerHandler(useCase, config)
 
 	repository.On("DeleteCustomer", mock.Anything).Return(errors.New("error"))
@@ -403,7 +403,7 @@ func TestCustomer_DeleteCustomerInternalServerError(t *testing.T) {
 func TestCustomer_DeleteCustomerBadRequest(t *testing.T) {
 	repository := new(domain.CustomerRepositoryMock)
 	useCase := usecases.NewCustomerService(repository)
-	config, _ := entities.NewConfig()
+	config := entities.NewConfig()
 	handler := NewCustomerHandler(useCase, config)
 
 	repository.On("DeleteCustomer", mock.Anything).Return(errors.New("error"))
@@ -424,7 +424,7 @@ func TestCustomer_DeleteCustomerBadRequest(t *testing.T) {
 func TestCustomer_SignIn(t *testing.T) {
 	repository := new(domain.CustomerRepositoryMock)
 	useCase := usecases.NewCustomerService(repository)
-	config, _ := entities.NewConfig()
+	config := entities.NewConfig()
 	handler := NewCustomerHandler(useCase, config)
 
 	repository.On("GetCustomerByCPF", mock.Anything).Return(domain.CustomerSuccess, nil)
@@ -449,7 +449,7 @@ func TestCustomer_SignIn(t *testing.T) {
 func TestCustomer_SignInUnprocessableEntity(t *testing.T) {
 	repository := new(domain.CustomerRepositoryMock)
 	useCase := usecases.NewCustomerService(repository)
-	config, _ := entities.NewConfig()
+	config := entities.NewConfig()
 	handler := NewCustomerHandler(useCase, config)
 
 	repository.On("GetCustomerByCPF", mock.Anything).Return(domain.CustomerSuccess, errors.New("not found"))
@@ -474,7 +474,7 @@ func TestCustomer_SignInUnprocessableEntity(t *testing.T) {
 func TestCustomer_SignInBadRequest(t *testing.T) {
 	repository := new(domain.CustomerRepositoryMock)
 	useCase := usecases.NewCustomerService(repository)
-	config, _ := entities.NewConfig()
+	config := entities.NewConfig()
 	handler := NewCustomerHandler(useCase, config)
 
 	repository.On("GetCustomerByCPF", mock.Anything).Return(domain.CustomerSuccess, errors.New("not found"))
