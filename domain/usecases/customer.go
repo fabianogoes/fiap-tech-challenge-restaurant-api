@@ -16,10 +16,7 @@ func NewCustomerService(cr ports.CustomerRepositoryPort) *CustomerService {
 }
 
 func (c *CustomerService) CreateCustomer(nome string, email string, cpf string) (*entities.Customer, error) {
-	customer, err := entities.NewCustomer(nome, email, cpf)
-	if err != nil {
-		panic(err)
-	}
+	customer := entities.NewCustomer(nome, email, cpf)
 
 	return c.customerRepository.CreateCustomer(customer)
 }

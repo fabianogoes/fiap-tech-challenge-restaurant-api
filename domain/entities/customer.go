@@ -11,10 +11,10 @@ type Customer struct {
 	UpdatedAt time.Time
 }
 
-func NewCustomer(nome string, email string, cpf string) (*Customer, error) {
+func NewCustomer(nome string, email string, cpf string) *Customer {
 	return &Customer{
 		Name:  nome,
 		Email: email,
 		CPF:   cpf,
-	}, nil
+	}
 }
