@@ -19,10 +19,7 @@ func Health(c *gin.Context) {
 }
 
 func Environment(c *gin.Context) {
-	config, err := entities.NewConfig()
-	if err != nil {
-		panic(err)
-	}
+	config := entities.NewConfig()
 
 	c.JSON(http.StatusOK, config)
 }
