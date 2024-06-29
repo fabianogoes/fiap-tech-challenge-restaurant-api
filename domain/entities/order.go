@@ -109,11 +109,13 @@ func (os OrderStatus) ToString() string {
 	}[os]
 }
 
-func (os OrderStatus) ToOrderStatus(status string) OrderStatus {
+func ToOrderStatus(status string) OrderStatus {
 	switch status {
 	case "STARTED":
 
 		return OrderStatusStarted
+	case "ADDING_ITEMS":
+		return OrderStatusAddingItems
 	case "CONFIRMED":
 
 		return OrderStatusConfirmed
@@ -126,7 +128,7 @@ func (os OrderStatus) ToOrderStatus(status string) OrderStatus {
 	case "PAID":
 
 		return OrderStatusPaid
-	case "PAYMENT_SET":
+	case "PAYMENT_SENT":
 		return OrderStatusPaymentSent
 	case "PAYMENT_REVERSED":
 
