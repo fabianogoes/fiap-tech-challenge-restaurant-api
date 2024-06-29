@@ -43,6 +43,16 @@ func (r *AttendantRepositoryMock) DeleteAttendant(id uint) error {
 	return args.Error(0)
 }
 
+var customerIDSuccess = uint(1)
+var CustomerSuccess = &entities.Customer{
+	ID:        customerIDSuccess,
+	Name:      "Test Customer",
+	Email:     "test@test.com",
+	CPF:       "12345678901",
+	CreatedAt: time.Now(),
+	UpdatedAt: time.Now(),
+}
+
 type CustomerRepositoryMock struct {
 	mock.Mock
 }

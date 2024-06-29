@@ -31,7 +31,7 @@ func ToCustomerResponses(customers []*entities.Customer) []GetCustomerResponse {
 }
 
 type CreateCustomerRequest struct {
-	Nome  string `json:"name"`
+	Name  string `json:"name"`
 	Email string `json:"email"`
 	CPF   string `json:"cpf"`
 }
