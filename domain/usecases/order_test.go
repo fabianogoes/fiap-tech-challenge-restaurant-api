@@ -22,7 +22,7 @@ var OrderItemSuccess = &entities.OrderItem{
 }
 var OrderStarted = &entities.Order{
 	ID:        orderIDSuccess,
-	Customer:  CustomerSuccess,
+	Customer:  domain.CustomerSuccess,
 	Attendant: domain.AttendantSuccess,
 	Date:      time.Now(),
 	Status:    entities.OrderStatusStarted,
@@ -32,7 +32,7 @@ var OrderStarted = &entities.Order{
 
 func TestOrderService_StartOrder(t *testing.T) {
 	customerRepository := new(domain.CustomerRepositoryMock)
-	customerRepository.On("GetCustomerById", mock.Anything).Return(CustomerSuccess, nil)
+	customerRepository.On("GetCustomerById", mock.Anything).Return(domain.CustomerSuccess, nil)
 
 	attendantRepository := new(domain.AttendantRepositoryMock)
 	attendantRepository.On("GetAttendantById", mock.Anything).Return(domain.AttendantSuccess, nil)
@@ -53,14 +53,14 @@ func TestOrderService_StartOrder(t *testing.T) {
 		new(domain.KitchenClientMock),
 	)
 
-	order, err := service.StartOrder(CustomerSuccess.ID, domain.AttendantSuccess.ID)
+	order, err := service.StartOrder(domain.CustomerSuccess.ID, domain.AttendantSuccess.ID)
 	assert.NoError(t, err)
 	assert.NotNil(t, order)
 }
 
 func TestOrderService_GetOrderById(t *testing.T) {
 	customerRepository := new(domain.CustomerRepositoryMock)
-	customerRepository.On("GetCustomerById", mock.Anything).Return(CustomerSuccess, nil)
+	customerRepository.On("GetCustomerById", mock.Anything).Return(domain.CustomerSuccess, nil)
 
 	attendantRepository := new(domain.AttendantRepositoryMock)
 	attendantRepository.On("GetAttendantById", mock.Anything).Return(domain.AttendantSuccess, nil)
@@ -88,7 +88,7 @@ func TestOrderService_GetOrderById(t *testing.T) {
 
 func TestOrderService_GetOrders(t *testing.T) {
 	customerRepository := new(domain.CustomerRepositoryMock)
-	customerRepository.On("GetCustomerById", mock.Anything).Return(CustomerSuccess, nil)
+	customerRepository.On("GetCustomerById", mock.Anything).Return(domain.CustomerSuccess, nil)
 
 	attendantRepository := new(domain.AttendantRepositoryMock)
 	attendantRepository.On("GetAttendantById", mock.Anything).Return(domain.AttendantSuccess, nil)
@@ -116,7 +116,7 @@ func TestOrderService_GetOrders(t *testing.T) {
 
 func TestOrderService_AddItemToOrder(t *testing.T) {
 	customerRepository := new(domain.CustomerRepositoryMock)
-	customerRepository.On("GetCustomerById", mock.Anything).Return(CustomerSuccess, nil)
+	customerRepository.On("GetCustomerById", mock.Anything).Return(domain.CustomerSuccess, nil)
 
 	attendantRepository := new(domain.AttendantRepositoryMock)
 	attendantRepository.On("GetAttendantById", mock.Anything).Return(domain.AttendantSuccess, nil)
@@ -144,7 +144,7 @@ func TestOrderService_AddItemToOrder(t *testing.T) {
 
 func TestOrderService_RemoveItemFromOrder(t *testing.T) {
 	customerRepository := new(domain.CustomerRepositoryMock)
-	customerRepository.On("GetCustomerById", mock.Anything).Return(CustomerSuccess, nil)
+	customerRepository.On("GetCustomerById", mock.Anything).Return(domain.CustomerSuccess, nil)
 
 	attendantRepository := new(domain.AttendantRepositoryMock)
 	attendantRepository.On("GetAttendantById", mock.Anything).Return(domain.AttendantSuccess, nil)
@@ -183,7 +183,7 @@ func TestOrderService_RemoveItemFromOrder(t *testing.T) {
 
 func TestOrderService_RemoveItemFromOrderPaid(t *testing.T) {
 	customerRepository := new(domain.CustomerRepositoryMock)
-	customerRepository.On("GetCustomerById", mock.Anything).Return(CustomerSuccess, nil)
+	customerRepository.On("GetCustomerById", mock.Anything).Return(domain.CustomerSuccess, nil)
 
 	attendantRepository := new(domain.AttendantRepositoryMock)
 	attendantRepository.On("GetAttendantById", mock.Anything).Return(domain.AttendantSuccess, nil)
@@ -225,7 +225,7 @@ func TestOrderService_RemoveItemFromOrderPaid(t *testing.T) {
 
 func TestOrderService_RemoveItemFromOrderPaidReverseError(t *testing.T) {
 	customerRepository := new(domain.CustomerRepositoryMock)
-	customerRepository.On("GetCustomerById", mock.Anything).Return(CustomerSuccess, nil)
+	customerRepository.On("GetCustomerById", mock.Anything).Return(domain.CustomerSuccess, nil)
 
 	attendantRepository := new(domain.AttendantRepositoryMock)
 	attendantRepository.On("GetAttendantById", mock.Anything).Return(domain.AttendantSuccess, nil)
@@ -267,7 +267,7 @@ func TestOrderService_RemoveItemFromOrderPaidReverseError(t *testing.T) {
 
 func TestOrderService_ConfirmationOrder(t *testing.T) {
 	customerRepository := new(domain.CustomerRepositoryMock)
-	customerRepository.On("GetCustomerById", mock.Anything).Return(CustomerSuccess, nil)
+	customerRepository.On("GetCustomerById", mock.Anything).Return(domain.CustomerSuccess, nil)
 
 	attendantRepository := new(domain.AttendantRepositoryMock)
 	attendantRepository.On("GetAttendantById", mock.Anything).Return(domain.AttendantSuccess, nil)
@@ -296,7 +296,7 @@ func TestOrderService_ConfirmationOrder(t *testing.T) {
 
 func TestOrderService_PaymentOrder(t *testing.T) {
 	customerRepository := new(domain.CustomerRepositoryMock)
-	customerRepository.On("GetCustomerById", mock.Anything).Return(CustomerSuccess, nil)
+	customerRepository.On("GetCustomerById", mock.Anything).Return(domain.CustomerSuccess, nil)
 
 	attendantRepository := new(domain.AttendantRepositoryMock)
 	attendantRepository.On("GetAttendantById", mock.Anything).Return(domain.AttendantSuccess, nil)
@@ -328,7 +328,7 @@ func TestOrderService_PaymentOrder(t *testing.T) {
 
 func TestOrderService_PaymentOrderConfirmed(t *testing.T) {
 	customerRepository := new(domain.CustomerRepositoryMock)
-	customerRepository.On("GetCustomerById", mock.Anything).Return(CustomerSuccess, nil)
+	customerRepository.On("GetCustomerById", mock.Anything).Return(domain.CustomerSuccess, nil)
 
 	attendantRepository := new(domain.AttendantRepositoryMock)
 	attendantRepository.On("GetAttendantById", mock.Anything).Return(domain.AttendantSuccess, nil)
@@ -365,7 +365,7 @@ func TestOrderService_PaymentOrderConfirmed(t *testing.T) {
 
 func TestOrderService_PaymentOrderError(t *testing.T) {
 	customerRepository := new(domain.CustomerRepositoryMock)
-	customerRepository.On("GetCustomerById", mock.Anything).Return(CustomerSuccess, nil)
+	customerRepository.On("GetCustomerById", mock.Anything).Return(domain.CustomerSuccess, nil)
 
 	attendantRepository := new(domain.AttendantRepositoryMock)
 	attendantRepository.On("GetAttendantById", mock.Anything).Return(domain.AttendantSuccess, nil)
@@ -401,7 +401,7 @@ func TestOrderService_PaymentOrderError(t *testing.T) {
 
 func TestOrderService_DeliveredOrder(t *testing.T) {
 	customerRepository := new(domain.CustomerRepositoryMock)
-	customerRepository.On("GetCustomerById", mock.Anything).Return(CustomerSuccess, nil)
+	customerRepository.On("GetCustomerById", mock.Anything).Return(domain.CustomerSuccess, nil)
 
 	attendantRepository := new(domain.AttendantRepositoryMock)
 	attendantRepository.On("GetAttendantById", mock.Anything).Return(domain.AttendantSuccess, nil)
@@ -446,7 +446,7 @@ func TestOrderService_DeliveredOrder(t *testing.T) {
 
 func TestOrderService_InPreparationOrder(t *testing.T) {
 	customerRepository := new(domain.CustomerRepositoryMock)
-	customerRepository.On("GetCustomerById", mock.Anything).Return(CustomerSuccess, nil)
+	customerRepository.On("GetCustomerById", mock.Anything).Return(domain.CustomerSuccess, nil)
 
 	attendantRepository := new(domain.AttendantRepositoryMock)
 	attendantRepository.On("GetAttendantById", mock.Anything).Return(domain.AttendantSuccess, nil)
@@ -479,7 +479,7 @@ func TestOrderService_InPreparationOrder(t *testing.T) {
 
 func TestOrderService_ReadyForDeliveryOrder(t *testing.T) {
 	customerRepository := new(domain.CustomerRepositoryMock)
-	customerRepository.On("GetCustomerById", mock.Anything).Return(CustomerSuccess, nil)
+	customerRepository.On("GetCustomerById", mock.Anything).Return(domain.CustomerSuccess, nil)
 
 	attendantRepository := new(domain.AttendantRepositoryMock)
 	attendantRepository.On("GetAttendantById", mock.Anything).Return(domain.AttendantSuccess, nil)
@@ -513,7 +513,7 @@ func TestOrderService_ReadyForDeliveryOrder(t *testing.T) {
 
 func TestOrderService_SentForDeliveryOrder(t *testing.T) {
 	customerRepository := new(domain.CustomerRepositoryMock)
-	customerRepository.On("GetCustomerById", mock.Anything).Return(CustomerSuccess, nil)
+	customerRepository.On("GetCustomerById", mock.Anything).Return(domain.CustomerSuccess, nil)
 
 	attendantRepository := new(domain.AttendantRepositoryMock)
 	attendantRepository.On("GetAttendantById", mock.Anything).Return(domain.AttendantSuccess, nil)
@@ -551,7 +551,7 @@ func TestOrderService_SentForDeliveryOrder(t *testing.T) {
 
 func TestOrderService_CancelOrder(t *testing.T) {
 	customerRepository := new(domain.CustomerRepositoryMock)
-	customerRepository.On("GetCustomerById", mock.Anything).Return(CustomerSuccess, nil)
+	customerRepository.On("GetCustomerById", mock.Anything).Return(domain.CustomerSuccess, nil)
 
 	attendantRepository := new(domain.AttendantRepositoryMock)
 	attendantRepository.On("GetAttendantById", mock.Anything).Return(domain.AttendantSuccess, nil)
@@ -588,7 +588,7 @@ func TestOrderService_CancelOrder(t *testing.T) {
 
 func TestOrderService_CancelOrderPaid(t *testing.T) {
 	customerRepository := new(domain.CustomerRepositoryMock)
-	customerRepository.On("GetCustomerById", mock.Anything).Return(CustomerSuccess, nil)
+	customerRepository.On("GetCustomerById", mock.Anything).Return(domain.CustomerSuccess, nil)
 
 	attendantRepository := new(domain.AttendantRepositoryMock)
 	attendantRepository.On("GetAttendantById", mock.Anything).Return(domain.AttendantSuccess, nil)
@@ -628,7 +628,7 @@ func TestOrderService_CancelOrderPaid(t *testing.T) {
 
 func TestOrderService_CancelOrderPaidReverseError(t *testing.T) {
 	customerRepository := new(domain.CustomerRepositoryMock)
-	customerRepository.On("GetCustomerById", mock.Anything).Return(CustomerSuccess, nil)
+	customerRepository.On("GetCustomerById", mock.Anything).Return(domain.CustomerSuccess, nil)
 
 	attendantRepository := new(domain.AttendantRepositoryMock)
 	attendantRepository.On("GetAttendantById", mock.Anything).Return(domain.AttendantSuccess, nil)

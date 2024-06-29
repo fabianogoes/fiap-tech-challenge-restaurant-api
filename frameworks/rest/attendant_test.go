@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"github.com/fabianogoes/fiap-challenge/domain"
 	"github.com/fabianogoes/fiap-challenge/domain/entities"
 	"github.com/fabianogoes/fiap-challenge/domain/usecases"
@@ -25,7 +24,7 @@ func TestAttendantHandler_GetAttendants(t *testing.T) {
 
 	setup := SetupTest()
 	setup.GET("/attendants", handler.GetAttendants)
-	request, err := http.NewRequest("GET", fmt.Sprintf("/attendants"), nil)
+	request, err := http.NewRequest("GET", "/attendants", nil)
 	assert.NoError(t, err)
 
 	response := httptest.NewRecorder()
@@ -45,7 +44,7 @@ func TestAttendantHandler_GetAttendantsInternalServerError(t *testing.T) {
 
 	setup := SetupTest()
 	setup.GET("/attendants", handler.GetAttendants)
-	request, err := http.NewRequest("GET", fmt.Sprintf("/attendants"), nil)
+	request, err := http.NewRequest("GET", "/attendants", nil)
 	assert.NoError(t, err)
 
 	response := httptest.NewRecorder()
@@ -65,7 +64,7 @@ func TestAttendantHandler_GetAttendantsStatusNoContent(t *testing.T) {
 
 	setup := SetupTest()
 	setup.GET("/attendants", handler.GetAttendants)
-	request, err := http.NewRequest("GET", fmt.Sprintf("/attendants"), nil)
+	request, err := http.NewRequest("GET", "/attendants", nil)
 	assert.NoError(t, err)
 
 	response := httptest.NewRecorder()
@@ -85,7 +84,7 @@ func TestAttendantHandler_GetAttendant(t *testing.T) {
 
 	setup := SetupTest()
 	setup.GET("/attendants/:id", handler.GetAttendant)
-	request, err := http.NewRequest("GET", fmt.Sprintf("/attendants/1"), nil)
+	request, err := http.NewRequest("GET", "/attendants/1", nil)
 	assert.NoError(t, err)
 
 	response := httptest.NewRecorder()
@@ -105,7 +104,7 @@ func TestAttendantHandler_GetAttendantInternalServerError(t *testing.T) {
 
 	setup := SetupTest()
 	setup.GET("/attendants/:id", handler.GetAttendant)
-	request, err := http.NewRequest("GET", fmt.Sprintf("/attendants/1"), nil)
+	request, err := http.NewRequest("GET", "/attendants/1", nil)
 	assert.NoError(t, err)
 
 	response := httptest.NewRecorder()
@@ -123,7 +122,7 @@ func TestAttendantHandler_GetAttendantBadRequest(t *testing.T) {
 
 	setup := SetupTest()
 	setup.GET("/attendants/:id", handler.GetAttendant)
-	request, err := http.NewRequest("GET", fmt.Sprintf("/attendants/xxx"), nil)
+	request, err := http.NewRequest("GET", "/attendants/xxx", nil)
 	assert.NoError(t, err)
 
 	response := httptest.NewRecorder()
@@ -147,7 +146,7 @@ func TestAttendantHandler_CreateAttendant(t *testing.T) {
 
 	setup := SetupTest()
 	setup.POST("/attendants/", handler.CreateAttendant)
-	request, err := http.NewRequest("POST", fmt.Sprintf("/attendants/"), readerPayload)
+	request, err := http.NewRequest("POST", "/attendants/", readerPayload)
 	assert.NoError(t, err)
 
 	response := httptest.NewRecorder()
@@ -165,7 +164,7 @@ func TestAttendantHandler_CreateAttendantBadRequest(t *testing.T) {
 
 	setup := SetupTest()
 	setup.POST("/attendants/", handler.CreateAttendant)
-	request, err := http.NewRequest("POST", fmt.Sprintf("/attendants/"), nil)
+	request, err := http.NewRequest("POST", "/attendants/", nil)
 	assert.NoError(t, err)
 
 	response := httptest.NewRecorder()
@@ -189,7 +188,7 @@ func TestAttendantHandler_CreateAttendantInternalServerError(t *testing.T) {
 
 	setup := SetupTest()
 	setup.POST("/attendants/", handler.CreateAttendant)
-	request, err := http.NewRequest("POST", fmt.Sprintf("/attendants/"), readerPayload)
+	request, err := http.NewRequest("POST", "/attendants/", readerPayload)
 	assert.NoError(t, err)
 
 	response := httptest.NewRecorder()

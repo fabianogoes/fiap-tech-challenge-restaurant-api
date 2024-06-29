@@ -6,53 +6,42 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"testing"
-	"time"
 )
-
-var customerIDSuccess = uint(1)
-var CustomerSuccess = &entities.Customer{
-	ID:        customerIDSuccess,
-	Name:      "Test Customer",
-	Email:     "test@test.com",
-	CPF:       "12345678901",
-	CreatedAt: time.Now(),
-	UpdatedAt: time.Now(),
-}
 
 func TestCustomerService_CreateCustomer(t *testing.T) {
 	repository := new(domain.CustomerRepositoryMock)
-	repository.On("CreateCustomer", mock.Anything).Return(CustomerSuccess, nil)
+	repository.On("CreateCustomer", mock.Anything).Return(domain.CustomerSuccess, nil)
 	service := NewCustomerService(repository)
 
-	createCustomer, err := service.CreateCustomer(CustomerSuccess.Name, CustomerSuccess.Email, CustomerSuccess.CPF)
+	createCustomer, err := service.CreateCustomer(domain.CustomerSuccess.Name, domain.CustomerSuccess.Email, domain.CustomerSuccess.CPF)
 	assert.NoError(t, err)
 	assert.NotNil(t, createCustomer)
 }
 
 func TestCustomerService_GetCustomerById(t *testing.T) {
 	repository := new(domain.CustomerRepositoryMock)
-	repository.On("GetCustomerById", mock.Anything).Return(CustomerSuccess, nil)
+	repository.On("GetCustomerById", mock.Anything).Return(domain.CustomerSuccess, nil)
 
 	service := NewCustomerService(repository)
-	customer, err := service.GetCustomerById(customerIDSuccess)
+	customer, err := service.GetCustomerById(domain.CustomerSuccess.ID)
 	assert.NoError(t, err)
 	assert.NotNil(t, customer)
 }
 
 func TestCustomerService_GetCustomerByCPF(t *testing.T) {
 	repository := new(domain.CustomerRepositoryMock)
-	repository.On("GetCustomerByCPF", mock.Anything).Return(CustomerSuccess, nil)
+	repository.On("GetCustomerByCPF", mock.Anything).Return(domain.CustomerSuccess, nil)
 
 	service := NewCustomerService(repository)
 
-	customerResponse, err := service.GetCustomerByCPF(CustomerSuccess.CPF)
+	customerResponse, err := service.GetCustomerByCPF(domain.CustomerSuccess.CPF)
 	assert.NoError(t, err)
 	assert.NotNil(t, customerResponse)
 }
 
 func TestCustomerService_GetCustomers(t *testing.T) {
 	repository := new(domain.CustomerRepositoryMock)
-	repository.On("GetCustomers").Return([]*entities.Customer{CustomerSuccess}, nil)
+	repository.On("GetCustomers").Return([]*entities.Customer{domain.CustomerSuccess}, nil)
 
 	service := NewCustomerService(repository)
 	customers, err := service.GetCustomers()
@@ -62,10 +51,10 @@ func TestCustomerService_GetCustomers(t *testing.T) {
 
 func TestCustomerService_UpdateCustomer(t *testing.T) {
 	repository := new(domain.CustomerRepositoryMock)
-	repository.On("UpdateCustomer", mock.Anything).Return(CustomerSuccess, nil)
+	repository.On("UpdateCustomer", mock.Anything).Return(domain.CustomerSuccess, nil)
 
 	service := NewCustomerService(repository)
-	updateCustomer, err := service.UpdateCustomer(CustomerSuccess)
+	updateCustomer, err := service.UpdateCustomer(domain.CustomerSuccess)
 	assert.NoError(t, err)
 	assert.NotNil(t, updateCustomer)
 }
@@ -75,6 +64,6 @@ func TestCustomerService_DeleteCustomer(t *testing.T) {
 	repository.On("DeleteCustomer", mock.Anything).Return(nil)
 
 	service := NewCustomerService(repository)
-	err := service.DeleteCustomer(customerIDSuccess)
+	err := service.DeleteCustomer(domain.CustomerSuccess.ID)
 	assert.NoError(t, err)
 }

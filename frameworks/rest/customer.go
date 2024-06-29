@@ -64,11 +64,6 @@ func (h *CustomerHandler) GetCustomer(c *gin.Context) {
 func (h *CustomerHandler) GetCustomerByCPF(c *gin.Context) {
 	var err error
 	cpf := c.Param("cpf")
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
-	}
 
 	customer, err := h.UseCase.GetCustomerByCPF(cpf)
 	if err != nil {
@@ -95,7 +90,7 @@ func (h *CustomerHandler) CreateCustomer(c *gin.Context) {
 		})
 	}
 
-	customer, err := h.UseCase.CreateCustomer(request.Nome, request.Email, request.CPF)
+	customer, err := h.UseCase.CreateCustomer(request.Name, request.Email, request.CPF)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
