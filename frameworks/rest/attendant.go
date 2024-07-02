@@ -42,6 +42,7 @@ func (h *AttendantHandler) GetAttendant(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
 		})
+		return
 	}
 
 	attendant, err := h.UseCase.GetAttendantById(uint(id))
@@ -49,6 +50,7 @@ func (h *AttendantHandler) GetAttendant(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
 		})
+		return
 	}
 
 	c.JSON(http.StatusOK, dto.ToAttendantResponse(attendant))
@@ -60,6 +62,7 @@ func (h *AttendantHandler) CreateAttendant(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
 		})
+		return
 	}
 
 	attendant, err := h.UseCase.CreateAttendant(request.Name)
@@ -67,6 +70,7 @@ func (h *AttendantHandler) CreateAttendant(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
 		})
+		return
 	}
 
 	c.JSON(http.StatusCreated, dto.ToAttendantResponse(attendant))
@@ -81,12 +85,14 @@ func (h *AttendantHandler) UpdateAttendant(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
 		})
+		return
 	}
 
 	if err = c.ShouldBindJSON(&request); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
 		})
+		return
 	}
 
 	attendant, err := h.UseCase.GetAttendantById(uint(id))
@@ -94,6 +100,7 @@ func (h *AttendantHandler) UpdateAttendant(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
 		})
+		return
 	}
 
 	attendant.Name = request.Name
@@ -109,6 +116,7 @@ func (h *AttendantHandler) DeleteAttendant(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
 		})
+		return
 	}
 
 	err = h.UseCase.DeleteAttendant(uint(id))
@@ -116,10 +124,10 @@ func (h *AttendantHandler) DeleteAttendant(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
 		})
+		return
 	}
 
 	response := fmt.Sprintf("Attendant %d deleted", id)
-	println(response)
 
 	c.JSON(http.StatusNoContent, gin.H{
 		"message": response,

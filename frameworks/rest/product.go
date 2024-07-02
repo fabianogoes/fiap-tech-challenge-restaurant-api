@@ -83,12 +83,14 @@ func (h *ProductHandler) UpdateProduct(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
 		})
+		return
 	}
 
 	if err = c.ShouldBindJSON(&request); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
 		})
+		return
 	}
 
 	product, err := h.UseCase.GetProductById(uint(id))
@@ -96,6 +98,7 @@ func (h *ProductHandler) UpdateProduct(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
 		})
+		return
 	}
 
 	product.Name = request.Name
@@ -114,6 +117,7 @@ func (h *ProductHandler) DeleteProduct(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
 		})
+		return
 	}
 
 	err = h.UseCase.DeleteProduct(uint(id))
@@ -121,10 +125,10 @@ func (h *ProductHandler) DeleteProduct(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
 		})
+		return
 	}
 
 	response := fmt.Sprintf("Product %d deleted", id)
-	println(response)
 
 	c.JSON(http.StatusNoContent, gin.H{
 		"message": response,

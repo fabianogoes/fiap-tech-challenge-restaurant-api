@@ -44,6 +44,7 @@ func (h *OrderHandler) GetOrders(c *gin.Context) {
 		c.JSON(http.StatusNoContent, gin.H{
 			"message": "No orders found",
 		})
+		return
 	}
 
 	c.JSON(http.StatusOK, dto.ToOrderResponses(orders))

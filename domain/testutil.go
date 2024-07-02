@@ -183,7 +183,10 @@ func (r *OrderRepositoryMock) GetOrderById(id uint) (*entities.Order, error) {
 
 func (r *OrderRepositoryMock) GetOrders() ([]*entities.Order, error) {
 	args := r.Called()
-	return args.Get(0).([]*entities.Order), args.Error(1)
+	if args.Get(0) != nil {
+		return args.Get(0).([]*entities.Order), args.Error(1)
+	}
+	return nil, args.Error(1)
 }
 
 func (r *OrderRepositoryMock) UpdateOrder(order *entities.Order) (*entities.Order, error) {
@@ -289,7 +292,10 @@ func (r *ProductRepositoryMock) UpdateProduct(product *entities.Product) (*entit
 
 func (r *ProductRepositoryMock) DeleteProduct(id uint) error {
 	args := r.Called(id)
-	return args.Error(0)
+	if args.Get(0) != nil {
+		return args.Error(0)
+	}
+	return nil
 }
 
 type DeliveryClientMock struct {

@@ -640,6 +640,6 @@ func TestOrderService_CancelOrderPaidReverseError(t *testing.T) {
 	domain.OrderStarted.Payment = &entities.Payment{ID: 1, Status: entities.PaymentStatusPaid}
 	domain.OrderStarted.Status = entities.OrderStatusStarted
 	order, err := service.CancelOrder(domain.OrderStarted)
-	assert.NoError(t, err)
-	assert.NotNil(t, order)
+	assert.Error(t, err)
+	assert.Nil(t, order)
 }
