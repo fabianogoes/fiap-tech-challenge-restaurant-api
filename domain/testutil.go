@@ -96,13 +96,25 @@ func (r *CustomerRepositoryMock) DeleteCustomer(id uint) error {
 	return args.Error(0)
 }
 
+var DeliverySuccess = &entities.Delivery{
+	ID:        uint(1),
+	Order:     entities.Order{},
+	Date:      time.Now(),
+	Status:    entities.DeliveryStatusSent,
+	CreatedAt: time.Now(),
+	UpdatedAt: time.Now(),
+}
+
 type DeliveryRepositoryMock struct {
 	mock.Mock
 }
 
 func (r *DeliveryRepositoryMock) GetDeliveryById(id uint) (*entities.Delivery, error) {
 	args := r.Called(id)
-	return args.Get(0).(*entities.Delivery), args.Error(1)
+	if args.Get(0) != nil {
+		return args.Get(0).(*entities.Delivery), args.Error(1)
+	}
+	return nil, args.Error(1)
 }
 
 func (r *DeliveryRepositoryMock) CreateDelivery(delivery *entities.Delivery) (*entities.Delivery, error) {

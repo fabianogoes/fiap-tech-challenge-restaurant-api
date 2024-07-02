@@ -770,3 +770,403 @@ func TestOrder_InPreparationOrderSuccess(t *testing.T) {
 	orderRepository.AssertCalled(t, "UpdateOrder", mock.Anything, mock.Anything, mock.Anything)
 	kitchenClient.AssertCalled(t, "Preparation", mock.Anything)
 }
+
+func TestOrder_ReadyForDeliveryOrderSuccess(t *testing.T) {
+	orderInPreparation := domain.OrderStarted
+	orderInPreparation.Status = entities.OrderStatusInPreparation
+	orderInPreparation.Items = []*entities.OrderItem{domain.OrderItemSuccess}
+	orderInPreparation.Payment = &entities.Payment{Status: entities.PaymentStatusPaid}
+
+	attendantRepository := new(domain.AttendantRepositoryMock)
+	customerRepository := new(domain.CustomerRepositoryMock)
+	orderRepository := new(domain.OrderRepositoryMock)
+	productRepository := new(domain.ProductRepositoryMock)
+	kitchenClient := new(domain.KitchenClientMock)
+
+	orderRepository.On("GetOrderById", domain.OrderStarted.ID).Return(domain.OrderStarted, nil)
+	orderRepository.On("UpdateOrder", mock.Anything, mock.Anything, mock.Anything).Return(orderInPreparation, nil)
+	kitchenClient.On("ReadyDelivery", mock.Anything).Return(nil)
+
+	attendantUseCase := usecases.NewAttendantService(attendantRepository)
+	customerUseCase := usecases.NewCustomerService(customerRepository)
+	productUseCase := usecases.NewProductService(productRepository)
+	orderUseCase := usecases.NewOrderService(
+		orderRepository,
+		customerRepository,
+		attendantRepository,
+		usecases.NewPaymentService(new(domain.PaymentRepositoryMock)),
+		new(domain.PaymentClientMock),
+		new(domain.DeliveryClientMock),
+		new(domain.DeliveryRepositoryMock),
+		kitchenClient,
+	)
+
+	handler := NewOrderHandler(
+		orderUseCase,
+		customerUseCase,
+		attendantUseCase,
+		productUseCase,
+	)
+
+	setup := SetupTest()
+	setup.PUT("/:id/ready-for-delivery", handler.ReadyForDeliveryOrder)
+	request, err := http.NewRequest("PUT", fmt.Sprintf("/%d/ready-for-delivery", domain.OrderStarted.ID), nil)
+	assert.NoError(t, err)
+
+	response := httptest.NewRecorder()
+	setup.ServeHTTP(response, request)
+	assert.Equal(t, http.StatusOK, response.Code)
+
+	assert.NoError(t, err)
+	assert.NotNil(t, response)
+	orderRepository.AssertCalled(t, "GetOrderById", domain.OrderStarted.ID)
+	orderRepository.AssertCalled(t, "UpdateOrder", mock.Anything, mock.Anything, mock.Anything)
+	kitchenClient.AssertCalled(t, "ReadyDelivery", mock.Anything)
+}
+
+func TestOrder_SentForDeliveryOrderSuccess(t *testing.T) {
+	orderReadyForDelivery := domain.OrderStarted
+	orderReadyForDelivery.Status = entities.OrderStatusReadyForDelivery
+	orderReadyForDelivery.Items = []*entities.OrderItem{domain.OrderItemSuccess}
+	orderReadyForDelivery.Payment = &entities.Payment{Status: entities.PaymentStatusPaid}
+	orderReadyForDelivery.Delivery = domain.DeliverySuccess
+
+	attendantRepository := new(domain.AttendantRepositoryMock)
+	customerRepository := new(domain.CustomerRepositoryMock)
+	orderRepository := new(domain.OrderRepositoryMock)
+	productRepository := new(domain.ProductRepositoryMock)
+	deliveryRepository := new(domain.DeliveryRepositoryMock)
+
+	orderRepository.On("GetOrderById", domain.OrderStarted.ID).Return(domain.OrderStarted, nil)
+	orderRepository.On("UpdateOrder", mock.Anything, mock.Anything, mock.Anything).Return(orderReadyForDelivery, nil)
+	deliveryRepository.On("GetDeliveryById", mock.Anything).Return(domain.DeliverySuccess, nil)
+	deliveryRepository.On("UpdateDelivery", mock.Anything).Return(domain.DeliverySuccess, nil)
+
+	attendantUseCase := usecases.NewAttendantService(attendantRepository)
+	customerUseCase := usecases.NewCustomerService(customerRepository)
+	productUseCase := usecases.NewProductService(productRepository)
+	orderUseCase := usecases.NewOrderService(
+		orderRepository,
+		customerRepository,
+		attendantRepository,
+		usecases.NewPaymentService(new(domain.PaymentRepositoryMock)),
+		new(domain.PaymentClientMock),
+		new(domain.DeliveryClientMock),
+		deliveryRepository,
+		new(domain.KitchenClientMock),
+	)
+
+	handler := NewOrderHandler(
+		orderUseCase,
+		customerUseCase,
+		attendantUseCase,
+		productUseCase,
+	)
+
+	setup := SetupTest()
+	setup.PUT("/:id/sent-for-delivery", handler.SentForDeliveryOrder)
+	request, err := http.NewRequest("PUT", fmt.Sprintf("/%d/sent-for-delivery", domain.OrderStarted.ID), nil)
+	assert.NoError(t, err)
+
+	response := httptest.NewRecorder()
+	setup.ServeHTTP(response, request)
+	assert.Equal(t, http.StatusOK, response.Code)
+
+	assert.NoError(t, err)
+	assert.NotNil(t, response)
+	orderRepository.AssertCalled(t, "GetOrderById", domain.OrderStarted.ID)
+	orderRepository.AssertCalled(t, "UpdateOrder", mock.Anything, mock.Anything, mock.Anything)
+	deliveryRepository.AssertCalled(t, "GetDeliveryById", mock.Anything)
+	deliveryRepository.AssertCalled(t, "UpdateDelivery", mock.Anything)
+}
+
+func TestOrder_DeliveredOrderSuccess(t *testing.T) {
+	orderSentForDelivery := domain.OrderStarted
+	orderSentForDelivery.Status = entities.OrderStatusSentForDelivery
+	orderSentForDelivery.Items = []*entities.OrderItem{domain.OrderItemSuccess}
+	orderSentForDelivery.Payment = &entities.Payment{Status: entities.PaymentStatusPaid}
+	orderSentForDelivery.Delivery = domain.DeliverySuccess
+
+	attendantRepository := new(domain.AttendantRepositoryMock)
+	customerRepository := new(domain.CustomerRepositoryMock)
+	orderRepository := new(domain.OrderRepositoryMock)
+	productRepository := new(domain.ProductRepositoryMock)
+	deliveryRepository := new(domain.DeliveryRepositoryMock)
+	deliveryClient := new(domain.DeliveryClientMock)
+
+	orderRepository.On("GetOrderById", domain.OrderStarted.ID).Return(domain.OrderStarted, nil)
+	orderRepository.On("UpdateOrder", mock.Anything, mock.Anything, mock.Anything).Return(orderSentForDelivery, nil)
+	deliveryRepository.On("GetDeliveryById", mock.Anything).Return(domain.DeliverySuccess, nil)
+	deliveryRepository.On("UpdateDelivery", mock.Anything).Return(domain.DeliverySuccess, nil)
+	deliveryClient.On("Deliver", mock.Anything).Return(nil)
+
+	attendantUseCase := usecases.NewAttendantService(attendantRepository)
+	customerUseCase := usecases.NewCustomerService(customerRepository)
+	productUseCase := usecases.NewProductService(productRepository)
+	orderUseCase := usecases.NewOrderService(
+		orderRepository,
+		customerRepository,
+		attendantRepository,
+		usecases.NewPaymentService(new(domain.PaymentRepositoryMock)),
+		new(domain.PaymentClientMock),
+		deliveryClient,
+		deliveryRepository,
+		new(domain.KitchenClientMock),
+	)
+
+	handler := NewOrderHandler(
+		orderUseCase,
+		customerUseCase,
+		attendantUseCase,
+		productUseCase,
+	)
+
+	setup := SetupTest()
+	setup.PUT("/:id/delivered", handler.DeliveredOrder)
+	request, err := http.NewRequest("PUT", fmt.Sprintf("/%d/delivered", domain.OrderStarted.ID), nil)
+	assert.NoError(t, err)
+
+	response := httptest.NewRecorder()
+	setup.ServeHTTP(response, request)
+	assert.Equal(t, http.StatusOK, response.Code)
+
+	assert.NoError(t, err)
+	assert.NotNil(t, response)
+	orderRepository.AssertCalled(t, "GetOrderById", domain.OrderStarted.ID)
+	orderRepository.AssertCalled(t, "UpdateOrder", mock.Anything, mock.Anything, mock.Anything)
+	deliveryRepository.AssertCalled(t, "GetDeliveryById", mock.Anything)
+	deliveryRepository.AssertCalled(t, "UpdateDelivery", mock.Anything)
+	deliveryClient.AssertCalled(t, "Deliver", mock.Anything)
+}
+
+func TestOrder_CancelOrderNotPaidSuccess(t *testing.T) {
+	orderConfirmed := domain.OrderStarted
+	orderConfirmed.Status = entities.OrderStatusConfirmed
+	orderConfirmed.Items = []*entities.OrderItem{domain.OrderItemSuccess}
+	orderConfirmed.Payment = &entities.Payment{Status: entities.PaymentStatusPending}
+	orderConfirmed.Delivery = domain.DeliverySuccess
+
+	attendantRepository := new(domain.AttendantRepositoryMock)
+	customerRepository := new(domain.CustomerRepositoryMock)
+	orderRepository := new(domain.OrderRepositoryMock)
+	productRepository := new(domain.ProductRepositoryMock)
+	deliveryRepository := new(domain.DeliveryRepositoryMock)
+	paymentRepository := new(domain.PaymentRepositoryMock)
+	deliveryClient := new(domain.DeliveryClientMock)
+	paymentClient := new(domain.PaymentClientMock)
+
+	orderRepository.On("GetOrderById", domain.OrderStarted.ID).Return(domain.OrderStarted, nil)
+	orderRepository.On("UpdateOrder", mock.Anything, mock.Anything, mock.Anything).Return(orderConfirmed, nil)
+
+	attendantUseCase := usecases.NewAttendantService(attendantRepository)
+	customerUseCase := usecases.NewCustomerService(customerRepository)
+	productUseCase := usecases.NewProductService(productRepository)
+	paymentUseCase := usecases.NewPaymentService(paymentRepository)
+	orderUseCase := usecases.NewOrderService(
+		orderRepository,
+		customerRepository,
+		attendantRepository,
+		paymentUseCase,
+		paymentClient,
+		deliveryClient,
+		deliveryRepository,
+		new(domain.KitchenClientMock),
+	)
+
+	handler := NewOrderHandler(
+		orderUseCase,
+		customerUseCase,
+		attendantUseCase,
+		productUseCase,
+	)
+
+	setup := SetupTest()
+	setup.PUT("/:id/cancel", handler.CancelOrder)
+	request, err := http.NewRequest("PUT", fmt.Sprintf("/%d/cancel", domain.OrderStarted.ID), nil)
+	assert.NoError(t, err)
+
+	response := httptest.NewRecorder()
+	setup.ServeHTTP(response, request)
+	assert.Equal(t, http.StatusOK, response.Code)
+
+	assert.NoError(t, err)
+	assert.NotNil(t, response)
+	orderRepository.AssertCalled(t, "GetOrderById", domain.OrderStarted.ID)
+	orderRepository.AssertCalled(t, "UpdateOrder", mock.Anything, mock.Anything, mock.Anything)
+}
+
+func TestOrder_CancelOrderPaidSuccess(t *testing.T) {
+	orderPaid := domain.OrderStarted
+	orderPaid.Status = entities.OrderStatusPaid
+	orderPaid.Items = []*entities.OrderItem{domain.OrderItemSuccess}
+	orderPaid.Payment = &entities.Payment{Status: entities.PaymentStatusPaid}
+	orderPaid.Delivery = domain.DeliverySuccess
+
+	attendantRepository := new(domain.AttendantRepositoryMock)
+	customerRepository := new(domain.CustomerRepositoryMock)
+	orderRepository := new(domain.OrderRepositoryMock)
+	productRepository := new(domain.ProductRepositoryMock)
+	deliveryRepository := new(domain.DeliveryRepositoryMock)
+	paymentRepository := new(domain.PaymentRepositoryMock)
+	deliveryClient := new(domain.DeliveryClientMock)
+	paymentClient := new(domain.PaymentClientMock)
+
+	orderRepository.On("GetOrderById", domain.OrderStarted.ID).Return(domain.OrderStarted, nil)
+	orderRepository.On("UpdateOrder", mock.Anything, mock.Anything, mock.Anything).Return(orderPaid, nil)
+	paymentRepository.On("GetPaymentById", mock.Anything).Return(orderPaid.Payment, nil)
+	paymentRepository.On("UpdatePayment", mock.Anything).Return(orderPaid.Payment, nil)
+	paymentClient.On("Reverse", mock.Anything).Return(nil)
+
+	attendantUseCase := usecases.NewAttendantService(attendantRepository)
+	customerUseCase := usecases.NewCustomerService(customerRepository)
+	productUseCase := usecases.NewProductService(productRepository)
+	paymentUseCase := usecases.NewPaymentService(paymentRepository)
+	orderUseCase := usecases.NewOrderService(
+		orderRepository,
+		customerRepository,
+		attendantRepository,
+		paymentUseCase,
+		paymentClient,
+		deliveryClient,
+		deliveryRepository,
+		new(domain.KitchenClientMock),
+	)
+
+	handler := NewOrderHandler(
+		orderUseCase,
+		customerUseCase,
+		attendantUseCase,
+		productUseCase,
+	)
+
+	setup := SetupTest()
+	setup.PUT("/:id/cancel", handler.CancelOrder)
+	request, err := http.NewRequest("PUT", fmt.Sprintf("/%d/cancel", domain.OrderStarted.ID), nil)
+	assert.NoError(t, err)
+
+	response := httptest.NewRecorder()
+	setup.ServeHTTP(response, request)
+	assert.Equal(t, http.StatusOK, response.Code)
+
+	assert.NoError(t, err)
+	assert.NotNil(t, response)
+	orderRepository.AssertCalled(t, "GetOrderById", domain.OrderStarted.ID)
+	orderRepository.AssertCalled(t, "UpdateOrder", mock.Anything, mock.Anything, mock.Anything)
+	paymentRepository.AssertCalled(t, "GetPaymentById", mock.Anything)
+	paymentRepository.AssertCalled(t, "UpdatePayment", mock.Anything)
+	paymentClient.AssertCalled(t, "Reverse", mock.Anything)
+}
+
+func TestOrder_CancelOrderReverseFailed(t *testing.T) {
+	orderPaid := domain.OrderStarted
+	orderPaid.Status = entities.OrderStatusPaid
+	orderPaid.Items = []*entities.OrderItem{domain.OrderItemSuccess}
+	orderPaid.Payment = &entities.Payment{Status: entities.PaymentStatusPaid}
+	orderPaid.Delivery = domain.DeliverySuccess
+
+	attendantRepository := new(domain.AttendantRepositoryMock)
+	customerRepository := new(domain.CustomerRepositoryMock)
+	orderRepository := new(domain.OrderRepositoryMock)
+	productRepository := new(domain.ProductRepositoryMock)
+	deliveryRepository := new(domain.DeliveryRepositoryMock)
+	paymentRepository := new(domain.PaymentRepositoryMock)
+	deliveryClient := new(domain.DeliveryClientMock)
+	paymentClient := new(domain.PaymentClientMock)
+
+	orderRepository.On("GetOrderById", domain.OrderStarted.ID).Return(domain.OrderStarted, nil)
+	orderRepository.On("UpdateOrder", mock.Anything, mock.Anything, mock.Anything).Return(orderPaid, nil)
+	paymentRepository.On("GetPaymentById", mock.Anything).Return(orderPaid.Payment, nil)
+	paymentRepository.On("UpdatePayment", mock.Anything).Return(orderPaid.Payment, nil)
+	paymentClient.On("Reverse", mock.Anything).Return(errors.New("payment reverse error"))
+
+	attendantUseCase := usecases.NewAttendantService(attendantRepository)
+	customerUseCase := usecases.NewCustomerService(customerRepository)
+	productUseCase := usecases.NewProductService(productRepository)
+	paymentUseCase := usecases.NewPaymentService(paymentRepository)
+	orderUseCase := usecases.NewOrderService(
+		orderRepository,
+		customerRepository,
+		attendantRepository,
+		paymentUseCase,
+		paymentClient,
+		deliveryClient,
+		deliveryRepository,
+		new(domain.KitchenClientMock),
+	)
+
+	handler := NewOrderHandler(
+		orderUseCase,
+		customerUseCase,
+		attendantUseCase,
+		productUseCase,
+	)
+
+	setup := SetupTest()
+	setup.PUT("/:id/cancel", handler.CancelOrder)
+	request, err := http.NewRequest("PUT", fmt.Sprintf("/%d/cancel", domain.OrderStarted.ID), nil)
+	assert.NoError(t, err)
+
+	response := httptest.NewRecorder()
+	setup.ServeHTTP(response, request)
+	assert.Equal(t, http.StatusInternalServerError, response.Code)
+
+	assert.NoError(t, err)
+	assert.NotNil(t, response)
+	orderRepository.AssertCalled(t, "GetOrderById", domain.OrderStarted.ID)
+	paymentRepository.AssertCalled(t, "GetPaymentById", mock.Anything)
+	paymentClient.AssertCalled(t, "Reverse", mock.Anything)
+}
+
+func TestOrder_CancelOrderDeliveredFailed(t *testing.T) {
+	orderPaid := domain.OrderStarted
+	orderPaid.Status = entities.OrderStatusDelivered
+	orderPaid.Items = []*entities.OrderItem{domain.OrderItemSuccess}
+	orderPaid.Payment = &entities.Payment{Status: entities.PaymentStatusPaid}
+	orderPaid.Delivery = domain.DeliverySuccess
+
+	attendantRepository := new(domain.AttendantRepositoryMock)
+	customerRepository := new(domain.CustomerRepositoryMock)
+	orderRepository := new(domain.OrderRepositoryMock)
+	productRepository := new(domain.ProductRepositoryMock)
+	deliveryRepository := new(domain.DeliveryRepositoryMock)
+	paymentRepository := new(domain.PaymentRepositoryMock)
+	deliveryClient := new(domain.DeliveryClientMock)
+	paymentClient := new(domain.PaymentClientMock)
+
+	orderRepository.On("GetOrderById", domain.OrderStarted.ID).Return(domain.OrderStarted, nil)
+
+	attendantUseCase := usecases.NewAttendantService(attendantRepository)
+	customerUseCase := usecases.NewCustomerService(customerRepository)
+	productUseCase := usecases.NewProductService(productRepository)
+	paymentUseCase := usecases.NewPaymentService(paymentRepository)
+	orderUseCase := usecases.NewOrderService(
+		orderRepository,
+		customerRepository,
+		attendantRepository,
+		paymentUseCase,
+		paymentClient,
+		deliveryClient,
+		deliveryRepository,
+		new(domain.KitchenClientMock),
+	)
+
+	handler := NewOrderHandler(
+		orderUseCase,
+		customerUseCase,
+		attendantUseCase,
+		productUseCase,
+	)
+
+	setup := SetupTest()
+	setup.PUT("/:id/cancel", handler.CancelOrder)
+	request, err := http.NewRequest("PUT", fmt.Sprintf("/%d/cancel", domain.OrderStarted.ID), nil)
+	assert.NoError(t, err)
+
+	response := httptest.NewRecorder()
+	setup.ServeHTTP(response, request)
+	assert.Equal(t, http.StatusInternalServerError, response.Code)
+
+	assert.NoError(t, err)
+	assert.NotNil(t, response)
+	orderRepository.AssertCalled(t, "GetOrderById", domain.OrderStarted.ID)
+}

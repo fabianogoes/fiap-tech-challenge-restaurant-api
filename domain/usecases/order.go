@@ -304,6 +304,7 @@ func (os *OrderService) CancelOrder(order *entities.Order) (*entities.Order, err
 		if err := os.paymentClient.Reverse(order); err != nil {
 			order.Status = entities.OrderStatusPaymentError
 			payment.Status = entities.PaymentStatusError
+			return nil, err
 		} else {
 			payment.Status = entities.PaymentStatusReversed
 			_, err = os.paymentUseCase.UpdatePayment(payment)
