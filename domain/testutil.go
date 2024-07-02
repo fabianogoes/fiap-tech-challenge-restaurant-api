@@ -24,7 +24,10 @@ func (r *AttendantRepositoryMock) CreateAttendant(nome string) (*entities.Attend
 }
 func (r *AttendantRepositoryMock) GetAttendantById(id uint) (*entities.Attendant, error) {
 	args := r.Called(id)
-	return args.Get(0).(*entities.Attendant), args.Error(1)
+	if args.Get(0) != nil {
+		return args.Get(0).(*entities.Attendant), args.Error(1)
+	}
+	return nil, args.Error(1)
 }
 func (r *AttendantRepositoryMock) GetAttendantByName(name string) (*entities.Attendant, error) {
 	args := r.Called(name)
@@ -64,12 +67,18 @@ func (r *CustomerRepositoryMock) CreateCustomer(customer *entities.Customer) (*e
 
 func (r *CustomerRepositoryMock) GetCustomerByCPF(cpf string) (*entities.Customer, error) {
 	args := r.Called(cpf)
-	return args.Get(0).(*entities.Customer), args.Error(1)
+	if args.Get(0) != nil {
+		return args.Get(0).(*entities.Customer), args.Error(1)
+	}
+	return nil, args.Error(1)
 }
 
 func (r *CustomerRepositoryMock) GetCustomerById(id uint) (*entities.Customer, error) {
 	args := r.Called(id)
-	return args.Get(0).(*entities.Customer), args.Error(1)
+	if args.Get(0) != nil {
+		return args.Get(0).(*entities.Customer), args.Error(1)
+	}
+	return nil, args.Error(1)
 }
 
 func (r *CustomerRepositoryMock) GetCustomers() ([]*entities.Customer, error) {
@@ -120,18 +129,44 @@ func (c *KitchenClientMock) ReadyDelivery(orderID uint) error {
 	return args.Error(0)
 }
 
+var orderIDSuccess = uint(1)
+var orderItemIDSuccess = uint(1)
+var OrderItemSuccess = &entities.OrderItem{
+	ID:        orderItemIDSuccess,
+	Product:   ProductSuccess,
+	Quantity:  10,
+	UnitPrice: 10_00,
+	CreatedAt: time.Now(),
+	UpdatedAt: time.Now(),
+}
+var OrderStarted = &entities.Order{
+	ID:        orderIDSuccess,
+	Customer:  CustomerSuccess,
+	Attendant: AttendantSuccess,
+	Date:      time.Now(),
+	Status:    entities.OrderStatusStarted,
+	CreatedAt: time.Now(),
+	UpdatedAt: time.Now(),
+}
+
 type OrderRepositoryMock struct {
 	mock.Mock
 }
 
 func (r *OrderRepositoryMock) CreateOrder(entity *entities.Order) (*entities.Order, error) {
 	args := r.Called(entity)
-	return args.Get(0).(*entities.Order), args.Error(1)
+	if args.Get(0) != nil {
+		return args.Get(0).(*entities.Order), args.Error(1)
+	}
+	return nil, args.Error(1)
 }
 
 func (r *OrderRepositoryMock) GetOrderById(id uint) (*entities.Order, error) {
 	args := r.Called(id)
-	return args.Get(0).(*entities.Order), args.Error(1)
+	if args.Get(0) != nil {
+		return args.Get(0).(*entities.Order), args.Error(1)
+	}
+	return nil, args.Error(1)
 }
 
 func (r *OrderRepositoryMock) GetOrders() ([]*entities.Order, error) {

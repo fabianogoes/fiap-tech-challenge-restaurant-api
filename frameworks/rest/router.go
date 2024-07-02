@@ -51,11 +51,11 @@ func NewRouter(
 
 	orders := router.Group("/orders")
 	{
+		orders.GET("/", orderHandler.GetOrders)
+		orders.GET("/:id", orderHandler.GetOrderById)
 		orders.POST("/", orderHandler.StartOrder)
 		orders.POST("/:id/item", orderHandler.AddItemToOrder)
 		orders.DELETE("/:id/item/:idItem", orderHandler.RemoveItemFromOrder)
-		orders.GET("/:id", orderHandler.GetOrderById)
-		orders.GET("/", orderHandler.GetOrders)
 		orders.PUT("/:id/confirmation", orderHandler.ConfirmationOrder)
 		orders.PUT("/:id/payment", orderHandler.PaymentOrder)
 		orders.POST("/:id/payment/webhook", orderHandler.PaymentWebhook)

@@ -22,7 +22,23 @@ type OrderResponse struct {
 	UpdatedAt     string `json:"updatedAt"`
 }
 
-func ToOrderResponse(order *entities.Order) OrderResponse {
+func ToOrderResponse(order entities.Order) OrderResponse {
+	var payment OrderPaymentResponse
+	if order.Payment != nil {
+		payment = OrderPaymentResponse{
+			Status:      order.Payment.Status.ToString(),
+			Method:      order.Payment.Method.ToString(),
+			ErrorReason: order.Payment.ErrorReason,
+		}
+	}
+
+	var deliveryStatus OrderDeliveryResponse
+	if order.Delivery != nil {
+		deliveryStatus = OrderDeliveryResponse{
+			Status: order.Delivery.Status.ToString(),
+		}
+	}
+
 	response := OrderResponse{
 		ID:            order.ID,
 		CustomerCPF:   order.Customer.CPF,
@@ -32,17 +48,11 @@ func ToOrderResponse(order *entities.Order) OrderResponse {
 		Amount:        fmt.Sprintf("%.2f", order.Amount()),
 		ItemsTotal:    order.ItemsQuantity(),
 		Status:        order.Status.ToString(),
-		Payment: OrderPaymentResponse{
-			Status:      order.Payment.Status.ToString(),
-			Method:      order.Payment.Method.ToString(),
-			ErrorReason: order.Payment.ErrorReason,
-		},
-		Delivery: OrderDeliveryResponse{
-			Status: order.Delivery.Status.ToString(),
-		},
-		Items:     []OrderItemResponse{},
-		CreatedAt: order.CreatedAt.Format("2006-01-02 15:04:05"),
-		UpdatedAt: order.UpdatedAt.Format("2006-01-02 15:04:05"),
+		Payment:       payment,
+		Delivery:      deliveryStatus,
+		Items:         []OrderItemResponse{},
+		CreatedAt:     order.CreatedAt.Format("2006-01-02 15:04:05"),
+		UpdatedAt:     order.UpdatedAt.Format("2006-01-02 15:04:05"),
 	}
 
 	for _, item := range order.Items {
@@ -60,7 +70,7 @@ func ToOrderResponse(order *entities.Order) OrderResponse {
 func ToOrderResponses(orders []*entities.Order) []OrderResponse {
 	var response []OrderResponse
 	for _, order := range orders {
-		response = append(response, ToOrderResponse(order))
+		response = append(response, ToOrderResponse(*order))
 	}
 	return response
 }

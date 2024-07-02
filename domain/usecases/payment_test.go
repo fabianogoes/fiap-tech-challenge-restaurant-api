@@ -12,7 +12,7 @@ import (
 var paymentIDSuccess = uint(1)
 var PaymentPending = &entities.Payment{
 	ID:        paymentIDSuccess,
-	Order:     *OrderStarted,
+	Order:     *domain.OrderStarted,
 	Method:    entities.PaymentMethodCreditCard,
 	Status:    entities.PaymentStatusPending,
 	Value:     100_00,
