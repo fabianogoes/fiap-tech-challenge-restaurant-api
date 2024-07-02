@@ -31,6 +31,45 @@ func NewOrderHandler(
 	}
 }
 
+func (h *OrderHandler) GetOrders(c *gin.Context) {
+	orders, err := h.OrderUseCase.GetOrders()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	if len(orders) == 0 {
+		c.JSON(http.StatusNoContent, gin.H{
+			"message": "No orders found",
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, dto.ToOrderResponses(orders))
+}
+
+func (h *OrderHandler) GetOrderById(c *gin.Context) {
+	orderID, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	order, err := h.OrderUseCase.GetOrderById(uint(orderID))
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, dto.ToOrderResponse(*order))
+}
+
 func (h *OrderHandler) StartOrder(c *gin.Context) {
 	var request dto.StartOrderRequest
 	if err := c.ShouldBindJSON(&request); err != nil {
@@ -40,26 +79,26 @@ func (h *OrderHandler) StartOrder(c *gin.Context) {
 		return
 	}
 
-	if _, err := h.attendantUseCase.GetAttendantById(uint(request.AttendantID)); err != nil {
+	_, errAttendant := h.attendantUseCase.GetAttendantById(request.AttendantID)
+	if errAttendant != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
+			"error": errAttendant.Error(),
 		})
 		return
 	}
 
-	customer, err := h.CustomerUseCase.GetCustomerByCPF(request.CustomerCPF)
-	if err != nil {
+	customer, errCustomer := h.CustomerUseCase.GetCustomerByCPF(request.CustomerCPF)
+	if errCustomer != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
+			"error": errCustomer.Error(),
 		})
 		return
 	}
 
-	order, err := h.OrderUseCase.StartOrder(customer.ID, request.AttendantID)
-
-	if err != nil {
+	order, errStartOrder := h.OrderUseCase.StartOrder(customer.ID, request.AttendantID)
+	if errStartOrder != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": err.Error(),
+			"error": errStartOrder.Error(),
 		})
 		return
 	}
@@ -107,7 +146,7 @@ func (h *OrderHandler) AddItemToOrder(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusCreated, dto.ToOrderResponse(orderUpdated))
+	c.JSON(http.StatusCreated, dto.ToOrderResponse(*orderUpdated))
 }
 
 func (h *OrderHandler) RemoveItemFromOrder(c *gin.Context) {
@@ -144,44 +183,7 @@ func (h *OrderHandler) RemoveItemFromOrder(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusAccepted, dto.ToOrderResponse(orderUpdated))
-}
-
-func (h *OrderHandler) GetOrderById(c *gin.Context) {
-	orderID, err := strconv.Atoi(c.Param("id"))
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
-		return
-	}
-
-	order, err := h.OrderUseCase.GetOrderById(uint(orderID))
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
-		return
-	}
-
-	c.JSON(http.StatusOK, dto.ToOrderResponse(order))
-}
-
-func (h *OrderHandler) GetOrders(c *gin.Context) {
-	orders, err := h.OrderUseCase.GetOrders()
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": err.Error(),
-		})
-	}
-
-	if len(orders) == 0 {
-		c.JSON(http.StatusNoContent, gin.H{
-			"message": "No orders found",
-		})
-	}
-
-	c.JSON(http.StatusOK, dto.ToOrderResponses(orders))
+	c.JSON(http.StatusAccepted, dto.ToOrderResponse(*orderUpdated))
 }
 
 func (h *OrderHandler) ConfirmationOrder(c *gin.Context) {
@@ -210,7 +212,7 @@ func (h *OrderHandler) ConfirmationOrder(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, dto.ToOrderResponse(order))
+	c.JSON(http.StatusOK, dto.ToOrderResponse(*order))
 }
 
 func (h *OrderHandler) PaymentOrder(c *gin.Context) {
@@ -246,7 +248,7 @@ func (h *OrderHandler) PaymentOrder(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, dto.ToOrderResponse(order))
+	c.JSON(http.StatusOK, dto.ToOrderResponse(*order))
 }
 
 func (h *OrderHandler) PaymentWebhook(c *gin.Context) {
@@ -293,7 +295,7 @@ func (h *OrderHandler) PaymentWebhook(c *gin.Context) {
 		}
 	}
 
-	c.JSON(http.StatusOK, dto.ToOrderResponse(order))
+	c.JSON(http.StatusOK, dto.ToOrderResponse(*order))
 }
 
 func (h *OrderHandler) InPreparationOrder(c *gin.Context) {
@@ -322,7 +324,7 @@ func (h *OrderHandler) InPreparationOrder(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, dto.ToOrderResponse(order))
+	c.JSON(http.StatusOK, dto.ToOrderResponse(*order))
 }
 
 func (h *OrderHandler) ReadyForDeliveryOrder(c *gin.Context) {
@@ -351,7 +353,7 @@ func (h *OrderHandler) ReadyForDeliveryOrder(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, dto.ToOrderResponse(order))
+	c.JSON(http.StatusOK, dto.ToOrderResponse(*order))
 }
 
 func (h *OrderHandler) SentForDeliveryOrder(c *gin.Context) {
@@ -380,7 +382,7 @@ func (h *OrderHandler) SentForDeliveryOrder(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, dto.ToOrderResponse(order))
+	c.JSON(http.StatusOK, dto.ToOrderResponse(*order))
 }
 
 func (h *OrderHandler) DeliveredOrder(c *gin.Context) {
@@ -409,7 +411,7 @@ func (h *OrderHandler) DeliveredOrder(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, dto.ToOrderResponse(order))
+	c.JSON(http.StatusOK, dto.ToOrderResponse(*order))
 }
 
 func (h *OrderHandler) CancelOrder(c *gin.Context) {
@@ -437,5 +439,5 @@ func (h *OrderHandler) CancelOrder(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, dto.ToOrderResponse(order))
+	c.JSON(http.StatusOK, dto.ToOrderResponse(*order))
 }

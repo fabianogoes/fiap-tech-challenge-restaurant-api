@@ -333,6 +333,7 @@ func TestProduct_DeleteProductInternalServerError(t *testing.T) {
 
 	assert.NoError(t, err)
 	assert.NotNil(t, response)
+	repository.AssertCalled(t, "DeleteProduct", mock.Anything)
 }
 
 func TestProduct_DeleteProductStatusBadRequest(t *testing.T) {
@@ -351,4 +352,5 @@ func TestProduct_DeleteProductStatusBadRequest(t *testing.T) {
 
 	assert.NoError(t, err)
 	assert.NotNil(t, response)
+	repository.AssertNotCalled(t, "DeleteProduct", mock.Anything)
 }

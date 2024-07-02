@@ -80,6 +80,7 @@ const (
 	OrderStatusPaid
 	OrderStatusPaymentSent
 	OrderStatusPaymentReversed
+	OrderStatusPaymentReversedError
 	OrderStatusPaymentError
 	OrderStatusInPreparation
 	OrderStatusReadyForDelivery
@@ -98,6 +99,7 @@ func (os OrderStatus) ToString() string {
 		"PAID",
 		"PAYMENT_SENT",
 		"PAYMENT_REVERSED",
+		"PAYMENT_REVERSED_ERROR",
 		"PAYMENT_ERROR",
 		"IN_PREPARATION",
 		"READY_FOR_DELIVERY",
@@ -133,6 +135,9 @@ func ToOrderStatus(status string) OrderStatus {
 	case "PAYMENT_REVERSED":
 
 		return OrderStatusPaymentReversed
+	case "PAYMENT_REVERSED_ERROR":
+
+		return OrderStatusPaymentReversedError
 	case "PAYMENT_ERROR":
 
 		return OrderStatusPaymentError
