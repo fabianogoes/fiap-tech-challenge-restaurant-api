@@ -189,13 +189,27 @@ func (r *OrderRepositoryMock) GetOrderItemById(id uint) (*entities.OrderItem, er
 	return args.Get(0).(*entities.OrderItem), args.Error(1)
 }
 
+var PaymentPaid = &entities.Payment{
+	ID:        1,
+	Order:     entities.Order{},
+	Date:      time.Now(),
+	Method:    entities.PaymentMethodCreditCard,
+	Status:    entities.PaymentStatusPaid,
+	Value:     10,
+	CreatedAt: time.Now(),
+	UpdatedAt: time.Now(),
+}
+
 type PaymentRepositoryMock struct {
 	mock.Mock
 }
 
 func (r *PaymentRepositoryMock) GetPaymentById(id uint) (*entities.Payment, error) {
 	args := r.Called(id)
-	return args.Get(0).(*entities.Payment), args.Error(1)
+	if args.Get(0) != nil {
+		return args.Get(0).(*entities.Payment), args.Error(1)
+	}
+	return nil, args.Error(1)
 }
 
 func (r *PaymentRepositoryMock) UpdatePayment(payment *entities.Payment) (*entities.Payment, error) {
