@@ -924,6 +924,134 @@ func TestOrder_ConfirmationOrderSuccess(t *testing.T) {
 	orderRepository.AssertCalled(t, "UpdateOrder", mock.Anything, mock.Anything, mock.Anything)
 }
 
+func TestOrder_ConfirmationInternalServerError(t *testing.T) {
+	attendantRepository := new(domain.AttendantRepositoryMock)
+	customerRepository := new(domain.CustomerRepositoryMock)
+	orderRepository := new(domain.OrderRepositoryMock)
+	productRepository := new(domain.ProductRepositoryMock)
+
+	orderRepository.On("GetOrderById", domain.OrderStarted.ID).Return(domain.OrderStarted, nil)
+	orderRepository.On("UpdateOrder", mock.Anything, mock.Anything, mock.Anything).Return(nil, errors.New("update order error"))
+
+	attendantUseCase := usecases.NewAttendantService(attendantRepository)
+	customerUseCase := usecases.NewCustomerService(customerRepository)
+	productUseCase := usecases.NewProductService(productRepository)
+	orderUseCase := usecases.NewOrderService(
+		orderRepository,
+		customerRepository,
+		attendantRepository,
+		usecases.NewPaymentService(new(domain.PaymentRepositoryMock)),
+		new(domain.PaymentClientMock),
+		new(domain.DeliveryClientMock),
+		new(domain.DeliveryRepositoryMock),
+		new(domain.KitchenClientMock),
+	)
+
+	handler := NewOrderHandler(
+		orderUseCase,
+		customerUseCase,
+		attendantUseCase,
+		productUseCase,
+	)
+
+	setup := SetupTest()
+	setup.PUT("/:id/confirmation", handler.ConfirmationOrder)
+	request, err := http.NewRequest("PUT", fmt.Sprintf("/%d/confirmation", domain.OrderStarted.ID), nil)
+	assert.NoError(t, err)
+
+	response := httptest.NewRecorder()
+	setup.ServeHTTP(response, request)
+	assert.Equal(t, http.StatusInternalServerError, response.Code)
+
+	assert.NoError(t, err)
+	assert.NotNil(t, response)
+	orderRepository.AssertCalled(t, "GetOrderById", domain.OrderStarted.ID)
+	orderRepository.AssertCalled(t, "UpdateOrder", mock.Anything, mock.Anything, mock.Anything)
+}
+
+func TestOrder_ConfirmationBadRequestGetOrder(t *testing.T) {
+	attendantRepository := new(domain.AttendantRepositoryMock)
+	customerRepository := new(domain.CustomerRepositoryMock)
+	orderRepository := new(domain.OrderRepositoryMock)
+	productRepository := new(domain.ProductRepositoryMock)
+
+	orderRepository.On("GetOrderById", domain.OrderStarted.ID).Return(nil, errors.New("get order error"))
+
+	attendantUseCase := usecases.NewAttendantService(attendantRepository)
+	customerUseCase := usecases.NewCustomerService(customerRepository)
+	productUseCase := usecases.NewProductService(productRepository)
+	orderUseCase := usecases.NewOrderService(
+		orderRepository,
+		customerRepository,
+		attendantRepository,
+		usecases.NewPaymentService(new(domain.PaymentRepositoryMock)),
+		new(domain.PaymentClientMock),
+		new(domain.DeliveryClientMock),
+		new(domain.DeliveryRepositoryMock),
+		new(domain.KitchenClientMock),
+	)
+
+	handler := NewOrderHandler(
+		orderUseCase,
+		customerUseCase,
+		attendantUseCase,
+		productUseCase,
+	)
+
+	setup := SetupTest()
+	setup.PUT("/:id/confirmation", handler.ConfirmationOrder)
+	request, err := http.NewRequest("PUT", fmt.Sprintf("/%d/confirmation", domain.OrderStarted.ID), nil)
+	assert.NoError(t, err)
+
+	response := httptest.NewRecorder()
+	setup.ServeHTTP(response, request)
+	assert.Equal(t, http.StatusBadRequest, response.Code)
+
+	assert.NoError(t, err)
+	assert.NotNil(t, response)
+	orderRepository.AssertCalled(t, "GetOrderById", domain.OrderStarted.ID)
+}
+
+func TestOrder_ConfirmationBadRequestId(t *testing.T) {
+	attendantRepository := new(domain.AttendantRepositoryMock)
+	customerRepository := new(domain.CustomerRepositoryMock)
+	orderRepository := new(domain.OrderRepositoryMock)
+	productRepository := new(domain.ProductRepositoryMock)
+
+	attendantUseCase := usecases.NewAttendantService(attendantRepository)
+	customerUseCase := usecases.NewCustomerService(customerRepository)
+	productUseCase := usecases.NewProductService(productRepository)
+	orderUseCase := usecases.NewOrderService(
+		orderRepository,
+		customerRepository,
+		attendantRepository,
+		usecases.NewPaymentService(new(domain.PaymentRepositoryMock)),
+		new(domain.PaymentClientMock),
+		new(domain.DeliveryClientMock),
+		new(domain.DeliveryRepositoryMock),
+		new(domain.KitchenClientMock),
+	)
+
+	handler := NewOrderHandler(
+		orderUseCase,
+		customerUseCase,
+		attendantUseCase,
+		productUseCase,
+	)
+
+	setup := SetupTest()
+	setup.PUT("/:id/confirmation", handler.ConfirmationOrder)
+	request, err := http.NewRequest("PUT", "/x/confirmation", nil)
+	assert.NoError(t, err)
+
+	response := httptest.NewRecorder()
+	setup.ServeHTTP(response, request)
+	assert.Equal(t, http.StatusBadRequest, response.Code)
+
+	assert.NoError(t, err)
+	assert.NotNil(t, response)
+}
+
 func TestOrder_PaymentOrderSuccess(t *testing.T) {
 	payload := dto.PaymentOrderRequest{PaymentMethod: entities.PaymentMethodCreditCard.ToString()}
 	orderConfirmed := domain.OrderStarted
