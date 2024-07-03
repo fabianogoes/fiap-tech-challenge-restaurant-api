@@ -1870,6 +1870,144 @@ func TestOrder_InPreparationOrderSuccess(t *testing.T) {
 	kitchenClient.AssertCalled(t, "Preparation", mock.Anything)
 }
 
+func TestOrder_InPreparationInternalServerError(t *testing.T) {
+	orderPaid := domain.OrderStarted
+	orderPaid.Status = entities.OrderStatusPaid
+	orderPaid.Items = []*entities.OrderItem{domain.OrderItemSuccess}
+	orderPaid.Payment = &entities.Payment{Status: entities.PaymentStatusPending}
+
+	attendantRepository := new(domain.AttendantRepositoryMock)
+	customerRepository := new(domain.CustomerRepositoryMock)
+	orderRepository := new(domain.OrderRepositoryMock)
+	productRepository := new(domain.ProductRepositoryMock)
+	kitchenClient := new(domain.KitchenClientMock)
+
+	orderRepository.On("GetOrderById", domain.OrderStarted.ID).Return(domain.OrderStarted, nil)
+	orderRepository.On("UpdateOrder", mock.Anything, mock.Anything, mock.Anything).Return(nil, errors.New("update order error"))
+	kitchenClient.On("Preparation", mock.Anything).Return(nil)
+
+	attendantUseCase := usecases.NewAttendantService(attendantRepository)
+	customerUseCase := usecases.NewCustomerService(customerRepository)
+	productUseCase := usecases.NewProductService(productRepository)
+	orderUseCase := usecases.NewOrderService(
+		orderRepository,
+		customerRepository,
+		attendantRepository,
+		usecases.NewPaymentService(new(domain.PaymentRepositoryMock)),
+		new(domain.PaymentClientMock),
+		new(domain.DeliveryClientMock),
+		new(domain.DeliveryRepositoryMock),
+		kitchenClient,
+	)
+
+	handler := NewOrderHandler(
+		orderUseCase,
+		customerUseCase,
+		attendantUseCase,
+		productUseCase,
+	)
+
+	setup := SetupTest()
+	setup.PUT("/:id/in-preparation", handler.InPreparationOrder)
+	request, err := http.NewRequest("PUT", fmt.Sprintf("/%d/in-preparation", domain.OrderStarted.ID), nil)
+	assert.NoError(t, err)
+
+	response := httptest.NewRecorder()
+	setup.ServeHTTP(response, request)
+	assert.Equal(t, http.StatusInternalServerError, response.Code)
+
+	assert.NoError(t, err)
+	assert.NotNil(t, response)
+	orderRepository.AssertCalled(t, "GetOrderById", domain.OrderStarted.ID)
+	orderRepository.AssertCalled(t, "UpdateOrder", mock.Anything, mock.Anything, mock.Anything)
+	kitchenClient.AssertCalled(t, "Preparation", mock.Anything)
+}
+
+func TestOrder_InPreparationBadRequestGetOrder(t *testing.T) {
+	attendantRepository := new(domain.AttendantRepositoryMock)
+	customerRepository := new(domain.CustomerRepositoryMock)
+	orderRepository := new(domain.OrderRepositoryMock)
+	productRepository := new(domain.ProductRepositoryMock)
+	kitchenClient := new(domain.KitchenClientMock)
+
+	orderRepository.On("GetOrderById", domain.OrderStarted.ID).Return(nil, errors.New("get order error"))
+
+	attendantUseCase := usecases.NewAttendantService(attendantRepository)
+	customerUseCase := usecases.NewCustomerService(customerRepository)
+	productUseCase := usecases.NewProductService(productRepository)
+	orderUseCase := usecases.NewOrderService(
+		orderRepository,
+		customerRepository,
+		attendantRepository,
+		usecases.NewPaymentService(new(domain.PaymentRepositoryMock)),
+		new(domain.PaymentClientMock),
+		new(domain.DeliveryClientMock),
+		new(domain.DeliveryRepositoryMock),
+		kitchenClient,
+	)
+
+	handler := NewOrderHandler(
+		orderUseCase,
+		customerUseCase,
+		attendantUseCase,
+		productUseCase,
+	)
+
+	setup := SetupTest()
+	setup.PUT("/:id/in-preparation", handler.InPreparationOrder)
+	request, err := http.NewRequest("PUT", fmt.Sprintf("/%d/in-preparation", domain.OrderStarted.ID), nil)
+	assert.NoError(t, err)
+
+	response := httptest.NewRecorder()
+	setup.ServeHTTP(response, request)
+	assert.Equal(t, http.StatusBadRequest, response.Code)
+
+	assert.NoError(t, err)
+	assert.NotNil(t, response)
+	orderRepository.AssertCalled(t, "GetOrderById", domain.OrderStarted.ID)
+}
+
+func TestOrder_InPreparationBadRequestId(t *testing.T) {
+	attendantRepository := new(domain.AttendantRepositoryMock)
+	customerRepository := new(domain.CustomerRepositoryMock)
+	orderRepository := new(domain.OrderRepositoryMock)
+	productRepository := new(domain.ProductRepositoryMock)
+	kitchenClient := new(domain.KitchenClientMock)
+
+	attendantUseCase := usecases.NewAttendantService(attendantRepository)
+	customerUseCase := usecases.NewCustomerService(customerRepository)
+	productUseCase := usecases.NewProductService(productRepository)
+	orderUseCase := usecases.NewOrderService(
+		orderRepository,
+		customerRepository,
+		attendantRepository,
+		usecases.NewPaymentService(new(domain.PaymentRepositoryMock)),
+		new(domain.PaymentClientMock),
+		new(domain.DeliveryClientMock),
+		new(domain.DeliveryRepositoryMock),
+		kitchenClient,
+	)
+
+	handler := NewOrderHandler(
+		orderUseCase,
+		customerUseCase,
+		attendantUseCase,
+		productUseCase,
+	)
+
+	setup := SetupTest()
+	setup.PUT("/:id/in-preparation", handler.InPreparationOrder)
+	request, err := http.NewRequest("PUT", "/x/in-preparation", nil)
+	assert.NoError(t, err)
+
+	response := httptest.NewRecorder()
+	setup.ServeHTTP(response, request)
+	assert.Equal(t, http.StatusBadRequest, response.Code)
+
+	assert.NoError(t, err)
+	assert.NotNil(t, response)
+}
+
 func TestOrder_ReadyForDeliveryOrderSuccess(t *testing.T) {
 	orderInPreparation := domain.OrderStarted
 	orderInPreparation.Status = entities.OrderStatusInPreparation
