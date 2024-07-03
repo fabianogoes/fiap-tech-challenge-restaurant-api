@@ -120,6 +120,7 @@ func (h *OrderHandler) AddItemToOrder(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
 		})
+		return
 	}
 
 	order, err := h.OrderUseCase.GetOrderById(uint(orderID))

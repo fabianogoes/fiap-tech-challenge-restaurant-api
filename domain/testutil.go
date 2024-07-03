@@ -267,12 +267,18 @@ type ProductRepositoryMock struct {
 
 func (r *ProductRepositoryMock) CreateProduct(name string, price float64, categoryID uint) (*entities.Product, error) {
 	args := r.Called(name, price, categoryID)
-	return args.Get(0).(*entities.Product), args.Error(1)
+	if args.Get(0) != nil {
+		return args.Get(0).(*entities.Product), args.Error(1)
+	}
+	return nil, args.Error(1)
 }
 
 func (r *ProductRepositoryMock) GetProductById(id uint) (*entities.Product, error) {
 	args := r.Called(id)
-	return args.Get(0).(*entities.Product), args.Error(1)
+	if args.Get(0) != nil {
+		return args.Get(0).(*entities.Product), args.Error(1)
+	}
+	return nil, args.Error(1)
 }
 
 func (r *ProductRepositoryMock) GetProductByName(name string) (*entities.Product, error) {
