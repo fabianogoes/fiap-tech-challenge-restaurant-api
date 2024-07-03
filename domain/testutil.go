@@ -191,7 +191,10 @@ func (r *OrderRepositoryMock) GetOrders() ([]*entities.Order, error) {
 
 func (r *OrderRepositoryMock) UpdateOrder(order *entities.Order) (*entities.Order, error) {
 	args := r.Called(order)
-	return args.Get(0).(*entities.Order), args.Error(1)
+	if args.Get(0) != nil {
+		return args.Get(0).(*entities.Order), args.Error(1)
+	}
+	return nil, args.Error(1)
 }
 
 func (r *OrderRepositoryMock) RemoveItemFromOrder(idItem uint) error {
