@@ -37,6 +37,89 @@ func TestOrderService_StartOrder(t *testing.T) {
 	assert.NotNil(t, order)
 }
 
+func TestOrderService_StartOrderError(t *testing.T) {
+	customerRepository := new(domain.CustomerRepositoryMock)
+	customerRepository.On("GetCustomerById", mock.Anything).Return(domain.CustomerSuccess, nil)
+
+	attendantRepository := new(domain.AttendantRepositoryMock)
+	attendantRepository.On("GetAttendantById", mock.Anything).Return(domain.AttendantSuccess, nil)
+
+	paymentService := NewPaymentService(new(domain.PaymentRepositoryMock))
+
+	repository := new(domain.OrderRepositoryMock)
+	repository.On("CreateOrder", mock.Anything).Return(nil, errors.New("create order error"))
+
+	service := NewOrderService(
+		repository,
+		customerRepository,
+		attendantRepository,
+		paymentService,
+		new(domain.PaymentClientMock),
+		new(domain.DeliveryClientMock),
+		new(domain.DeliveryRepositoryMock),
+		new(domain.KitchenClientMock),
+	)
+
+	order, err := service.StartOrder(domain.CustomerSuccess.ID, domain.AttendantSuccess.ID)
+	assert.Error(t, err)
+	assert.Nil(t, order)
+}
+
+func TestOrderService_StartOrderGetAttendantError(t *testing.T) {
+	customerRepository := new(domain.CustomerRepositoryMock)
+	customerRepository.On("GetCustomerById", mock.Anything).Return(domain.CustomerSuccess, nil)
+
+	attendantRepository := new(domain.AttendantRepositoryMock)
+	attendantRepository.On("GetAttendantById", mock.Anything).Return(nil, errors.New("get attendant error"))
+
+	paymentService := NewPaymentService(new(domain.PaymentRepositoryMock))
+
+	repository := new(domain.OrderRepositoryMock)
+	repository.On("CreateOrder", mock.Anything).Return(domain.OrderStarted, nil)
+
+	service := NewOrderService(
+		repository,
+		customerRepository,
+		attendantRepository,
+		paymentService,
+		new(domain.PaymentClientMock),
+		new(domain.DeliveryClientMock),
+		new(domain.DeliveryRepositoryMock),
+		new(domain.KitchenClientMock),
+	)
+
+	order, err := service.StartOrder(domain.CustomerSuccess.ID, domain.AttendantSuccess.ID)
+	assert.Error(t, err)
+	assert.Nil(t, order)
+}
+
+func TestOrderService_StartOrderGetCustomerError(t *testing.T) {
+	customerRepository := new(domain.CustomerRepositoryMock)
+	customerRepository.On("GetCustomerById", mock.Anything).Return(nil, errors.New("get customer error"))
+
+	attendantRepository := new(domain.AttendantRepositoryMock)
+
+	paymentService := NewPaymentService(new(domain.PaymentRepositoryMock))
+
+	repository := new(domain.OrderRepositoryMock)
+	repository.On("CreateOrder", mock.Anything).Return(domain.OrderStarted, nil)
+
+	service := NewOrderService(
+		repository,
+		customerRepository,
+		attendantRepository,
+		paymentService,
+		new(domain.PaymentClientMock),
+		new(domain.DeliveryClientMock),
+		new(domain.DeliveryRepositoryMock),
+		new(domain.KitchenClientMock),
+	)
+
+	order, err := service.StartOrder(domain.CustomerSuccess.ID, domain.AttendantSuccess.ID)
+	assert.Error(t, err)
+	assert.Nil(t, order)
+}
+
 func TestOrderService_GetOrderById(t *testing.T) {
 	customerRepository := new(domain.CustomerRepositoryMock)
 	customerRepository.On("GetCustomerById", mock.Anything).Return(domain.CustomerSuccess, nil)
@@ -160,6 +243,77 @@ func TestOrderService_RemoveItemFromOrder(t *testing.T) {
 	assert.NotNil(t, order)
 }
 
+func TestOrderService_RemoveItemFromOrderSentForDeliveryError(t *testing.T) {
+	customerRepository := new(domain.CustomerRepositoryMock)
+	customerRepository.On("GetCustomerById", mock.Anything).Return(domain.CustomerSuccess, nil)
+
+	attendantRepository := new(domain.AttendantRepositoryMock)
+	attendantRepository.On("GetAttendantById", mock.Anything).Return(domain.AttendantSuccess, nil)
+
+	paymentRepository := new(domain.PaymentRepositoryMock)
+	paymentRepository.On("GetPaymentById", mock.Anything).Return(PaymentPending, nil)
+	paymentRepository.On("UpdatePayment", mock.Anything).Return(PaymentPending, nil)
+	paymentService := NewPaymentService(paymentRepository)
+
+	repository := new(domain.OrderRepositoryMock)
+	repository.On("GetOrderItemById", mock.Anything).Return(domain.OrderItemSuccess, nil)
+	repository.On("RemoveItemFromOrder", mock.Anything).Return(nil)
+	repository.On("UpdateOrder", mock.Anything).Return(domain.OrderStarted, nil)
+
+	service := NewOrderService(
+		repository,
+		customerRepository,
+		attendantRepository,
+		paymentService,
+		new(domain.PaymentClientMock),
+		new(domain.DeliveryClientMock),
+		new(domain.DeliveryRepositoryMock),
+		new(domain.KitchenClientMock),
+	)
+
+	orderRequest := domain.OrderStarted
+	orderRequest.Status = entities.OrderStatusSentForDelivery
+	orderRequest.Payment = &entities.Payment{
+		ID:     domain.ProductSuccess.ID,
+		Status: entities.PaymentStatusPending,
+	}
+
+	order, err := service.RemoveItemFromOrder(orderRequest, 1)
+	assert.Error(t, err)
+	assert.Nil(t, order)
+}
+
+func TestOrderService_RemoveItemFromOrderGetItemError(t *testing.T) {
+	customerRepository := new(domain.CustomerRepositoryMock)
+	attendantRepository := new(domain.AttendantRepositoryMock)
+	paymentRepository := new(domain.PaymentRepositoryMock)
+	paymentService := NewPaymentService(paymentRepository)
+
+	repository := new(domain.OrderRepositoryMock)
+	repository.On("GetOrderItemById", mock.Anything).Return(nil, errors.New("get item error"))
+
+	service := NewOrderService(
+		repository,
+		customerRepository,
+		attendantRepository,
+		paymentService,
+		new(domain.PaymentClientMock),
+		new(domain.DeliveryClientMock),
+		new(domain.DeliveryRepositoryMock),
+		new(domain.KitchenClientMock),
+	)
+
+	orderRequest := domain.OrderStarted
+	orderRequest.Payment = &entities.Payment{
+		ID:     domain.ProductSuccess.ID,
+		Status: entities.PaymentStatusPending,
+	}
+
+	order, err := service.RemoveItemFromOrder(orderRequest, 1)
+	assert.Error(t, err)
+	assert.Nil(t, order)
+}
+
 func TestOrderService_RemoveItemFromOrderPaid(t *testing.T) {
 	customerRepository := new(domain.CustomerRepositoryMock)
 	customerRepository.On("GetCustomerById", mock.Anything).Return(domain.CustomerSuccess, nil)
@@ -192,6 +346,7 @@ func TestOrderService_RemoveItemFromOrderPaid(t *testing.T) {
 	)
 
 	orderRequest := domain.OrderStarted
+	orderRequest.Status = entities.OrderStatusPaid
 	orderRequest.Payment = &entities.Payment{
 		ID:     domain.ProductSuccess.ID,
 		Status: entities.PaymentStatusPaid,
@@ -200,6 +355,49 @@ func TestOrderService_RemoveItemFromOrderPaid(t *testing.T) {
 	order, err := service.RemoveItemFromOrder(orderRequest, 1)
 	assert.NoError(t, err)
 	assert.NotNil(t, order)
+}
+
+func TestOrderService_RemoveItemFromOrderPaidUpdatePaymentError(t *testing.T) {
+	customerRepository := new(domain.CustomerRepositoryMock)
+	customerRepository.On("GetCustomerById", mock.Anything).Return(domain.CustomerSuccess, nil)
+
+	attendantRepository := new(domain.AttendantRepositoryMock)
+	attendantRepository.On("GetAttendantById", mock.Anything).Return(domain.AttendantSuccess, nil)
+
+	paymentRepository := new(domain.PaymentRepositoryMock)
+	paymentRepository.On("GetPaymentById", mock.Anything).Return(PaymentPending, nil)
+	paymentRepository.On("UpdatePayment", mock.Anything).Return(nil, errors.New("update payment error"))
+	paymentService := NewPaymentService(paymentRepository)
+
+	repository := new(domain.OrderRepositoryMock)
+	repository.On("GetOrderItemById", mock.Anything).Return(domain.OrderItemSuccess, nil)
+	repository.On("RemoveItemFromOrder", mock.Anything).Return(nil)
+	repository.On("UpdateOrder", mock.Anything).Return(domain.OrderStarted, nil)
+
+	paymentClient := new(domain.PaymentClientMock)
+	paymentClient.On("Reverse", mock.Anything).Return(nil)
+
+	service := NewOrderService(
+		repository,
+		customerRepository,
+		attendantRepository,
+		paymentService,
+		paymentClient,
+		new(domain.DeliveryClientMock),
+		new(domain.DeliveryRepositoryMock),
+		new(domain.KitchenClientMock),
+	)
+
+	orderRequest := domain.OrderStarted
+	orderRequest.Status = entities.OrderStatusPaid
+	orderRequest.Payment = &entities.Payment{
+		ID:     domain.ProductSuccess.ID,
+		Status: entities.PaymentStatusPaid,
+	}
+
+	order, err := service.RemoveItemFromOrder(orderRequest, 1)
+	assert.Error(t, err)
+	assert.Nil(t, order)
 }
 
 func TestOrderService_RemoveItemFromOrderPaidReverseError(t *testing.T) {
