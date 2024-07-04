@@ -239,6 +239,7 @@ func (h *OrderHandler) PaymentOrder(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
 		})
+		return
 	}
 
 	order, err = h.OrderUseCase.PaymentOrder(order, request.PaymentMethod)
