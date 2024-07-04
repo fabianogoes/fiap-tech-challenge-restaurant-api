@@ -204,7 +204,10 @@ func (r *OrderRepositoryMock) RemoveItemFromOrder(idItem uint) error {
 
 func (r *OrderRepositoryMock) GetOrderItemById(id uint) (*entities.OrderItem, error) {
 	args := r.Called(id)
-	return args.Get(0).(*entities.OrderItem), args.Error(1)
+	if args.Get(0) != nil {
+		return args.Get(0).(*entities.OrderItem), args.Error(1)
+	}
+	return nil, args.Error(1)
 }
 
 var PaymentPaid = &entities.Payment{
@@ -232,7 +235,10 @@ func (r *PaymentRepositoryMock) GetPaymentById(id uint) (*entities.Payment, erro
 
 func (r *PaymentRepositoryMock) UpdatePayment(payment *entities.Payment) (*entities.Payment, error) {
 	args := r.Called(payment)
-	return args.Get(0).(*entities.Payment), args.Error(1)
+	if args.Get(0) != nil {
+		return args.Get(0).(*entities.Payment), args.Error(1)
+	}
+	return nil, args.Error(1)
 }
 
 type PaymentClientMock struct {
