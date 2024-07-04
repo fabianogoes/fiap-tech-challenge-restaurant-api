@@ -15,7 +15,7 @@ type Order struct {
 	UpdatedAt time.Time
 }
 
-func NewOrder(customer *Customer, attendant *Attendant) (*Order, error) {
+func NewOrder(customer *Customer, attendant *Attendant) *Order {
 	return &Order{
 		Customer:  customer,
 		Attendant: attendant,
@@ -29,7 +29,7 @@ func NewOrder(customer *Customer, attendant *Attendant) (*Order, error) {
 		Delivery: &Delivery{
 			Status: DeliveryStatusPending,
 		},
-	}, nil
+	}
 }
 
 func (o *Order) Amount() float64 {

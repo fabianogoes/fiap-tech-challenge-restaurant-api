@@ -56,10 +56,7 @@ func (os *OrderService) StartOrder(customerID uint, attendantID uint) (*entities
 		return nil, err
 	}
 
-	order, err := entities.NewOrder(customer, attendant)
-	if err != nil {
-		return nil, err
-	}
+	order := entities.NewOrder(customer, attendant)
 
 	return os.orderRepository.CreateOrder(order)
 }
