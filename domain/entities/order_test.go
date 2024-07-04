@@ -6,8 +6,7 @@ import (
 )
 
 func Test_Order(t *testing.T) {
-	order, err := NewOrder(&Customer{}, &Attendant{})
-	assert.NoError(t, err)
+	order := NewOrder(&Customer{}, &Attendant{})
 	assert.NotNil(t, order)
 
 	product := &Product{Price: 1}

@@ -43,7 +43,10 @@ func (r *AttendantRepositoryMock) UpdateAttendant(attendant *entities.Attendant)
 }
 func (r *AttendantRepositoryMock) DeleteAttendant(id uint) error {
 	args := r.Called(id)
-	return args.Error(0)
+	if args.Get(0) != nil {
+		return args.Error(0)
+	}
+	return nil
 }
 
 var customerIDSuccess = uint(1)
@@ -93,7 +96,10 @@ func (r *CustomerRepositoryMock) UpdateCustomer(customer *entities.Customer) (*e
 
 func (r *CustomerRepositoryMock) DeleteCustomer(id uint) error {
 	args := r.Called(id)
-	return args.Error(0)
+	if args.Get(0) != nil {
+		return args.Error(0)
+	}
+	return nil
 }
 
 var DeliverySuccess = &entities.Delivery{
@@ -133,12 +139,18 @@ type KitchenClientMock struct {
 
 func (c *KitchenClientMock) Preparation(order *entities.Order) error {
 	args := c.Called(order)
-	return args.Error(0)
+	if args.Get(0) != nil {
+		return args.Error(0)
+	}
+	return nil
 }
 
 func (c *KitchenClientMock) ReadyDelivery(orderID uint) error {
 	args := c.Called(orderID)
-	return args.Error(0)
+	if args.Get(0) != nil {
+		return args.Error(0)
+	}
+	return nil
 }
 
 var orderIDSuccess = uint(1)
@@ -199,7 +211,10 @@ func (r *OrderRepositoryMock) UpdateOrder(order *entities.Order) (*entities.Orde
 
 func (r *OrderRepositoryMock) RemoveItemFromOrder(idItem uint) error {
 	args := r.Called(idItem)
-	return args.Error(0)
+	if args.Get(0) != nil {
+		return args.Error(0)
+	}
+	return nil
 }
 
 func (r *OrderRepositoryMock) GetOrderItemById(id uint) (*entities.OrderItem, error) {
@@ -247,12 +262,18 @@ type PaymentClientMock struct {
 
 func (c *PaymentClientMock) Pay(order *entities.Order, paymentMethod string) error {
 	args := c.Called(order, paymentMethod)
-	return args.Error(0)
+	if args.Get(0) != nil {
+		return args.Error(0)
+	}
+	return nil
 }
 
 func (c *PaymentClientMock) Reverse(order *entities.Order) error {
 	args := c.Called(order)
-	return args.Error(0)
+	if args.Get(0) != nil {
+		return args.Error(0)
+	}
+	return nil
 }
 
 var productIDSuccess = uint(1)
@@ -319,5 +340,8 @@ type DeliveryClientMock struct {
 
 func (c *DeliveryClientMock) Deliver(order *entities.Order) error {
 	args := c.Called(order)
-	return args.Error(0)
+	if args.Get(0) != nil {
+		return args.Error(0)
+	}
+	return nil
 }
