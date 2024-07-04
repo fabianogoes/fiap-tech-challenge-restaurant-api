@@ -125,12 +125,18 @@ func (r *DeliveryRepositoryMock) GetDeliveryById(id uint) (*entities.Delivery, e
 
 func (r *DeliveryRepositoryMock) CreateDelivery(delivery *entities.Delivery) (*entities.Delivery, error) {
 	args := r.Called(delivery)
-	return args.Get(0).(*entities.Delivery), args.Error(1)
+	if args.Get(0) != nil {
+		return args.Get(0).(*entities.Delivery), args.Error(1)
+	}
+	return nil, args.Error(1)
 }
 
 func (r *DeliveryRepositoryMock) UpdateDelivery(delivery *entities.Delivery) (*entities.Delivery, error) {
 	args := r.Called(delivery)
-	return args.Get(0).(*entities.Delivery), args.Error(1)
+	if args.Get(0) != nil {
+		return args.Get(0).(*entities.Delivery), args.Error(1)
+	}
+	return nil, args.Error(1)
 }
 
 type KitchenClientMock struct {
