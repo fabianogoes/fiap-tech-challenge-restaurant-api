@@ -105,6 +105,9 @@ jobs:
       contents: write
       attestations: write
     steps:
+      - name: Check out the repo
+        uses: actions/checkout@v4
+
       - name: Configure AWS Credentials for GitHub Actions
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -113,6 +116,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
           lambda_layer_publish: true
+          
       - name: AWS get-caller-identity
         run: |
           aws sts get-caller-identity
@@ -124,7 +128,8 @@ jobs:
 
       - name: EKS apply secrets
         run: |
-          pwd && kubectl apply -f ${{ env.EKS_DIRECTORY }}secrets.yaml
+          ls -la 
+          kubectl apply -f ${{ env.EKS_DIRECTORY }}secrets.yaml
 
       - name: EKS apply deployment
         run: |
