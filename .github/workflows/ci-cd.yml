@@ -44,16 +44,6 @@ jobs:
       - name: Run tests with coverage
         run: go test -coverprofile=coverage.out ./...
 
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v4.0.1
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          slug: fabianogoes/fiap-tech-challenge-restaurant-api
-          files: coverage.out
-          flags: unittests
-          name: codecov-umbrella
-          fail_ci_if_error: true
-
       - name: SonarCloud Scan
         uses: sonarsource/sonarcloud-github-action@master
         env:
