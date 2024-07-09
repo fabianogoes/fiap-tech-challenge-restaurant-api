@@ -124,7 +124,7 @@ jobs:
 
       - name: EKS apply secrets
         run: |
-          kubectl apply -f ${{ env.EKS_DIRECTORY }}secrets.yaml
+          pwd && kubectl apply -f ${{ env.EKS_DIRECTORY }}secrets.yaml
 
       - name: EKS apply deployment
         run: |
