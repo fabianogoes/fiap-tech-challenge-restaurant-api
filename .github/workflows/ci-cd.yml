@@ -78,8 +78,9 @@ jobs:
       - name: Set short git commit SHA
         id: vars
         run: |
-          calculatedSha=$(git rev-parse --short ${{ github.sha }})
-          echo "::set-output name=docker_tag::${{ secrets.DOCKER_USERNAME }}/${{ env.DOCKER_HUB_REPOSITORY }}:$calculatedSha"
+          # calculatedSha=$(git rev-parse --short ${{ github.sha }})
+          # echo "::set-output name=docker_tag::${{ secrets.DOCKER_USERNAME }}/${{ env.DOCKER_HUB_REPOSITORY }}:$calculatedSha"
+          echo "::set-output name=docker_tag::${{ secrets.DOCKER_USERNAME }}/${{ env.DOCKER_HUB_REPOSITORY }}:latest"
 
       - name: Confirm git commit SHA output
         run: |
@@ -116,7 +117,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
           lambda_layer_publish: true
-          
+
       - name: AWS get-caller-identity
         run: |
           aws sts get-caller-identity
@@ -133,7 +134,7 @@ jobs:
 
       - name: EKS apply deployment
         run: |
-          sed -i "s|image:.*|image: ${{ steps.vars.outputs.docker_tag }}|g" ${{ env.EKS_DIRECTORY }}deployment.yaml
+          # sed -i "s|image:.*|image: ${{ steps.vars.outputs.docker_tag }}|g" ${{ env.EKS_DIRECTORY }}deployment.yaml
           kubectl apply -f ${{ env.EKS_DIRECTORY }}deployment.yaml
 
       - name: EKS apply hpa
