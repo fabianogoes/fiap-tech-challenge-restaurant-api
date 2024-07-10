@@ -52,7 +52,7 @@ jobs:
 
   build_docker:
     name: Build Docker Image
-    if: false
+    # if: false
     runs-on: ubuntu-latest
     needs: test
     permissions:
@@ -78,8 +78,9 @@ jobs:
       - name: Set short git commit SHA
         id: vars
         run: |
-          calculatedSha=$(git rev-parse --short ${{ github.sha }})
-          echo "::set-output name=docker_tag::${{ secrets.DOCKER_USERNAME }}/${{ env.DOCKER_HUB_REPOSITORY }}:$calculatedSha"
+          # calculatedSha=$(git rev-parse --short ${{ github.sha }})
+          # echo "::set-output name=docker_tag::${{ secrets.DOCKER_USERNAME }}/${{ env.DOCKER_HUB_REPOSITORY }}:$calculatedSha"
+          echo "::set-output name=docker_tag::${{ secrets.DOCKER_USERNAME }}/${{ env.DOCKER_HUB_REPOSITORY }}:latest"
 
       - name: Confirm git commit SHA output
         run: |
@@ -97,7 +98,7 @@ jobs:
 
   deploy:
     name: Deploy Kubernetes
-    if: false
+    #if: false
     runs-on: ubuntu-latest
     needs: build_docker
     permissions:
@@ -105,6 +106,9 @@ jobs:
       contents: write
       attestations: write
     steps:
+      - name: Check out the repo
+        uses: actions/checkout@v4
+
       - name: Configure AWS Credentials for GitHub Actions
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -113,6 +117,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
           lambda_layer_publish: true
+
       - name: AWS get-caller-identity
         run: |
           aws sts get-caller-identity
@@ -124,11 +129,12 @@ jobs:
 
       - name: EKS apply secrets
         run: |
+          ls -la 
           kubectl apply -f ${{ env.EKS_DIRECTORY }}secrets.yaml
 
       - name: EKS apply deployment
         run: |
-          sed -i "s|image:.*|image: ${{ steps.vars.outputs.docker_tag }}|g" ${{ env.EKS_DIRECTORY }}deployment.yaml
+          # sed -i "s|image:.*|image: ${{ steps.vars.outputs.docker_tag }}|g" ${{ env.EKS_DIRECTORY }}deployment.yaml
           kubectl apply -f ${{ env.EKS_DIRECTORY }}deployment.yaml
 
       - name: EKS apply hpa
