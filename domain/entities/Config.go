@@ -23,15 +23,15 @@ func NewConfig() *Config {
 	loadEnvironment()
 
 	config := &Config{
-		Environment: os.Getenv("APP_ENV"),
-		AppPort:     os.Getenv("APP_PORT"),
-		DBHost:      os.Getenv("DB_HOST"),
-		DBPort:      os.Getenv("DB_PORT"),
-		DBName:      os.Getenv("DB_DATABASE"),
-		DBUser:      os.Getenv("DB_USERNAME"),
-		DBPassword:  os.Getenv("DB_PASSWORD"),
-		APIVersion:  os.Getenv("API_VERSION"),
-		TokenSecret: os.Getenv("TOKEN_SECRET"),
+		Environment: strings.TrimRight(os.Getenv("APP_ENV"), "\n\r"),
+		AppPort:     strings.TrimRight(os.Getenv("APP_PORT"), "\n\r"),
+		DBHost:      strings.TrimRight(os.Getenv("DB_HOST"), "\n\r"),
+		DBPort:      strings.TrimRight(os.Getenv("DB_PORT"), "\n\r"),
+		DBName:      strings.TrimRight(os.Getenv("DB_DATABASE"), "\n\r"),
+		DBUser:      strings.TrimRight(os.Getenv("DB_USERNAME"), "\n\r"),
+		DBPassword:  strings.TrimRight(os.Getenv("DB_PASSWORD"), "\n\r"),
+		APIVersion:  strings.TrimRight(os.Getenv("API_VERSION"), "\n\r"),
+		TokenSecret: strings.TrimRight(os.Getenv("TOKEN_SECRET"), "\n\r"),
 	}
 
 	printConfig(config)
