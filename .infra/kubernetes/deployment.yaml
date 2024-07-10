@@ -39,26 +39,11 @@ spec:
             - secretRef:
                 name: app-secret
           env:
-            - name: DB_HOST
+            - name: DB_CONNECTION
               valueFrom:
                 secretKeyRef:
                   name: app-secret
-                  key: DB_HOST
-            - name: DB_DATABASE
-              valueFrom:
-                secretKeyRef:
-                  name: app-secret
-                  key: POSTGRES_DB
-            - name: DB_USERNAME
-              valueFrom:
-                secretKeyRef:
-                  name: app-secret
-                  key: POSTGRES_USER
-            - name: DB_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: app-secret
-                  key: POSTGRES_PASSWORD
+                  key: DB_CONNECTION
             - name: TOKEN_SECRET
               valueFrom:
                 secretKeyRef:
@@ -71,6 +56,6 @@ spec:
             - name: APP_PORT
               value: ":8080"
             - name: API_VERSION
-              value: "2024.5.1.5"
+              value: "4.0"
       restartPolicy: Always
 

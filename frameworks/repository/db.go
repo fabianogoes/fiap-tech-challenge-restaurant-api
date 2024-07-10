@@ -1,40 +1,18 @@
 package repository
 
 import (
-	"context"
 	"fmt"
 	"github.com/fabianogoes/fiap-challenge/domain/entities"
 	"github.com/fabianogoes/fiap-challenge/frameworks/repository/dbo"
-	"log"
-	"os"
-	"time"
-
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	"log"
 )
 
-func InitDB(ctx context.Context, config *entities.Config) (*gorm.DB, error) {
-	loc, _ := time.LoadLocation("UTC")
+func InitDB(config *entities.Config) (*gorm.DB, error) {
+	fmt.Printf("DB_CONNECTION = %s\n", config.DBConnection)
 
-	var dsnTemplate string
-	if config.Environment == "production" {
-		dsnTemplate = "user=%s password=%s host=%s port=%s dbname=%s TimeZone=%s"
-	} else {
-		dsnTemplate = "user=%s password=%s host=%s port=%s dbname=%s sslmode=disable TimeZone=%s"
-	}
-
-	dsn := fmt.Sprintf(dsnTemplate,
-		config.DBUser,
-		config.DBPassword,
-		config.DBHost,
-		config.DBPort,
-		config.DBName,
-		loc,
-	)
-
-	fmt.Printf("DB_HOST = %s\n", os.Getenv("DB_HOST"))
-
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	db, err := gorm.Open(postgres.Open(config.DBConnection), &gorm.Config{})
 	if err != nil {
 		log.Fatal("Error connecting to database", err)
 	}
