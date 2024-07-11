@@ -2,37 +2,43 @@ package entities
 
 import (
 	"fmt"
-	"github.com/joho/godotenv"
 	"log/slog"
 	"os"
+	"strings"
+
+	"github.com/joho/godotenv"
 )
 
 type Config struct {
-	AppName     string
-	Environment string
-	AppPort     string
-	DBUser      string
-	DBPassword  string
-	DBHost      string
-	DBPort      string
-	DBName      string
-	APIVersion  string
-	TokenSecret string
+	AppName       string
+	Environment   string
+	AppPort       string
+	DBUser        string
+	DBPassword    string
+	DBHost        string
+	DBPort        string
+	DBName        string
+	APIVersion    string
+	TokenSecret   string
+	PaymentApiUrl string
+	KitchenApiUrl string
 }
 
 func NewConfig() *Config {
 	loadEnvironment()
 
 	config := &Config{
-		Environment: os.Getenv("APP_ENV"),
-		AppPort:     os.Getenv("APP_PORT"),
-		DBHost:      os.Getenv("DB_HOST"),
-		DBPort:      os.Getenv("DB_PORT"),
-		DBName:      os.Getenv("DB_DATABASE"),
-		DBUser:      os.Getenv("DB_USERNAME"),
-		DBPassword:  os.Getenv("DB_PASSWORD"),
-		APIVersion:  os.Getenv("API_VERSION"),
-		TokenSecret: os.Getenv("TOKEN_SECRET"),
+		Environment:   strings.TrimRight(os.Getenv("APP_ENV"), "\n\r"),
+		AppPort:       strings.TrimRight(os.Getenv("APP_PORT"), "\n\r"),
+		DBHost:        strings.TrimRight(os.Getenv("DB_HOST"), "\n\r"),
+		DBPort:        strings.TrimRight(os.Getenv("DB_PORT"), "\n\r"),
+		DBName:        strings.TrimRight(os.Getenv("DB_DATABASE"), "\n\r"),
+		DBUser:        strings.TrimRight(os.Getenv("DB_USERNAME"), "\n\r"),
+		DBPassword:    strings.TrimRight(os.Getenv("DB_PASSWORD"), "\n\r"),
+		APIVersion:    strings.TrimRight(os.Getenv("API_VERSION"), "\n\r"),
+		TokenSecret:   strings.TrimRight(os.Getenv("TOKEN_SECRET"), "\n\r"),
+		PaymentApiUrl: strings.TrimRight(os.Getenv("PAYMENT_API_URL"), "\n\r"),
+		KitchenApiUrl: strings.TrimRight(os.Getenv("KITCHEN_API_URL"), "\n\r"),
 	}
 
 	printConfig(config)
@@ -60,6 +66,8 @@ func loadDefaultEnv() {
 	_ = os.Setenv("DB_PASSWORD", "pwd")
 	_ = os.Setenv("API_VERSION", "1.0")
 	_ = os.Setenv("TOKEN_SECRET", "123")
+	_ = os.Setenv("PAYMENT_API_URL", "http://localhost:8010")
+	_ = os.Setenv("KITCHEN_API_URL", "http://localhost:8020")
 }
 
 func loadProductionEnv() {
@@ -88,4 +96,6 @@ func printConfig(config *Config) {
 	fmt.Printf("DB Password: %s\n", config.DBPassword)
 	fmt.Printf("API version: %s\n", config.APIVersion)
 	fmt.Printf("Token Secret: %s\n", config.TokenSecret)
+	fmt.Printf("Payment API URL: %s\n", config.PaymentApiUrl)
+	fmt.Printf("Kitchen API URL: %s\n", config.KitchenApiUrl)
 }

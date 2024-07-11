@@ -42,27 +42,27 @@ spec:
             - name: DB_HOST
               valueFrom:
                 secretKeyRef:
-                  name: app-secret
+                  name: restaurant-secret
                   key: DB_HOST
             - name: DB_DATABASE
               valueFrom:
                 secretKeyRef:
-                  name: app-secret
+                  name: restaurant-secret
                   key: POSTGRES_DB
             - name: DB_USERNAME
               valueFrom:
                 secretKeyRef:
-                  name: app-secret
+                  name: restaurant-secret
                   key: POSTGRES_USER
             - name: DB_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: app-secret
+                  name: restaurant-secret
                   key: POSTGRES_PASSWORD
             - name: TOKEN_SECRET
               valueFrom:
                 secretKeyRef:
-                  name: app-secret
+                  name: restaurant-secret
                   key: TOKEN_SECRET
             - name: DB_PORT
               value: "5432"
@@ -74,4 +74,8 @@ spec:
               value: ":8080"
             - name: API_VERSION
               value: "4.0"
+            - name: PAYMENT_API_URL
+              value: "http://a22d56d187d3b4166aa01bbffcc23a7e-212615449.us-east-1.elb.amazonaws.com:8080/"
+            - name: KITCHEN_API_URL
+              value: "http://a74ca961315474c7b9d6fb3c31020ebf-2145173620.us-east-1.elb.amazonaws.com:8080/"
       restartPolicy: Always
