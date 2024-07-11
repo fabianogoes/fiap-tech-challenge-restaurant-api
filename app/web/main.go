@@ -58,7 +58,7 @@ func main() {
 	productUseCase := usecases.NewProductService(productRepository)
 	productHandler := rest.NewProductHandler(productUseCase)
 
-	paymentClientAdapter := payment.NewPaymentClientAdapter()
+	paymentClientAdapter := payment.NewPaymentClientAdapter(config)
 	paymentRepository := repository.NewPaymentRepository(db)
 	paymentUseCase := usecases.NewPaymentService(paymentRepository)
 	orderItemRepository := repository.NewOrderItemRepository(db)

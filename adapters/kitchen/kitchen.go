@@ -4,17 +4,19 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/fabianogoes/fiap-challenge/domain/entities"
 	"io/ioutil"
 	"log"
 	"net/http"
+
+	"github.com/fabianogoes/fiap-challenge/domain/entities"
 )
 
 type ClientAdapter struct {
+	config *entities.Config
 }
 
-func NewKitchenClientAdapter() *ClientAdapter {
-	return &ClientAdapter{}
+func NewKitchenClientAdapter(config *entities.Config) *ClientAdapter {
+	return &ClientAdapter{config: config}
 }
 
 func (p *ClientAdapter) Preparation(order *entities.Order) error {
@@ -24,7 +26,8 @@ func (p *ClientAdapter) Preparation(order *entities.Order) error {
 	fmt.Printf("Post body: %s\n", string(requestBytes))
 
 	responseBody := bytes.NewBuffer(requestBytes)
-	resp, err := http.Post("http://localhost:8020/kitchen/orders", "application/json", responseBody)
+	url := fmt.Sprintf("%s/kitchen/orders", p.config.KitchenApiUrl)
+	resp, err := http.Post(url, "application/json", responseBody)
 	if err != nil {
 		return fmt.Errorf("error kitchen creation request: %s", err)
 	}
@@ -36,7 +39,7 @@ func (p *ClientAdapter) Preparation(order *entities.Order) error {
 		log.Fatalln(err)
 	}
 	sb := string(body)
-	log.Printf(sb)
+	log.Println(sb)
 
 	response := OrderResponse{}
 	err = json.Unmarshal(body, &response)
@@ -44,8 +47,8 @@ func (p *ClientAdapter) Preparation(order *entities.Order) error {
 		return err
 	}
 
-	url := fmt.Sprintf("http://localhost:8020/kitchen/orders/%d/preparation", order.ID)
-	resp, err = http.Post(url, "application/json", responseBody)
+	url = fmt.Sprintf("%s/kitchen/orders/%d/preparation", p.config.KitchenApiUrl, order.ID)
+	_, err = http.Post(url, "application/json", responseBody)
 	if err != nil {
 		return fmt.Errorf("error kitchen preparation request: %s", err)
 	}
@@ -56,7 +59,7 @@ func (p *ClientAdapter) Preparation(order *entities.Order) error {
 func (p *ClientAdapter) ReadyDelivery(orderID uint) error {
 	fmt.Printf("Order Ready Delivery %d \n", orderID)
 
-	url := fmt.Sprintf("http://localhost:8020/kitchen/orders/%d/preparation", orderID)
+	url := fmt.Sprintf("%s/kitchen/orders/%d/preparation", p.config.KitchenApiUrl, orderID)
 	resp, err := http.Post(url, "application/json", nil)
 	if err != nil {
 		return fmt.Errorf("error kitchen preparation request: %s", err)
@@ -69,7 +72,7 @@ func (p *ClientAdapter) ReadyDelivery(orderID uint) error {
 		log.Fatalln(err)
 	}
 	sb := string(body)
-	log.Printf(sb)
+	log.Println(sb)
 
 	return nil
 }
