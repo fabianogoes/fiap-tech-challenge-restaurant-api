@@ -2,6 +2,7 @@ package usecases
 
 import (
 	"fmt"
+
 	"github.com/fabianogoes/fiap-challenge/domain/entities"
 	"github.com/fabianogoes/fiap-challenge/domain/ports"
 )
@@ -140,13 +141,13 @@ func (os *OrderService) PaymentOrder(order *entities.Order, paymentMethod string
 }
 
 func (os *OrderService) PaymentOrderConfirmed(order *entities.Order, paymentMethod string) (*entities.Order, error) {
-	if len(order.Items) == 0 {
-		return nil, fmt.Errorf(NotPossibleWithoutItems, "PAY", order.ID)
-	}
+	// if len(order.Items) == 0 {
+	// 	return nil, fmt.Errorf(NotPossibleWithoutItems, "PAY", order.ID)
+	// }
 
-	if order.Status != entities.OrderStatusPaymentSent {
-		return nil, fmt.Errorf("it is not possible to PAY the order: %d without PAYMENT_SENT", order.ID)
-	}
+	// if order.Status != entities.OrderStatusPaymentSent {
+	// 	return nil, fmt.Errorf("it is not possible to PAY the order: %d without PAYMENT_SENT", order.ID)
+	// }
 
 	payment, err := os.paymentUseCase.GetPaymentById(order.Payment.ID)
 	if err != nil {
