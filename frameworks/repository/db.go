@@ -7,12 +7,30 @@ import (
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"log"
+	"time"
 )
 
 func InitDB(config *entities.Config) (*gorm.DB, error) {
-	fmt.Printf("DB_CONNECTION = %s\n", config.DBConnection)
+	loc, _ := time.LoadLocation("UTC")
 
-	db, err := gorm.Open(postgres.Open(config.DBConnection), &gorm.Config{})
+	var dsnTemplate string
+	if config.Environment == "production" {
+		dsnTemplate = "user=%s password=%s host=%s port=%s dbname=%s TimeZone=%s"
+	} else {
+		dsnTemplate = "user=%s password=%s host=%s port=%s dbname=%s sslmode=disable TimeZone=%s"
+	}
+
+	dsn := fmt.Sprintf(dsnTemplate,
+		config.DBUser,
+		config.DBPassword,
+		config.DBHost,
+		config.DBPort,
+		config.DBName,
+		loc,
+	)
+	fmt.Printf("dsn = %s\n", dsn)
+
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Fatal("Error connecting to database", err)
 	}
