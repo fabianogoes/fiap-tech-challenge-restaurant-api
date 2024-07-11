@@ -141,17 +141,18 @@ func (os *OrderService) PaymentOrder(order *entities.Order, paymentMethod string
 }
 
 func (os *OrderService) PaymentOrderConfirmed(order *entities.Order, paymentMethod string) (*entities.Order, error) {
-	// if len(order.Items) == 0 {
-	// 	return nil, fmt.Errorf(NotPossibleWithoutItems, "PAY", order.ID)
-	// }
+	fmt.Printf("PaymentOrderConfirmed Order %d paid by method %s\n", order.ID, paymentMethod)
+	if len(order.Items) == 0 {
+		return nil, fmt.Errorf(NotPossibleWithoutItems, "PAY", order.ID)
+	}
 
-	// if order.Status != entities.OrderStatusPaymentSent {
-	// 	return nil, fmt.Errorf("it is not possible to PAY the order: %d without PAYMENT_SENT", order.ID)
-	// }
+	if order.Status != entities.OrderStatusPaymentSent {
+		return nil, fmt.Errorf("it is not possible to PAY the order: %d without PAYMENT_SENT", order.ID)
+	}
 
 	payment, err := os.paymentUseCase.GetPaymentById(order.Payment.ID)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error while getting payment id %v - %v", order.Payment.ID, err)
 	}
 
 	order.Status = entities.OrderStatusPaid
@@ -160,9 +161,10 @@ func (os *OrderService) PaymentOrderConfirmed(order *entities.Order, paymentMeth
 	payment.Method = entities.ToPaymentMethod(paymentMethod)
 	_, err = os.paymentUseCase.UpdatePayment(payment)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error while updating payment id %v - %v", payment.ID, err)
 	}
 
+	fmt.Printf("payment updated %v\n", payment)
 	order.Payment = payment
 	return os.orderRepository.UpdateOrder(order)
 }
