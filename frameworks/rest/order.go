@@ -2,10 +2,11 @@ package rest
 
 import (
 	"fmt"
-	"github.com/fabianogoes/fiap-challenge/domain/ports"
-	"github.com/fabianogoes/fiap-challenge/frameworks/rest/dto"
 	"net/http"
 	"strconv"
+
+	"github.com/fabianogoes/fiap-challenge/domain/ports"
+	"github.com/fabianogoes/fiap-challenge/frameworks/rest/dto"
 
 	"github.com/gin-gonic/gin"
 )
@@ -254,11 +255,12 @@ func (h *OrderHandler) PaymentOrder(c *gin.Context) {
 }
 
 func (h *OrderHandler) PaymentWebhook(c *gin.Context) {
+	fmt.Println("PaymentWebhook controller")
 	var err error
 	orderID, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
+			"get param id error": err.Error(),
 		})
 		return
 	}
@@ -266,7 +268,7 @@ func (h *OrderHandler) PaymentWebhook(c *gin.Context) {
 	order, err := h.OrderUseCase.GetOrderById(uint(orderID))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
+			"get order error": err.Error(),
 		})
 		return
 	}
@@ -274,7 +276,7 @@ func (h *OrderHandler) PaymentWebhook(c *gin.Context) {
 	var request dto.PaymentWebhookRequest
 	if err := c.ShouldBindJSON(&request); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
+			"bind payload error": err.Error(),
 		})
 		return
 	}
@@ -283,7 +285,7 @@ func (h *OrderHandler) PaymentWebhook(c *gin.Context) {
 		order, err = h.OrderUseCase.PaymentOrderConfirmed(order, request.PaymentMethod)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{
-				"error": err.Error(),
+				"invalid state PAID to comfirmed error": err.Error(),
 			})
 			return
 		}
