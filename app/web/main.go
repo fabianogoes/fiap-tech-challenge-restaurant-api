@@ -2,13 +2,14 @@ package main
 
 import (
 	"fmt"
+	"log/slog"
+	"os"
+
 	"github.com/fabianogoes/fiap-challenge/adapters/delivery"
 	"github.com/fabianogoes/fiap-challenge/adapters/kitchen"
 	"github.com/fabianogoes/fiap-challenge/adapters/payment"
 	"github.com/fabianogoes/fiap-challenge/domain/usecases"
 	"github.com/fabianogoes/fiap-challenge/frameworks/repository"
-	"log/slog"
-	"os"
 
 	"github.com/fabianogoes/fiap-challenge/domain/entities"
 
@@ -65,7 +66,7 @@ func main() {
 	orderRepository := repository.NewOrderRepository(db, orderItemRepository)
 	deliveryClientAdapter := delivery.NewDeliveryClientAdapter()
 	deliveryRepository := repository.NewDeliveryRepository(db)
-	kitchenClientAdapter := kitchen.NewKitchenClientAdapter()
+	kitchenClientAdapter := kitchen.NewKitchenClientAdapter(config)
 	orderUseCase := usecases.NewOrderService(
 		orderRepository,
 		customerRepository,
