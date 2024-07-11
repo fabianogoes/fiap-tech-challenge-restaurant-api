@@ -8,7 +8,7 @@ tmp/
 postgres/
 
 # exclude any development-specific files
-# *.env
+*.env
 *.log
 *.out
 *.exe

@@ -2,13 +2,15 @@ package entities
 
 import (
 	"fmt"
-	"github.com/joho/godotenv"
 	"log/slog"
 	"os"
 	"strings"
+
+	"github.com/joho/godotenv"
 )
 
 type Config struct {
+	AppName      string
 	Environment  string
 	AppPort      string
 	DBConnection string
@@ -20,6 +22,7 @@ func NewConfig() *Config {
 	loadEnvironment()
 
 	config := &Config{
+		AppName:      strings.TrimRight(os.Getenv("APP_NAME"), "\n\r"),
 		Environment:  strings.TrimRight(os.Getenv("APP_ENV"), "\n\r"),
 		AppPort:      strings.TrimRight(os.Getenv("APP_PORT"), "\n\r"),
 		DBConnection: strings.TrimRight(os.Getenv("DB_CONNECTION"), "\n\r"),
@@ -43,6 +46,7 @@ func loadEnvironment() {
 }
 
 func loadDefaultEnv() {
+	_ = os.Setenv("APP_NAME", "restaurant-api")
 	_ = os.Setenv("APP_ENV", "default")
 	_ = os.Setenv("APP_PORT", ":8080")
 	_ = os.Setenv("DB_CONNECTION", "postgres://tech_challenge_usr:tech_challenge_pwd@localhost:5432/restaurant_db?sslmode=disable")
@@ -53,7 +57,7 @@ func loadDefaultEnv() {
 func loadProductionEnv() {
 	err := godotenv.Load() // Load .env file
 	if err != nil {
-		slog.Error("Error loading .env file", "error", err)
+		slog.Info("loading .env file not found")
 	}
 }
 
@@ -67,6 +71,7 @@ func loadDevelopmentEnv() {
 
 func printConfig(config *Config) {
 	fmt.Println("*** Environments ***")
+	fmt.Printf("App Name: %s\n", config.AppName)
 	fmt.Printf("Environment: %s\n", config.Environment)
 	fmt.Printf("App Port: %s\n", config.AppPort)
 	fmt.Printf("DB Connection: %s\n", config.DBConnection)

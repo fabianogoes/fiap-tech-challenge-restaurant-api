@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: restaurant-api
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: restaurant-api
@@ -51,6 +51,8 @@ spec:
                   key: TOKEN_SECRET
             - name: DB_PORT
               value: "5432"
+            - name: APP_NAME
+              value: restaurant-api
             - name: APP_ENV
               value: "production"
             - name: APP_PORT
@@ -58,4 +60,3 @@ spec:
             - name: API_VERSION
               value: "4.0"
       restartPolicy: Always
-
