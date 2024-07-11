@@ -58,7 +58,7 @@ func NewRouter(
 		orders.DELETE("/:id/item/:idItem", orderHandler.RemoveItemFromOrder)
 		orders.PUT("/:id/confirmation", orderHandler.ConfirmationOrder)
 		orders.PUT("/:id/payment", orderHandler.PaymentOrder)
-		orders.POST("/:id/payment/webhook", orderHandler.PaymentWebhook)
+		orders.PUT("/:id/payment/webhook", orderHandler.PaymentWebhook)
 		orders.PUT("/:id/in-preparation", orderHandler.InPreparationOrder)
 		orders.PUT("/:id/ready-for-delivery", orderHandler.ReadyForDeliveryOrder)
 		orders.PUT("/:id/sent-for-delivery", orderHandler.SentForDeliveryOrder)
