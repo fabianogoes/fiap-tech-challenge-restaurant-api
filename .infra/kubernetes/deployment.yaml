@@ -37,17 +37,17 @@ spec:
               cpu: 1m
           envFrom:
             - secretRef:
-                name: app-secret
+                name: restaurant-secret
           env:
             - name: DB_CONNECTION
               valueFrom:
                 secretKeyRef:
-                  name: app-secret
+                  name: restaurant-secret
                   key: DB_CONNECTION
             - name: TOKEN_SECRET
               valueFrom:
                 secretKeyRef:
-                  name: app-secret
+                  name: restaurant-secret
                   key: TOKEN_SECRET
             - name: DB_PORT
               value: "5432"
