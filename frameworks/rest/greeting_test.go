@@ -25,7 +25,7 @@ func TestWelcome(t *testing.T) {
 	}
 	err = json.Unmarshal(response.Body.Bytes(), &welcomeResponse)
 	assert.NoError(t, err)
-	assert.Equal(t, "Welcome to the API GoFood", welcomeResponse.Message)
+	assert.Equal(t, "Welcome to the Restaurant API!", welcomeResponse.Message)
 }
 
 func TestHealth(t *testing.T) {

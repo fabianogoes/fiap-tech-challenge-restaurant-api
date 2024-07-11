@@ -1,14 +1,15 @@
 package rest
 
 import (
+	"net/http"
+
 	"github.com/fabianogoes/fiap-challenge/domain/entities"
 	"github.com/gin-gonic/gin"
-	"net/http"
 )
 
 func Welcome(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
-		"message": "Welcome to the API GoFood",
+		"message": "Welcome to the Restaurant API!",
 	})
 }
 
