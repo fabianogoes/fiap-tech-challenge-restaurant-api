@@ -29,6 +29,7 @@ func NewConfig() *Config {
 
 	config := &Config{
 		Environment:   strings.TrimRight(os.Getenv("APP_ENV"), "\n\r"),
+		AppName:       strings.TrimRight(os.Getenv("APP_NAME"), "\n\r"),
 		AppPort:       strings.TrimRight(os.Getenv("APP_PORT"), "\n\r"),
 		DBHost:        strings.TrimRight(os.Getenv("DB_HOST"), "\n\r"),
 		DBPort:        strings.TrimRight(os.Getenv("DB_PORT"), "\n\r"),
@@ -58,6 +59,7 @@ func loadEnvironment() {
 
 func loadDefaultEnv() {
 	_ = os.Setenv("APP_ENV", "default")
+	_ = os.Setenv("APP_NAME", "restaurant-api")
 	_ = os.Setenv("APP_PORT", ":8020")
 	_ = os.Setenv("DB_HOST", "localhost")
 	_ = os.Setenv("DB_PORT", "5432")
@@ -88,6 +90,7 @@ func loadDevelopmentEnv() {
 func printConfig(config *Config) {
 	fmt.Println("*** Environments ***")
 	fmt.Printf("Environment: %s\n", config.Environment)
+	fmt.Printf("App Name: %s\n", config.AppName)
 	fmt.Printf("App Port: %s\n", config.AppPort)
 	fmt.Printf("DB Host: %s\n", config.DBHost)
 	fmt.Printf("DB Port: %s\n", config.DBPort)
