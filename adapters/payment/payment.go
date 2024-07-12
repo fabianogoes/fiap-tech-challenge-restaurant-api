@@ -26,6 +26,7 @@ func (p *ClientAdapter) Pay(order *entities.Order, paymentMethod string) error {
 		"orderId": order.ID,
 		"method":  paymentMethod,
 		"value":   order.Amount(),
+		"date":    order.Date.Format("2006-01-02T15:04:05"),
 	})
 	fmt.Printf("Post body: %s\n", string(postBody))
 
