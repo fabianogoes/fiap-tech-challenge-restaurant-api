@@ -155,6 +155,7 @@ func (os *OrderService) PaymentOrderConfirmed(order *entities.Order, paymentMeth
 		return nil, fmt.Errorf("error while getting payment id %v - %v", order.Payment.ID, err)
 	}
 
+	fmt.Printf("confimation payment %v\n", payment.ID)
 	order.Status = entities.OrderStatusPaid
 	payment.Status = entities.PaymentStatusPaid
 	payment.ErrorReason = ""

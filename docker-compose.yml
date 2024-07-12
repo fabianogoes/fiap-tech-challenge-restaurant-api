@@ -26,7 +26,13 @@ services:
       APP_ENV: "${APP_ENV:-development}"
       HTTP_URL: "${HTTP_URL:-127.0.0.1}"
       HTTP_PORT: "${HTTP_PORT:-:8080}"
-      DB_CONNECTION: "${DB_CONNECTION:-postgres://tech_challenge_usr:tech_challenge_pwd@postgres:5432/restaurant_db?sslmode=disable}"
+      DB_CONNECTION: "${DB_CONNECTION:-postgres}"
+      DB_HOST: "${DB_HOST:-localhost}"
+      DB_PORT: "${DB_PORT:-5432}"
+      DB_DATABASE: "${DB_DATABASE:-restaurant_db}"
+      DB_USERNAME: "${DB_USERNAME:-usr}"
+      DB_PASSWORD: "${DB_PASSWORD:-pwd}"
+    ports:
     ports:
       - "8080:8080"
     depends_on:
