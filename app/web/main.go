@@ -1,15 +1,15 @@
 package main
 
 import (
-	"context"
 	"fmt"
+	"log/slog"
+	"os"
+
 	"github.com/fabianogoes/fiap-challenge/adapters/delivery"
 	"github.com/fabianogoes/fiap-challenge/adapters/kitchen"
 	"github.com/fabianogoes/fiap-challenge/adapters/payment"
 	"github.com/fabianogoes/fiap-challenge/domain/usecases"
 	"github.com/fabianogoes/fiap-challenge/frameworks/repository"
-	"log/slog"
-	"os"
 
 	"github.com/fabianogoes/fiap-challenge/domain/entities"
 
@@ -37,14 +37,15 @@ func init() {
 func main() {
 	fmt.Println("Starting web server...")
 
-	ctx := context.Background()
 	var err error
 
 	config := entities.NewConfig()
-	db, err := repository.InitDB(ctx, config)
+	db, err := repository.InitDB(config)
 	if err != nil {
+		fmt.Printf("error while initializing database %v", err)
 		panic(err)
 	}
+	fmt.Println("DB connected successfully")
 
 	attendantRepository := repository.NewAttendantRepository(db)
 	attendantUseCase := usecases.NewAttendantService(attendantRepository)
@@ -58,14 +59,14 @@ func main() {
 	productUseCase := usecases.NewProductService(productRepository)
 	productHandler := rest.NewProductHandler(productUseCase)
 
-	paymentClientAdapter := payment.NewPaymentClientAdapter()
+	paymentClientAdapter := payment.NewPaymentClientAdapter(config)
 	paymentRepository := repository.NewPaymentRepository(db)
 	paymentUseCase := usecases.NewPaymentService(paymentRepository)
 	orderItemRepository := repository.NewOrderItemRepository(db)
 	orderRepository := repository.NewOrderRepository(db, orderItemRepository)
 	deliveryClientAdapter := delivery.NewDeliveryClientAdapter()
 	deliveryRepository := repository.NewDeliveryRepository(db)
-	kitchenClientAdapter := kitchen.NewKitchenClientAdapter()
+	kitchenClientAdapter := kitchen.NewKitchenClientAdapter(config)
 	orderUseCase := usecases.NewOrderService(
 		orderRepository,
 		customerRepository,
@@ -90,14 +91,13 @@ func main() {
 		orderHandler,
 	)
 	if err != nil {
+		fmt.Printf("error while initializing router %v", err)
 		panic(err)
 	}
 
-	fmt.Println("DB connected")
-	fmt.Println(db)
-
 	err = router.Run(config.AppPort)
 	if err != nil {
+		fmt.Printf("error while starting web server %v", err)
 		panic(err)
 	}
 }

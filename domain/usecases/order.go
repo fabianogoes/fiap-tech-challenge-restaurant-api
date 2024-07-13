@@ -2,6 +2,7 @@ package usecases
 
 import (
 	"fmt"
+
 	"github.com/fabianogoes/fiap-challenge/domain/entities"
 	"github.com/fabianogoes/fiap-challenge/domain/ports"
 )
@@ -140,6 +141,7 @@ func (os *OrderService) PaymentOrder(order *entities.Order, paymentMethod string
 }
 
 func (os *OrderService) PaymentOrderConfirmed(order *entities.Order, paymentMethod string) (*entities.Order, error) {
+	fmt.Printf("PaymentOrderConfirmed Order %d paid by method %s\n", order.ID, paymentMethod)
 	if len(order.Items) == 0 {
 		return nil, fmt.Errorf(NotPossibleWithoutItems, "PAY", order.ID)
 	}
@@ -150,18 +152,20 @@ func (os *OrderService) PaymentOrderConfirmed(order *entities.Order, paymentMeth
 
 	payment, err := os.paymentUseCase.GetPaymentById(order.Payment.ID)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error while getting payment id %v - %v", order.Payment.ID, err)
 	}
 
+	fmt.Printf("confimation payment %v\n", payment.ID)
 	order.Status = entities.OrderStatusPaid
 	payment.Status = entities.PaymentStatusPaid
 	payment.ErrorReason = ""
 	payment.Method = entities.ToPaymentMethod(paymentMethod)
 	_, err = os.paymentUseCase.UpdatePayment(payment)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error while updating payment id %v - %v", payment.ID, err)
 	}
 
+	fmt.Printf("payment updated %v\n", payment)
 	order.Payment = payment
 	return os.orderRepository.UpdateOrder(order)
 }

@@ -2,24 +2,24 @@ version: "3.8"
 
 services:
   postgres:
-    container_name: restaurant_db
+    container_name: restaurant-db
     image: postgres:12.8
     restart: always
     env_file: ${ENV_FILE:-.env.development}
     environment:
-      POSTGRES_USER: usr
-      POSTGRES_PASSWORD: pwd
+      POSTGRES_USER: tech_challenge_usr
+      POSTGRES_PASSWORD: tech_challenge_pwd
       POSTGRES_DB: restaurant_db
       POSTGRES_HOST_AUTH_METHOD: "trust"
     ports:
       - "5432:5432"
     networks:
-      - go-food-network
+      - restaurant-network
 
   api:
     build:
       context: .
-    container_name: gofood_app
+    container_name: restaurant-api
     restart: always
     environment:
       APP_NAME: "${APP_NAME:-restaurant-api}"
@@ -37,8 +37,8 @@ services:
     depends_on:
       - postgres
     networks:
-      - go-food-network
+      - restaurant-network
 
 networks:
-  go-food-network:
+  restaurant-network:
     driver: bridge

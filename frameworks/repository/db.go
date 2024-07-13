@@ -1,19 +1,16 @@
 package repository
 
 import (
-	"context"
 	"fmt"
 	"github.com/fabianogoes/fiap-challenge/domain/entities"
 	"github.com/fabianogoes/fiap-challenge/frameworks/repository/dbo"
-	"log"
-	"os"
-	"time"
-
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	"log"
+	"time"
 )
 
-func InitDB(ctx context.Context, config *entities.Config) (*gorm.DB, error) {
+func InitDB(config *entities.Config) (*gorm.DB, error) {
 	loc, _ := time.LoadLocation("UTC")
 
 	var dsnTemplate string
@@ -31,8 +28,7 @@ func InitDB(ctx context.Context, config *entities.Config) (*gorm.DB, error) {
 		config.DBName,
 		loc,
 	)
-
-	fmt.Printf("DB_HOST = %s\n", os.Getenv("DB_HOST"))
+	fmt.Printf("dsn = %s\n", dsn)
 
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {

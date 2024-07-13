@@ -2,10 +2,11 @@ package rest
 
 import (
 	"fmt"
-	"github.com/fabianogoes/fiap-challenge/domain/ports"
-	"github.com/fabianogoes/fiap-challenge/frameworks/rest/dto"
 	"net/http"
 	"strconv"
+
+	"github.com/fabianogoes/fiap-challenge/domain/ports"
+	"github.com/fabianogoes/fiap-challenge/frameworks/rest/dto"
 
 	"github.com/gin-gonic/gin"
 )
@@ -254,39 +255,44 @@ func (h *OrderHandler) PaymentOrder(c *gin.Context) {
 }
 
 func (h *OrderHandler) PaymentWebhook(c *gin.Context) {
+	fmt.Println("PaymentWebhook controller")
 	var err error
 	orderID, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
+			"get param id error": err.Error(),
 		})
 		return
 	}
+	fmt.Printf("Controller webhook OrderID: %d OK \n", orderID)
 
 	order, err := h.OrderUseCase.GetOrderById(uint(orderID))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
+			"get order error": err.Error(),
 		})
 		return
 	}
+	fmt.Printf("Controller webhook get order: %d OK \n", orderID)
 
 	var request dto.PaymentWebhookRequest
 	if err := c.ShouldBindJSON(&request); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
+			"bind payload error": err.Error(),
 		})
 		return
 	}
+	fmt.Printf("Controller webhook bind payload: %d OK \n", orderID)
 
 	if request.Status == "PAID" {
 		order, err = h.OrderUseCase.PaymentOrderConfirmed(order, request.PaymentMethod)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{
-				"error": err.Error(),
+				"invalid state PAID to comfirmed error": err.Error(),
 			})
 			return
 		}
+		fmt.Printf("Controller webhook PAID: %d OK \n", orderID)
 	} else {
 		order, err = h.OrderUseCase.PaymentOrderError(order, request.PaymentMethod, request.ErrorReason)
 		if err != nil {
@@ -295,6 +301,7 @@ func (h *OrderHandler) PaymentWebhook(c *gin.Context) {
 			})
 			return
 		}
+		fmt.Printf("Controller webhook NOT PAID: %d OK \n", orderID)
 	}
 
 	c.JSON(http.StatusOK, dto.ToOrderResponse(*order))

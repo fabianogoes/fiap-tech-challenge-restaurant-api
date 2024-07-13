@@ -4,17 +4,19 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/fabianogoes/fiap-challenge/domain/entities"
 	"io/ioutil"
 	"log"
 	"net/http"
+
+	"github.com/fabianogoes/fiap-challenge/domain/entities"
 )
 
 type ClientAdapter struct {
+	config *entities.Config
 }
 
-func NewPaymentClientAdapter() *ClientAdapter {
-	return &ClientAdapter{}
+func NewPaymentClientAdapter(config *entities.Config) *ClientAdapter {
+	return &ClientAdapter{config: config}
 }
 
 func (p *ClientAdapter) Pay(order *entities.Order, paymentMethod string) error {
@@ -24,11 +26,13 @@ func (p *ClientAdapter) Pay(order *entities.Order, paymentMethod string) error {
 		"orderId": order.ID,
 		"method":  paymentMethod,
 		"value":   order.Amount(),
+		"date":    order.Date.Format("2006-01-02T15:04:05"),
 	})
 	fmt.Printf("Post body: %s\n", string(postBody))
 
 	responseBody := bytes.NewBuffer(postBody)
-	resp, err := http.Post("http://localhost:8010/payments/", "application/json", responseBody)
+	url := fmt.Sprintf("%s/payments/", p.config.PaymentApiUrl)
+	resp, err := http.Post(url, "application/json", responseBody)
 	if err != nil {
 		log.Fatalf("An Error Occured %v", err)
 	}
@@ -40,7 +44,7 @@ func (p *ClientAdapter) Pay(order *entities.Order, paymentMethod string) error {
 	}
 
 	sb := string(body)
-	log.Printf(sb)
+	log.Println(sb)
 
 	return nil
 }
