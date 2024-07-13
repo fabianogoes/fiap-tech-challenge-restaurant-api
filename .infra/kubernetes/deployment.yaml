@@ -73,7 +73,7 @@ spec:
             - name: APP_PORT
               value: ":8080"
             - name: API_VERSION
-              value: "4.0"
+              value: "4.0.0"
             - name: PAYMENT_API_URL
               value: "http://a22d56d187d3b4166aa01bbffcc23a7e-212615449.us-east-1.elb.amazonaws.com:8080"
             - name: KITCHEN_API_URL
