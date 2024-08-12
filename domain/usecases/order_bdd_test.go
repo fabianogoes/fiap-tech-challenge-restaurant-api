@@ -60,6 +60,7 @@ var _ = Describe("Order", func() {
 			new(domain.DeliveryClientMock),
 			new(domain.DeliveryRepositoryMock),
 			new(domain.KitchenClientMock),
+			new(domain.PaymentMessagingMock),
 		)
 
 		response, err := service.ConfirmationOrder(&order)
@@ -93,6 +94,7 @@ var _ = Describe("Order", func() {
 			new(domain.DeliveryClientMock),
 			new(domain.DeliveryRepositoryMock),
 			new(domain.KitchenClientMock),
+			new(domain.PaymentMessagingMock),
 		)
 
 		response, err := service.PaymentOrder(&order, entities.PaymentMethodCreditCard.ToString())
@@ -143,6 +145,7 @@ var _ = Describe("Order", func() {
 			new(domain.DeliveryClientMock),
 			new(domain.DeliveryRepositoryMock),
 			new(domain.KitchenClientMock),
+			new(domain.PaymentMessagingMock),
 		)
 
 		orderPaymentSent := order
@@ -196,6 +199,7 @@ var _ = Describe("Order", func() {
 			new(domain.DeliveryClientMock),
 			new(domain.DeliveryRepositoryMock),
 			new(domain.KitchenClientMock),
+			new(domain.PaymentMessagingMock),
 		)
 
 		orderPaymentSent := order
@@ -231,6 +235,7 @@ var _ = Describe("Order", func() {
 			new(domain.DeliveryClientMock),
 			new(domain.DeliveryRepositoryMock),
 			kitchenClient,
+			new(domain.PaymentMessagingMock),
 		)
 
 		orderPaid := order
@@ -271,6 +276,7 @@ var _ = Describe("Order", func() {
 			new(domain.DeliveryClientMock),
 			deliveryRepository,
 			kitchenClient,
+			new(domain.PaymentMessagingMock),
 		)
 
 		orderInPreparation.Payment.Status = entities.PaymentStatusPaid
@@ -324,6 +330,7 @@ var _ = Describe("Order", func() {
 			new(domain.DeliveryClientMock),
 			deliveryRepository,
 			kitchenClient,
+			new(domain.PaymentMessagingMock),
 		)
 
 		response, err := service.SentForDeliveryOrder(&orderReadyForDelivery)

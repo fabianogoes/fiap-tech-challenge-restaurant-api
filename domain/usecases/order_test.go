@@ -30,6 +30,7 @@ func TestOrderService_StartOrder(t *testing.T) {
 		new(domain.DeliveryClientMock),
 		new(domain.DeliveryRepositoryMock),
 		new(domain.KitchenClientMock),
+		new(domain.PaymentMessagingMock),
 	)
 
 	order, err := service.StartOrder(domain.CustomerSuccess.ID, domain.AttendantSuccess.ID)
@@ -58,6 +59,7 @@ func TestOrderService_StartOrderError(t *testing.T) {
 		new(domain.DeliveryClientMock),
 		new(domain.DeliveryRepositoryMock),
 		new(domain.KitchenClientMock),
+		new(domain.PaymentMessagingMock),
 	)
 
 	order, err := service.StartOrder(domain.CustomerSuccess.ID, domain.AttendantSuccess.ID)
@@ -86,6 +88,7 @@ func TestOrderService_StartOrderGetAttendantError(t *testing.T) {
 		new(domain.DeliveryClientMock),
 		new(domain.DeliveryRepositoryMock),
 		new(domain.KitchenClientMock),
+		new(domain.PaymentMessagingMock),
 	)
 
 	order, err := service.StartOrder(domain.CustomerSuccess.ID, domain.AttendantSuccess.ID)
@@ -113,6 +116,7 @@ func TestOrderService_StartOrderGetCustomerError(t *testing.T) {
 		new(domain.DeliveryClientMock),
 		new(domain.DeliveryRepositoryMock),
 		new(domain.KitchenClientMock),
+		new(domain.PaymentMessagingMock),
 	)
 
 	order, err := service.StartOrder(domain.CustomerSuccess.ID, domain.AttendantSuccess.ID)
@@ -141,6 +145,7 @@ func TestOrderService_GetOrderById(t *testing.T) {
 		new(domain.DeliveryClientMock),
 		new(domain.DeliveryRepositoryMock),
 		new(domain.KitchenClientMock),
+		new(domain.PaymentMessagingMock),
 	)
 
 	order, err := service.GetOrderById(domain.OrderItemSuccess.ID)
@@ -169,6 +174,7 @@ func TestOrderService_GetOrders(t *testing.T) {
 		new(domain.DeliveryClientMock),
 		new(domain.DeliveryRepositoryMock),
 		new(domain.KitchenClientMock),
+		new(domain.PaymentMessagingMock),
 	)
 
 	order, err := service.GetOrders()
@@ -197,6 +203,7 @@ func TestOrderService_AddItemToOrder(t *testing.T) {
 		new(domain.DeliveryClientMock),
 		new(domain.DeliveryRepositoryMock),
 		new(domain.KitchenClientMock),
+		new(domain.PaymentMessagingMock),
 	)
 
 	order, err := service.AddItemToOrder(domain.OrderStarted, domain.ProductSuccess, 1)
@@ -230,6 +237,7 @@ func TestOrderService_RemoveItemFromOrder(t *testing.T) {
 		new(domain.DeliveryClientMock),
 		new(domain.DeliveryRepositoryMock),
 		new(domain.KitchenClientMock),
+		new(domain.PaymentMessagingMock),
 	)
 
 	orderRequest := domain.OrderStarted
@@ -269,6 +277,7 @@ func TestOrderService_RemoveItemFromOrderError(t *testing.T) {
 		new(domain.DeliveryClientMock),
 		new(domain.DeliveryRepositoryMock),
 		new(domain.KitchenClientMock),
+		new(domain.PaymentMessagingMock),
 	)
 
 	orderRequest := domain.OrderStarted
@@ -308,6 +317,7 @@ func TestOrderService_RemoveItemFromOrderSentForDeliveryError(t *testing.T) {
 		new(domain.DeliveryClientMock),
 		new(domain.DeliveryRepositoryMock),
 		new(domain.KitchenClientMock),
+		new(domain.PaymentMessagingMock),
 	)
 
 	orderRequest := domain.OrderStarted
@@ -340,6 +350,7 @@ func TestOrderService_RemoveItemFromOrderGetItemError(t *testing.T) {
 		new(domain.DeliveryClientMock),
 		new(domain.DeliveryRepositoryMock),
 		new(domain.KitchenClientMock),
+		new(domain.PaymentMessagingMock),
 	)
 
 	orderRequest := domain.OrderStarted
@@ -382,6 +393,7 @@ func TestOrderService_RemoveItemFromOrderPaid(t *testing.T) {
 		new(domain.DeliveryClientMock),
 		new(domain.DeliveryRepositoryMock),
 		new(domain.KitchenClientMock),
+		new(domain.PaymentMessagingMock),
 	)
 
 	orderRequest := domain.OrderStarted
@@ -425,6 +437,7 @@ func TestOrderService_RemoveItemFromOrderPaidUpdatePaymentError(t *testing.T) {
 		new(domain.DeliveryClientMock),
 		new(domain.DeliveryRepositoryMock),
 		new(domain.KitchenClientMock),
+		new(domain.PaymentMessagingMock),
 	)
 
 	orderRequest := domain.OrderStarted
@@ -468,6 +481,7 @@ func TestOrderService_RemoveItemFromOrderPaidReverseError(t *testing.T) {
 		new(domain.DeliveryClientMock),
 		new(domain.DeliveryRepositoryMock),
 		new(domain.KitchenClientMock),
+		new(domain.PaymentMessagingMock),
 	)
 
 	orderRequest := domain.OrderStarted
@@ -502,6 +516,7 @@ func TestOrderService_ConfirmationOrder(t *testing.T) {
 		new(domain.DeliveryClientMock),
 		new(domain.DeliveryRepositoryMock),
 		new(domain.KitchenClientMock),
+		new(domain.PaymentMessagingMock),
 	)
 
 	domain.OrderStarted.Items = []*entities.OrderItem{domain.OrderItemSuccess}
@@ -531,6 +546,7 @@ func TestOrderService_ConfirmationOrderItemsEmptyError(t *testing.T) {
 		new(domain.DeliveryClientMock),
 		new(domain.DeliveryRepositoryMock),
 		new(domain.KitchenClientMock),
+		new(domain.PaymentMessagingMock),
 	)
 
 	domain.OrderStarted.Items = []*entities.OrderItem{domain.OrderItemSuccess}
@@ -562,6 +578,7 @@ func TestOrderService_PaymentOrder(t *testing.T) {
 		new(domain.DeliveryClientMock),
 		new(domain.DeliveryRepositoryMock),
 		new(domain.KitchenClientMock),
+		new(domain.PaymentMessagingMock),
 	)
 
 	domain.OrderStarted.Items = []*entities.OrderItem{domain.OrderItemSuccess}
@@ -594,6 +611,7 @@ func TestOrderService_PaymentOrderPayError(t *testing.T) {
 		new(domain.DeliveryClientMock),
 		new(domain.DeliveryRepositoryMock),
 		new(domain.KitchenClientMock),
+		new(domain.PaymentMessagingMock),
 	)
 
 	order := domain.OrderStarted
@@ -628,6 +646,7 @@ func TestOrderService_PaymentOrderOrderNotConfirmedError(t *testing.T) {
 		new(domain.DeliveryClientMock),
 		new(domain.DeliveryRepositoryMock),
 		new(domain.KitchenClientMock),
+		new(domain.PaymentMessagingMock),
 	)
 
 	domain.OrderStarted.Items = []*entities.OrderItem{domain.OrderItemSuccess}
@@ -660,6 +679,7 @@ func TestOrderService_PaymentOrderItemsEmptyError(t *testing.T) {
 		new(domain.DeliveryClientMock),
 		new(domain.DeliveryRepositoryMock),
 		new(domain.KitchenClientMock),
+		new(domain.PaymentMessagingMock),
 	)
 
 	domain.OrderStarted.Items = []*entities.OrderItem{}
@@ -696,6 +716,7 @@ func TestOrderService_PaymentOrderConfirmed(t *testing.T) {
 		new(domain.DeliveryClientMock),
 		new(domain.DeliveryRepositoryMock),
 		new(domain.KitchenClientMock),
+		new(domain.PaymentMessagingMock),
 	)
 
 	domain.OrderStarted.Items = []*entities.OrderItem{domain.OrderItemSuccess}
@@ -733,6 +754,7 @@ func TestOrderService_PaymentOrderConfirmedUpdateError(t *testing.T) {
 		new(domain.DeliveryClientMock),
 		new(domain.DeliveryRepositoryMock),
 		new(domain.KitchenClientMock),
+		new(domain.PaymentMessagingMock),
 	)
 
 	order := domain.OrderStarted
@@ -771,6 +793,7 @@ func TestOrderService_PaymentOrderConfirmedGetPaymentError(t *testing.T) {
 		new(domain.DeliveryClientMock),
 		new(domain.DeliveryRepositoryMock),
 		new(domain.KitchenClientMock),
+		new(domain.PaymentMessagingMock),
 	)
 
 	order := domain.OrderStarted
@@ -809,6 +832,7 @@ func TestOrderService_PaymentOrderConfirmedNotSent(t *testing.T) {
 		new(domain.DeliveryClientMock),
 		new(domain.DeliveryRepositoryMock),
 		new(domain.KitchenClientMock),
+		new(domain.PaymentMessagingMock),
 	)
 
 	order := domain.OrderStarted
@@ -847,6 +871,7 @@ func TestOrderService_PaymentOrderConfirmedItemsEmptyError(t *testing.T) {
 		new(domain.DeliveryClientMock),
 		new(domain.DeliveryRepositoryMock),
 		new(domain.KitchenClientMock),
+		new(domain.PaymentMessagingMock),
 	)
 
 	order := domain.OrderStarted
@@ -884,6 +909,7 @@ func TestOrderService_PaymentOrderError(t *testing.T) {
 		new(domain.DeliveryClientMock),
 		new(domain.DeliveryRepositoryMock),
 		new(domain.KitchenClientMock),
+		new(domain.PaymentMessagingMock),
 	)
 
 	domain.OrderStarted.Items = []*entities.OrderItem{domain.OrderItemSuccess}
@@ -914,6 +940,7 @@ func TestOrderService_PaymentOrderErrorUpdateError(t *testing.T) {
 		new(domain.DeliveryClientMock),
 		new(domain.DeliveryRepositoryMock),
 		new(domain.KitchenClientMock),
+		new(domain.PaymentMessagingMock),
 	)
 
 	order := domain.OrderStarted
@@ -949,6 +976,7 @@ func TestOrderService_PaymentOrderErrorGetPaymentError(t *testing.T) {
 		new(domain.DeliveryClientMock),
 		new(domain.DeliveryRepositoryMock),
 		new(domain.KitchenClientMock),
+		new(domain.PaymentMessagingMock),
 	)
 
 	order := domain.OrderStarted
@@ -986,6 +1014,7 @@ func TestOrderService_PaymentOrderErrorNotSent(t *testing.T) {
 		new(domain.DeliveryClientMock),
 		new(domain.DeliveryRepositoryMock),
 		new(domain.KitchenClientMock),
+		new(domain.PaymentMessagingMock),
 	)
 
 	order := domain.OrderStarted
@@ -1023,6 +1052,7 @@ func TestOrderService_PaymentOrderErrorItemsEmpty(t *testing.T) {
 		new(domain.DeliveryClientMock),
 		new(domain.DeliveryRepositoryMock),
 		new(domain.KitchenClientMock),
+		new(domain.PaymentMessagingMock),
 	)
 
 	order := domain.OrderStarted
@@ -1067,6 +1097,7 @@ func TestOrderService_DeliveredOrder(t *testing.T) {
 		deliveryClient,
 		deliveryRepository,
 		new(domain.KitchenClientMock),
+		new(domain.PaymentMessagingMock),
 	)
 
 	PaymentPending.Status = entities.PaymentStatusPaid
@@ -1113,6 +1144,7 @@ func TestOrderService_DeliveredOrderNotPaid(t *testing.T) {
 		deliveryClient,
 		deliveryRepository,
 		new(domain.KitchenClientMock),
+		new(domain.PaymentMessagingMock),
 	)
 
 	PaymentPending.Status = entities.PaymentStatusPending
@@ -1159,6 +1191,7 @@ func TestOrderService_DeliveredOrderUpdateError(t *testing.T) {
 		deliveryClient,
 		deliveryRepository,
 		new(domain.KitchenClientMock),
+		new(domain.PaymentMessagingMock),
 	)
 
 	PaymentPending.Status = entities.PaymentStatusPaid
@@ -1205,6 +1238,7 @@ func TestOrderService_DeliveredOrderClientError(t *testing.T) {
 		deliveryClient,
 		deliveryRepository,
 		new(domain.KitchenClientMock),
+		new(domain.PaymentMessagingMock),
 	)
 
 	PaymentPending.Status = entities.PaymentStatusPaid
@@ -1242,6 +1276,7 @@ func TestOrderService_DeliveredOrderGetError(t *testing.T) {
 		deliveryClient,
 		deliveryRepository,
 		new(domain.KitchenClientMock),
+		new(domain.PaymentMessagingMock),
 	)
 
 	PaymentPending.Status = entities.PaymentStatusPaid
@@ -1288,6 +1323,7 @@ func TestOrderService_DeliveredOrderNotSentForDelivery(t *testing.T) {
 		deliveryClient,
 		deliveryRepository,
 		new(domain.KitchenClientMock),
+		new(domain.PaymentMessagingMock),
 	)
 
 	PaymentPending.Status = entities.PaymentStatusPaid
@@ -1334,6 +1370,7 @@ func TestOrderService_DeliveredOrderItemsEmptyError(t *testing.T) {
 		deliveryClient,
 		deliveryRepository,
 		new(domain.KitchenClientMock),
+		new(domain.PaymentMessagingMock),
 	)
 
 	PaymentPending.Status = entities.PaymentStatusPaid
@@ -1371,6 +1408,7 @@ func TestOrderService_InPreparationOrder(t *testing.T) {
 		new(domain.DeliveryClientMock),
 		new(domain.DeliveryRepositoryMock),
 		kitchenClient,
+		new(domain.PaymentMessagingMock),
 	)
 
 	order := domain.OrderStarted
@@ -1405,6 +1443,7 @@ func TestOrderService_InPreparationOrderClientError(t *testing.T) {
 		new(domain.DeliveryClientMock),
 		new(domain.DeliveryRepositoryMock),
 		kitchenClient,
+		new(domain.PaymentMessagingMock),
 	)
 
 	order := domain.OrderStarted
@@ -1439,6 +1478,7 @@ func TestOrderService_InPreparationOrderNotPaid(t *testing.T) {
 		new(domain.DeliveryClientMock),
 		new(domain.DeliveryRepositoryMock),
 		kitchenClient,
+		new(domain.PaymentMessagingMock),
 	)
 
 	order := domain.OrderStarted
@@ -1473,6 +1513,7 @@ func TestOrderService_InPreparationOrderItemsEmptyError(t *testing.T) {
 		new(domain.DeliveryClientMock),
 		new(domain.DeliveryRepositoryMock),
 		kitchenClient,
+		new(domain.PaymentMessagingMock),
 	)
 
 	order := domain.OrderStarted
@@ -1507,6 +1548,7 @@ func TestOrderService_ReadyForDeliveryOrder(t *testing.T) {
 		new(domain.DeliveryClientMock),
 		new(domain.DeliveryRepositoryMock),
 		kitchenClient,
+		new(domain.PaymentMessagingMock),
 	)
 
 	order := domain.OrderStarted
@@ -1542,6 +1584,7 @@ func TestOrderService_ReadyForDeliveryOrderClientError(t *testing.T) {
 		new(domain.DeliveryClientMock),
 		new(domain.DeliveryRepositoryMock),
 		kitchenClient,
+		new(domain.PaymentMessagingMock),
 	)
 
 	order := domain.OrderStarted
@@ -1577,6 +1620,7 @@ func TestOrderService_ReadyForDeliveryOrderNotInPreparationError(t *testing.T) {
 		new(domain.DeliveryClientMock),
 		new(domain.DeliveryRepositoryMock),
 		kitchenClient,
+		new(domain.PaymentMessagingMock),
 	)
 
 	order := domain.OrderStarted
@@ -1612,6 +1656,7 @@ func TestOrderService_ReadyForDeliveryOrderNotPaidError(t *testing.T) {
 		new(domain.DeliveryClientMock),
 		new(domain.DeliveryRepositoryMock),
 		kitchenClient,
+		new(domain.PaymentMessagingMock),
 	)
 
 	order := domain.OrderStarted
@@ -1647,6 +1692,7 @@ func TestOrderService_ReadyForDeliveryOrderItemsEmptyError(t *testing.T) {
 		new(domain.DeliveryClientMock),
 		new(domain.DeliveryRepositoryMock),
 		kitchenClient,
+		new(domain.PaymentMessagingMock),
 	)
 
 	order := domain.OrderStarted
@@ -1686,6 +1732,7 @@ func TestOrderService_SentForDeliveryOrderNotPaid(t *testing.T) {
 		new(domain.DeliveryClientMock),
 		deliveryRepository,
 		kitchenClient,
+		new(domain.PaymentMessagingMock),
 	)
 
 	order := domain.OrderStarted
@@ -1725,6 +1772,7 @@ func TestOrderService_SentForDeliveryOrder(t *testing.T) {
 		new(domain.DeliveryClientMock),
 		deliveryRepository,
 		kitchenClient,
+		new(domain.PaymentMessagingMock),
 	)
 
 	order := domain.OrderStarted
@@ -1755,6 +1803,7 @@ func TestOrderService_SentForDeliveryOrderUpdateError(t *testing.T) {
 		new(domain.DeliveryClientMock),
 		deliveryRepository,
 		kitchenClient,
+		new(domain.PaymentMessagingMock),
 	)
 
 	order := domain.OrderStarted
@@ -1785,6 +1834,7 @@ func TestOrderService_SentForDeliveryOrderGetError(t *testing.T) {
 		new(domain.DeliveryClientMock),
 		deliveryRepository,
 		kitchenClient,
+		new(domain.PaymentMessagingMock),
 	)
 
 	order := domain.OrderStarted
@@ -1824,6 +1874,7 @@ func TestOrderService_SentForDeliveryOrderNotReadyForDeliveryError(t *testing.T)
 		new(domain.DeliveryClientMock),
 		deliveryRepository,
 		kitchenClient,
+		new(domain.PaymentMessagingMock),
 	)
 
 	order := domain.OrderStarted
@@ -1863,6 +1914,7 @@ func TestOrderService_SentForDeliveryOrderItemsEmptyError(t *testing.T) {
 		new(domain.DeliveryClientMock),
 		deliveryRepository,
 		kitchenClient,
+		new(domain.PaymentMessagingMock),
 	)
 
 	order := domain.OrderStarted
@@ -1901,6 +1953,7 @@ func TestOrderService_CancelOrder(t *testing.T) {
 		new(domain.DeliveryClientMock),
 		deliveryRepository,
 		kitchenClient,
+		new(domain.PaymentMessagingMock),
 	)
 
 	domain.OrderStarted.Items = []*entities.OrderItem{domain.OrderItemSuccess}
@@ -1941,6 +1994,7 @@ func TestOrderService_CancelOrderUpdatePaymentError(t *testing.T) {
 		new(domain.DeliveryClientMock),
 		deliveryRepository,
 		kitchenClient,
+		new(domain.PaymentMessagingMock),
 	)
 
 	order := domain.OrderStarted
@@ -1979,6 +2033,7 @@ func TestOrderService_CancelOrderSentForDelivery(t *testing.T) {
 		new(domain.DeliveryClientMock),
 		deliveryRepository,
 		kitchenClient,
+		new(domain.PaymentMessagingMock),
 	)
 
 	domain.OrderStarted.Items = []*entities.OrderItem{domain.OrderItemSuccess}
@@ -2019,6 +2074,7 @@ func TestOrderService_CancelOrderPaid(t *testing.T) {
 		new(domain.DeliveryClientMock),
 		deliveryRepository,
 		kitchenClient,
+		new(domain.PaymentMessagingMock),
 	)
 
 	domain.OrderStarted.Items = []*entities.OrderItem{domain.OrderItemSuccess}
@@ -2058,6 +2114,7 @@ func TestOrderService_CancelOrderPaidReverseError(t *testing.T) {
 		new(domain.DeliveryClientMock),
 		deliveryRepository,
 		kitchenClient,
+		new(domain.PaymentMessagingMock),
 	)
 
 	domain.OrderStarted.Items = []*entities.OrderItem{domain.OrderItemSuccess}

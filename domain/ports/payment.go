@@ -16,3 +16,7 @@ type PaymentRepositoryPort interface {
 	GetPaymentById(id uint) (*entities.Payment, error)
 	UpdatePayment(payment *entities.Payment) (*entities.Payment, error)
 }
+
+type PaymentMessagingPort interface {
+	Send(order *entities.Order, paymentMethod string) error
+}

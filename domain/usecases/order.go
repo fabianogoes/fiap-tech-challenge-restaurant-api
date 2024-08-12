@@ -2,6 +2,7 @@ package usecases
 
 import (
 	"fmt"
+	"log/slog"
 
 	"github.com/fabianogoes/fiap-challenge/domain/entities"
 	"github.com/fabianogoes/fiap-challenge/domain/ports"
@@ -21,6 +22,7 @@ type OrderService struct {
 	deliveryClient      ports.DeliveryClientPort
 	deliveryRepository  ports.DeliveryRepositoryPort
 	kitchenClient       ports.KitchenClientPort
+	paymentMessaging    ports.PaymentMessagingPort
 }
 
 func NewOrderService(
@@ -32,6 +34,7 @@ func NewOrderService(
 	deliveryClient ports.DeliveryClientPort,
 	deliveryRepo ports.DeliveryRepositoryPort,
 	kitchenClient ports.KitchenClientPort,
+	paymentMessaging ports.PaymentMessagingPort,
 ) *OrderService {
 	return &OrderService{
 		orderRepository:     orderRepo,
@@ -42,6 +45,7 @@ func NewOrderService(
 		deliveryClient:      deliveryClient,
 		deliveryRepository:  deliveryRepo,
 		kitchenClient:       kitchenClient,
+		paymentMessaging:    paymentMessaging,
 	}
 }
 
@@ -131,10 +135,21 @@ func (os *OrderService) PaymentOrder(order *entities.Order, paymentMethod string
 		return nil, fmt.Errorf("it is not possible to PAY the order: %d without CONFIRMED", order.ID)
 	}
 
-	if err := os.paymentClient.Pay(order, paymentMethod); err != nil {
+	//if err := os.paymentClient.Pay(order, paymentMethod); err != nil {
+	//	order.Status = entities.OrderStatusPaymentError
+	//} else {
+	//	order.Status = entities.OrderStatusPaymentSent
+	//}
+
+	if err := os.paymentMessaging.Send(order, paymentMethod); err != nil {
+		slog.Error(err.Error())
 		order.Status = entities.OrderStatusPaymentError
 	} else {
 		order.Status = entities.OrderStatusPaymentSent
+		order.Payment.Method = entities.ToPaymentMethod(paymentMethod)
+		if _, err := os.paymentUseCase.UpdatePayment(order.Payment); err != nil {
+			return nil, err
+		}
 	}
 
 	return os.orderRepository.UpdateOrder(order)

@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/fabianogoes/fiap-challenge/adapters/messaging"
 	"log/slog"
 	"os"
 
@@ -67,6 +68,7 @@ func main() {
 	deliveryClientAdapter := delivery.NewDeliveryClientAdapter()
 	deliveryRepository := repository.NewDeliveryRepository(db)
 	kitchenClientAdapter := kitchen.NewKitchenClientAdapter(config)
+	paymentMessaging := messaging.NewPaymentMessaging()
 	orderUseCase := usecases.NewOrderService(
 		orderRepository,
 		customerRepository,
@@ -76,6 +78,7 @@ func main() {
 		deliveryClientAdapter,
 		deliveryRepository,
 		kitchenClientAdapter,
+		paymentMessaging,
 	)
 	orderHandler := rest.NewOrderHandler(
 		orderUseCase,

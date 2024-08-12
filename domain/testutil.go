@@ -159,6 +159,18 @@ func (c *KitchenClientMock) ReadyDelivery(orderID uint) error {
 	return nil
 }
 
+type PaymentMessagingMock struct {
+	mock.Mock
+}
+
+func (m *PaymentMessagingMock) Send(order *entities.Order, paymentMethod string) error {
+	args := m.Called(order, paymentMethod)
+	if args.Get(0) != nil {
+		return args.Error(0)
+	}
+	return nil
+}
+
 var orderIDSuccess = uint(1)
 var orderItemIDSuccess = uint(1)
 var OrderItemSuccess = &entities.OrderItem{
