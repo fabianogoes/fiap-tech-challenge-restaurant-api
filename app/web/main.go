@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/fabianogoes/fiap-challenge/adapters/messaging"
+	"github.com/fabianogoes/fiap-challenge/frameworks/scheduler"
 	"log/slog"
 	"os"
 
@@ -48,6 +49,7 @@ func main() {
 	}
 	fmt.Println("DB connected successfully")
 
+	awsSQSClient := messaging.NewAWSSQSClient(config)
 	attendantRepository := repository.NewAttendantRepository(db)
 	attendantUseCase := usecases.NewAttendantService(attendantRepository)
 	attendantHandler := rest.NewAttendantHandler(attendantUseCase)
@@ -68,7 +70,7 @@ func main() {
 	deliveryClientAdapter := delivery.NewDeliveryClientAdapter()
 	deliveryRepository := repository.NewDeliveryRepository(db)
 	kitchenClientAdapter := kitchen.NewKitchenClientAdapter(config)
-	paymentMessaging := messaging.NewPaymentMessaging()
+	paymentMessaging := messaging.NewPaymentMessaging(awsSQSClient)
 	orderUseCase := usecases.NewOrderService(
 		orderRepository,
 		customerRepository,
@@ -86,6 +88,10 @@ func main() {
 		attendantUseCase,
 		productUseCase,
 	)
+
+	paymentReceiver := messaging.NewPaymentReceiver(orderUseCase, config, awsSQSClient)
+	cron := scheduler.InitCronScheduler(paymentReceiver)
+	defer cron.Stop()
 
 	router, err := rest.NewRouter(
 		customerHandler,

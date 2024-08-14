@@ -22,7 +22,7 @@ type OrderService struct {
 	deliveryClient      ports.DeliveryClientPort
 	deliveryRepository  ports.DeliveryRepositoryPort
 	kitchenClient       ports.KitchenClientPort
-	paymentMessaging    ports.PaymentMessagingPort
+	paymentMessaging    ports.PaymentPublisherPort
 }
 
 func NewOrderService(
@@ -34,7 +34,7 @@ func NewOrderService(
 	deliveryClient ports.DeliveryClientPort,
 	deliveryRepo ports.DeliveryRepositoryPort,
 	kitchenClient ports.KitchenClientPort,
-	paymentMessaging ports.PaymentMessagingPort,
+	paymentMessaging ports.PaymentPublisherPort,
 ) *OrderService {
 	return &OrderService{
 		orderRepository:     orderRepo,
@@ -141,7 +141,7 @@ func (os *OrderService) PaymentOrder(order *entities.Order, paymentMethod string
 	//	order.Status = entities.OrderStatusPaymentSent
 	//}
 
-	if err := os.paymentMessaging.Send(order, paymentMethod); err != nil {
+	if err := os.paymentMessaging.Publish(order, paymentMethod); err != nil {
 		slog.Error(err.Error())
 		order.Status = entities.OrderStatusPaymentError
 	} else {

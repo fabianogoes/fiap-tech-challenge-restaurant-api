@@ -7,17 +7,18 @@ import (
 )
 
 type PaymentMessaging struct {
+	awsSQSClient *AWSSQSClient
 }
 
-func NewPaymentMessaging() *PaymentMessaging {
-	return &PaymentMessaging{}
+func NewPaymentMessaging(awsSQSClient *AWSSQSClient) *PaymentMessaging {
+	return &PaymentMessaging{awsSQSClient}
 }
 
-func (m *PaymentMessaging) Send(order *entities.Order, paymentMethod string) error {
+func (m *PaymentMessaging) Publish(order *entities.Order, paymentMethod string) error {
 	fmt.Printf("Sending order %+v\n", order)
 
 	queueName := "order-payment-queue"
-	err := Publish(queueName, toMessageBody(order, paymentMethod))
+	err := m.awsSQSClient.Publish(queueName, toMessageBody(order, paymentMethod))
 	if err != nil {
 		return fmt.Errorf("error sending message to queue: %v", err)
 	}

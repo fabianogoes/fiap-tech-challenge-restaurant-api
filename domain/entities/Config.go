@@ -10,36 +10,44 @@ import (
 )
 
 type Config struct {
-	AppName       string
-	Environment   string
-	AppPort       string
-	DBUser        string
-	DBPassword    string
-	DBHost        string
-	DBPort        string
-	DBName        string
-	APIVersion    string
-	TokenSecret   string
-	PaymentApiUrl string
-	KitchenApiUrl string
+	AppName                 string
+	Environment             string
+	AppPort                 string
+	DBUser                  string
+	DBPassword              string
+	DBHost                  string
+	DBPort                  string
+	DBName                  string
+	APIVersion              string
+	TokenSecret             string
+	PaymentApiUrl           string
+	KitchenApiUrl           string
+	AwsRegion               string
+	AwsEndpoint             string
+	PaymentQueueUrl         string
+	PaymentCallbackQueueUrl string
 }
 
 func NewConfig() *Config {
 	loadEnvironment()
 
 	config := &Config{
-		Environment:   strings.TrimRight(os.Getenv("APP_ENV"), "\n\r"),
-		AppName:       strings.TrimRight(os.Getenv("APP_NAME"), "\n\r"),
-		AppPort:       strings.TrimRight(os.Getenv("APP_PORT"), "\n\r"),
-		DBHost:        strings.TrimRight(os.Getenv("DB_HOST"), "\n\r"),
-		DBPort:        strings.TrimRight(os.Getenv("DB_PORT"), "\n\r"),
-		DBName:        strings.TrimRight(os.Getenv("DB_DATABASE"), "\n\r"),
-		DBUser:        strings.TrimRight(os.Getenv("DB_USERNAME"), "\n\r"),
-		DBPassword:    strings.TrimRight(os.Getenv("DB_PASSWORD"), "\n\r"),
-		APIVersion:    strings.TrimRight(os.Getenv("API_VERSION"), "\n\r"),
-		TokenSecret:   strings.TrimRight(os.Getenv("TOKEN_SECRET"), "\n\r"),
-		PaymentApiUrl: strings.TrimRight(os.Getenv("PAYMENT_API_URL"), "\n\r"),
-		KitchenApiUrl: strings.TrimRight(os.Getenv("KITCHEN_API_URL"), "\n\r"),
+		Environment:             strings.TrimRight(os.Getenv("APP_ENV"), "\n\r"),
+		AppName:                 strings.TrimRight(os.Getenv("APP_NAME"), "\n\r"),
+		AppPort:                 strings.TrimRight(os.Getenv("APP_PORT"), "\n\r"),
+		DBHost:                  strings.TrimRight(os.Getenv("DB_HOST"), "\n\r"),
+		DBPort:                  strings.TrimRight(os.Getenv("DB_PORT"), "\n\r"),
+		DBName:                  strings.TrimRight(os.Getenv("DB_DATABASE"), "\n\r"),
+		DBUser:                  strings.TrimRight(os.Getenv("DB_USERNAME"), "\n\r"),
+		DBPassword:              strings.TrimRight(os.Getenv("DB_PASSWORD"), "\n\r"),
+		APIVersion:              strings.TrimRight(os.Getenv("API_VERSION"), "\n\r"),
+		TokenSecret:             strings.TrimRight(os.Getenv("TOKEN_SECRET"), "\n\r"),
+		PaymentApiUrl:           strings.TrimRight(os.Getenv("PAYMENT_API_URL"), "\n\r"),
+		KitchenApiUrl:           strings.TrimRight(os.Getenv("KITCHEN_API_URL"), "\n\r"),
+		AwsRegion:               strings.TrimRight(os.Getenv("AWS_REGION"), "\n\r"),
+		AwsEndpoint:             strings.TrimRight(os.Getenv("AWS_ENDPOINT"), "\n\r"),
+		PaymentQueueUrl:         strings.TrimRight(os.Getenv("PAYMENT_QUEUE_URL"), "\n\r"),
+		PaymentCallbackQueueUrl: strings.TrimRight(os.Getenv("PAYMENT_CALLBACK_QUEUE_URL"), "\n\r"),
 	}
 
 	printConfig(config)
@@ -70,6 +78,10 @@ func loadDefaultEnv() {
 	_ = os.Setenv("TOKEN_SECRET", "123")
 	_ = os.Setenv("PAYMENT_API_URL", "http://localhost:8010")
 	_ = os.Setenv("KITCHEN_API_URL", "http://localhost:8020")
+	_ = os.Setenv("AWS_REGION", "us-east-1")
+	_ = os.Setenv("AWS_ENDPOINT", "http://localhost:4566")
+	_ = os.Setenv("PAYMENT_QUEUE_URL", "https://localhost.localstack.cloud:4566/000000000000/order-payment-queue")
+	_ = os.Setenv("PAYMENT_CALLBACK_QUEUE_URL", "https://localhost.localstack.cloud:4566/000000000000/order-payment-callback-queue")
 }
 
 func loadProductionEnv() {
@@ -101,4 +113,8 @@ func printConfig(config *Config) {
 	fmt.Printf("Token Secret: %s\n", config.TokenSecret)
 	fmt.Printf("Payment API URL: %s\n", config.PaymentApiUrl)
 	fmt.Printf("Kitchen API URL: %s\n", config.KitchenApiUrl)
+	fmt.Printf("AWS Region: %s\n", config.AwsRegion)
+	fmt.Printf("AWS EndPoint: %s\n", config.AwsEndpoint)
+	fmt.Printf("Payment Queue URL: %s\n", config.PaymentQueueUrl)
+	fmt.Printf("Payment Callback Queue URL: %s\n", config.PaymentCallbackQueueUrl)
 }

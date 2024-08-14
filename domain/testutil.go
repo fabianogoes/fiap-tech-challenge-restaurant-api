@@ -163,7 +163,7 @@ type PaymentMessagingMock struct {
 	mock.Mock
 }
 
-func (m *PaymentMessagingMock) Send(order *entities.Order, paymentMethod string) error {
+func (m *PaymentMessagingMock) Publish(order *entities.Order, paymentMethod string) error {
 	args := m.Called(order, paymentMethod)
 	if args.Get(0) != nil {
 		return args.Error(0)

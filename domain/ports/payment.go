@@ -17,6 +17,10 @@ type PaymentRepositoryPort interface {
 	UpdatePayment(payment *entities.Payment) (*entities.Payment, error)
 }
 
-type PaymentMessagingPort interface {
-	Send(order *entities.Order, paymentMethod string) error
+type PaymentPublisherPort interface {
+	Publish(order *entities.Order, paymentMethod string) error
+}
+
+type PaymentReceiverPort interface {
+	ReceiveCallback()
 }
