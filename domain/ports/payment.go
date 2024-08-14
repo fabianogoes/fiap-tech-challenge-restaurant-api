@@ -18,9 +18,9 @@ type PaymentRepositoryPort interface {
 }
 
 type PaymentPublisherPort interface {
-	Publish(order *entities.Order, paymentMethod string) error
+	PublishPayment(order *entities.Order, paymentMethod string) error
 }
 
 type PaymentReceiverPort interface {
-	ReceiveCallback()
+	ReceivePaymentCallback()
 }

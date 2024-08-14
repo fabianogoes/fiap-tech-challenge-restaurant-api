@@ -8,7 +8,6 @@ import (
 	"os"
 
 	"github.com/fabianogoes/fiap-challenge/adapters/delivery"
-	"github.com/fabianogoes/fiap-challenge/adapters/kitchen"
 	"github.com/fabianogoes/fiap-challenge/adapters/payment"
 	"github.com/fabianogoes/fiap-challenge/domain/usecases"
 	"github.com/fabianogoes/fiap-challenge/frameworks/repository"
@@ -69,8 +68,8 @@ func main() {
 	orderRepository := repository.NewOrderRepository(db, orderItemRepository)
 	deliveryClientAdapter := delivery.NewDeliveryClientAdapter()
 	deliveryRepository := repository.NewDeliveryRepository(db)
-	kitchenClientAdapter := kitchen.NewKitchenClientAdapter(config)
-	paymentMessaging := messaging.NewPaymentMessaging(awsSQSClient)
+	kitchenPublisher := messaging.NewKitchenPublisher(awsSQSClient)
+	paymentMessaging := messaging.NewPaymentPublisher(awsSQSClient)
 	orderUseCase := usecases.NewOrderService(
 		orderRepository,
 		customerRepository,
@@ -79,7 +78,7 @@ func main() {
 		paymentClientAdapter,
 		deliveryClientAdapter,
 		deliveryRepository,
-		kitchenClientAdapter,
+		kitchenPublisher,
 		paymentMessaging,
 	)
 	orderHandler := rest.NewOrderHandler(
@@ -90,7 +89,8 @@ func main() {
 	)
 
 	paymentReceiver := messaging.NewPaymentReceiver(orderUseCase, config, awsSQSClient)
-	cron := scheduler.InitCronScheduler(paymentReceiver)
+	kitchenReceiver := messaging.NewKitchenReceiver(orderUseCase, config, awsSQSClient)
+	cron := scheduler.InitCronScheduler(paymentReceiver, kitchenReceiver)
 	defer cron.Stop()
 
 	router, err := rest.NewRouter(

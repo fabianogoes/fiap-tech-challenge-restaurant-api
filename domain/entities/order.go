@@ -82,7 +82,10 @@ const (
 	OrderStatusPaymentReversed
 	OrderStatusPaymentReversedError
 	OrderStatusPaymentError
-	OrderStatusInPreparation
+	OrderStatusKitchenWaiting
+	OrderStatusKitchenPreparation
+	OrderStatusKitchenReady
+	OrderStatusKitchenCanceled
 	OrderStatusReadyForDelivery
 	OrderStatusSentForDelivery
 	OrderStatusDelivered
@@ -101,7 +104,10 @@ func (os OrderStatus) ToString() string {
 		"PAYMENT_REVERSED",
 		"PAYMENT_REVERSED_ERROR",
 		"PAYMENT_ERROR",
-		"IN_PREPARATION",
+		"KITCHEN_WAITING",
+		"KITCHEN_PREPARATION",
+		"KITCHEN_READY",
+		"KITCHEN_CANCELED",
 		"READY_FOR_DELIVERY",
 		"SENT_FOR_DELIVERY",
 		"DELIVERED",
@@ -114,16 +120,19 @@ func (os OrderStatus) ToString() string {
 func ToOrderStatus(status string) OrderStatus {
 	switch status {
 	case "STARTED":
-
 		return OrderStatusStarted
 	case "ADDING_ITEMS":
 		return OrderStatusAddingItems
 	case "CONFIRMED":
-
 		return OrderStatusConfirmed
-	case "IN_PREPARATION":
-
-		return OrderStatusInPreparation
+	case "KITCHEN_WAITING":
+		return OrderStatusKitchenWaiting
+	case "KITCHEN_PREPARATION":
+		return OrderStatusKitchenPreparation
+	case "KITCHEN_READY":
+		return OrderStatusKitchenReady
+	case "KITCHEN_CANCELED":
+		return OrderStatusKitchenCanceled
 	case "READY_FOR_DELIVERY":
 
 		return OrderStatusReadyForDelivery
@@ -131,6 +140,7 @@ func ToOrderStatus(status string) OrderStatus {
 
 		return OrderStatusPaid
 	case "PAYMENT_SENT":
+
 		return OrderStatusPaymentSent
 	case "PAYMENT_REVERSED":
 

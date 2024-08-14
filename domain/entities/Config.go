@@ -26,6 +26,8 @@ type Config struct {
 	AwsEndpoint             string
 	PaymentQueueUrl         string
 	PaymentCallbackQueueUrl string
+	KitchenQueueUrl         string
+	KitchenCallbackQueueUrl string
 }
 
 func NewConfig() *Config {
@@ -48,6 +50,8 @@ func NewConfig() *Config {
 		AwsEndpoint:             strings.TrimRight(os.Getenv("AWS_ENDPOINT"), "\n\r"),
 		PaymentQueueUrl:         strings.TrimRight(os.Getenv("PAYMENT_QUEUE_URL"), "\n\r"),
 		PaymentCallbackQueueUrl: strings.TrimRight(os.Getenv("PAYMENT_CALLBACK_QUEUE_URL"), "\n\r"),
+		KitchenQueueUrl:         strings.TrimRight(os.Getenv("KITCHEN_QUEUE_URL"), "\n\r"),
+		KitchenCallbackQueueUrl: strings.TrimRight(os.Getenv("KITCHEN_CALLBACK_QUEUE_URL"), "\n\r"),
 	}
 
 	printConfig(config)
@@ -82,6 +86,8 @@ func loadDefaultEnv() {
 	_ = os.Setenv("AWS_ENDPOINT", "http://localhost:4566")
 	_ = os.Setenv("PAYMENT_QUEUE_URL", "https://localhost.localstack.cloud:4566/000000000000/order-payment-queue")
 	_ = os.Setenv("PAYMENT_CALLBACK_QUEUE_URL", "https://localhost.localstack.cloud:4566/000000000000/order-payment-callback-queue")
+	_ = os.Setenv("KITCHEN_QUEUE_URL", "https://localhost.localstack.cloud:4566/000000000000/order-kitchen-queue")
+	_ = os.Setenv("KITCHEN_CALLBACK_QUEUE_URL", "https://localhost.localstack.cloud:4566/000000000000/order-kitchen-callback-queue")
 }
 
 func loadProductionEnv() {
@@ -117,4 +123,6 @@ func printConfig(config *Config) {
 	fmt.Printf("AWS EndPoint: %s\n", config.AwsEndpoint)
 	fmt.Printf("Payment Queue URL: %s\n", config.PaymentQueueUrl)
 	fmt.Printf("Payment Callback Queue URL: %s\n", config.PaymentCallbackQueueUrl)
+	fmt.Printf("Kitchen Queue URL: %s\n", config.KitchenQueueUrl)
+	fmt.Printf("Kitchen Callback Queue URL: %s\n", config.KitchenCallbackQueueUrl)
 }

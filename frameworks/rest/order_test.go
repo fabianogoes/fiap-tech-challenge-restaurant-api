@@ -2010,7 +2010,7 @@ func TestOrder_InPreparationBadRequestId(t *testing.T) {
 
 func TestOrder_ReadyForDeliveryOrderSuccess(t *testing.T) {
 	orderInPreparation := domain.OrderStarted
-	orderInPreparation.Status = entities.OrderStatusInPreparation
+	orderInPreparation.Status = entities.OrderStatusKitchenPreparation
 	orderInPreparation.Items = []*entities.OrderItem{domain.OrderItemSuccess}
 	orderInPreparation.Payment = &entities.Payment{Status: entities.PaymentStatusPaid}
 

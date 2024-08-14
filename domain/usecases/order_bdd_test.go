@@ -221,7 +221,7 @@ var _ = Describe("Order", func() {
 
 	Context("in preparation", func() {
 		orderInPreparation := order
-		orderInPreparation.Status = entities.OrderStatusInPreparation
+		orderInPreparation.Status = entities.OrderStatusKitchenPreparation
 		repository := new(domain.OrderRepositoryMock)
 		repository.On("UpdateOrder", mock.Anything).Return(&orderInPreparation, nil)
 		kitchenClient := new(domain.KitchenClientMock)
@@ -250,13 +250,13 @@ var _ = Describe("Order", func() {
 		})
 
 		It("has order status be InPreparation", func() {
-			Expect(response.Status).Should(Equal(entities.OrderStatusInPreparation))
+			Expect(response.Status).Should(Equal(entities.OrderStatusKitchenPreparation))
 		})
 	})
 
 	Context("ready for delivery", func() {
 		orderInPreparation := order
-		orderInPreparation.Status = entities.OrderStatusInPreparation
+		orderInPreparation.Status = entities.OrderStatusKitchenPreparation
 
 		orderReadyForDelivery := order
 		orderReadyForDelivery.Status = entities.OrderStatusReadyForDelivery

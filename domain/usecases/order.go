@@ -21,8 +21,8 @@ type OrderService struct {
 	paymentClient       ports.PaymentClientPort
 	deliveryClient      ports.DeliveryClientPort
 	deliveryRepository  ports.DeliveryRepositoryPort
-	kitchenClient       ports.KitchenClientPort
-	paymentMessaging    ports.PaymentPublisherPort
+	kitchenPublisher    ports.KitchenPublisherPort
+	paymentPublisher    ports.PaymentPublisherPort
 }
 
 func NewOrderService(
@@ -33,8 +33,8 @@ func NewOrderService(
 	paymentClient ports.PaymentClientPort,
 	deliveryClient ports.DeliveryClientPort,
 	deliveryRepo ports.DeliveryRepositoryPort,
-	kitchenClient ports.KitchenClientPort,
-	paymentMessaging ports.PaymentPublisherPort,
+	kitchenPublisher ports.KitchenPublisherPort,
+	paymentPublisher ports.PaymentPublisherPort,
 ) *OrderService {
 	return &OrderService{
 		orderRepository:     orderRepo,
@@ -44,8 +44,8 @@ func NewOrderService(
 		paymentClient:       paymentClient,
 		deliveryClient:      deliveryClient,
 		deliveryRepository:  deliveryRepo,
-		kitchenClient:       kitchenClient,
-		paymentMessaging:    paymentMessaging,
+		kitchenPublisher:    kitchenPublisher,
+		paymentPublisher:    paymentPublisher,
 	}
 }
 
@@ -135,13 +135,7 @@ func (os *OrderService) PaymentOrder(order *entities.Order, paymentMethod string
 		return nil, fmt.Errorf("it is not possible to PAY the order: %d without CONFIRMED", order.ID)
 	}
 
-	//if err := os.paymentClient.Pay(order, paymentMethod); err != nil {
-	//	order.Status = entities.OrderStatusPaymentError
-	//} else {
-	//	order.Status = entities.OrderStatusPaymentSent
-	//}
-
-	if err := os.paymentMessaging.Publish(order, paymentMethod); err != nil {
+	if err := os.paymentPublisher.PublishPayment(order, paymentMethod); err != nil {
 		slog.Error(err.Error())
 		order.Status = entities.OrderStatusPaymentError
 	} else {
@@ -251,12 +245,12 @@ func (os *OrderService) InPreparationOrder(order *entities.Order) (*entities.Ord
 		return nil, fmt.Errorf(NotPossibleWithoutPayment, "PREPARE", order.ID)
 	}
 
-	err := os.kitchenClient.Preparation(order)
+	err := os.kitchenPublisher.PublishKitchen(order)
 	if err != nil {
 		return nil, err
 	}
 
-	order.Status = entities.OrderStatusInPreparation
+	order.Status = entities.OrderStatusKitchenPreparation
 	return os.orderRepository.UpdateOrder(order)
 }
 
@@ -269,13 +263,8 @@ func (os *OrderService) ReadyForDeliveryOrder(order *entities.Order) (*entities.
 		return nil, fmt.Errorf(NotPossibleWithoutPayment, "DELIVERY", order.ID)
 	}
 
-	if order.Status != entities.OrderStatusInPreparation {
+	if order.Status != entities.OrderStatusKitchenPreparation {
 		return nil, fmt.Errorf("it is not possible to DELIVERY the order: %d without PREPARE", order.ID)
-	}
-
-	err := os.kitchenClient.ReadyDelivery(order.ID)
-	if err != nil {
-		return nil, err
 	}
 
 	order.Status = entities.OrderStatusReadyForDelivery

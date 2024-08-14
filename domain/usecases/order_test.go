@@ -1553,7 +1553,7 @@ func TestOrderService_ReadyForDeliveryOrder(t *testing.T) {
 
 	order := domain.OrderStarted
 	order.Items = []*entities.OrderItem{domain.OrderItemSuccess}
-	order.Status = entities.OrderStatusInPreparation
+	order.Status = entities.OrderStatusKitchenPreparation
 	order.Payment = &entities.Payment{Status: entities.PaymentStatusPaid}
 	response, err := service.ReadyForDeliveryOrder(order)
 	assert.NoError(t, err)
@@ -1589,7 +1589,7 @@ func TestOrderService_ReadyForDeliveryOrderClientError(t *testing.T) {
 
 	order := domain.OrderStarted
 	order.Items = []*entities.OrderItem{domain.OrderItemSuccess}
-	order.Status = entities.OrderStatusInPreparation
+	order.Status = entities.OrderStatusKitchenPreparation
 	order.Payment = &entities.Payment{Status: entities.PaymentStatusPaid}
 	response, err := service.ReadyForDeliveryOrder(order)
 	assert.Error(t, err)
@@ -1661,7 +1661,7 @@ func TestOrderService_ReadyForDeliveryOrderNotPaidError(t *testing.T) {
 
 	order := domain.OrderStarted
 	order.Items = []*entities.OrderItem{domain.OrderItemSuccess}
-	order.Status = entities.OrderStatusInPreparation
+	order.Status = entities.OrderStatusKitchenPreparation
 	order.Payment = &entities.Payment{Status: entities.PaymentStatusPending}
 	response, err := service.ReadyForDeliveryOrder(order)
 	assert.Error(t, err)
@@ -1697,7 +1697,7 @@ func TestOrderService_ReadyForDeliveryOrderItemsEmptyError(t *testing.T) {
 
 	order := domain.OrderStarted
 	order.Items = []*entities.OrderItem{}
-	order.Status = entities.OrderStatusInPreparation
+	order.Status = entities.OrderStatusKitchenPreparation
 	order.Payment = &entities.Payment{Status: entities.PaymentStatusPaid}
 	response, err := service.ReadyForDeliveryOrder(order)
 	assert.Error(t, err)
