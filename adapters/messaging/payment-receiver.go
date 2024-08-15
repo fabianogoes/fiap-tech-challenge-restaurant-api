@@ -46,7 +46,7 @@ func (r *PaymentReceiver) ReceivePaymentCallback() {
 			case entities.PaymentStatusError:
 				r.handleCallbackError(order, callbackStatus)
 			default:
-				slog.Info(fmt.Sprintf("order %v payment %v callback with status %v\n", paymentCallbackDTO.OrderId, paymentCallbackDTO.PaymentId, callbackStatus.ToString()))
+				slog.Info(fmt.Sprintf("order %v payment %v callback with status %v \n", paymentCallbackDTO.OrderId, paymentCallbackDTO.PaymentId, callbackStatus.ToString()))
 			}
 
 			r.awsSqsClient.Delete(message.ReceiptHandle, r.config.PaymentCallbackQueueUrl)

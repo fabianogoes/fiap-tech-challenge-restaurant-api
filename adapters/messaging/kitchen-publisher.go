@@ -4,23 +4,35 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/fabianogoes/fiap-challenge/domain/entities"
+	"github.com/fabianogoes/fiap-challenge/frameworks/repository"
 )
 
 type KitchenPublisher struct {
-	awsSQSClient *AWSSQSClient
+	awsSQSClient     *AWSSQSClient
+	outboxRepository *repository.OutboxRepository
 }
 
-func NewKitchenPublisher(awsSQSClient *AWSSQSClient) *KitchenPublisher {
-	return &KitchenPublisher{awsSQSClient}
+func NewKitchenPublisher(awsSQSClient *AWSSQSClient, outboxRepository *repository.OutboxRepository) *KitchenPublisher {
+	return &KitchenPublisher{awsSQSClient, outboxRepository}
 }
 
-func (m *KitchenPublisher) PublishKitchen(order *entities.Order) error {
+func (p *KitchenPublisher) PublishKitchen(order *entities.Order) error {
 	fmt.Printf("Sending order %v to kitchen\n", order.ID)
 
-	queueName := m.awsSQSClient.config.KitchenQueueUrl
-	err := m.awsSQSClient.Publish(queueName, toKitchenMessageBody(order))
+	queueUrl := p.awsSQSClient.config.KitchenQueueUrl
+	messageBody := toKitchenMessageBody(order)
+
+	if _, err := p.outboxRepository.CreateOutbox(order.ID, messageBody, queueUrl); err != nil {
+		return fmt.Errorf("error creating outbox for order %v: %v", order.ID, err)
+	}
+
+	err := p.awsSQSClient.Publish(queueUrl, messageBody)
 	if err != nil {
 		return fmt.Errorf("error sending message to kitchen: %v", err)
+	}
+
+	if err := p.outboxRepository.DeleteOutbox(order.ID); err != nil {
+		return fmt.Errorf("error deleting outbox for order %v: %v", order.ID, err)
 	}
 
 	return nil

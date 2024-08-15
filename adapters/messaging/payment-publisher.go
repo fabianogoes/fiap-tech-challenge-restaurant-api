@@ -4,23 +4,34 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/fabianogoes/fiap-challenge/domain/entities"
+	"github.com/fabianogoes/fiap-challenge/frameworks/repository"
 )
 
 type PaymentPublisher struct {
-	awsSQSClient *AWSSQSClient
+	awsSQSClient     *AWSSQSClient
+	outboxRepository *repository.OutboxRepository
 }
 
-func NewPaymentPublisher(awsSQSClient *AWSSQSClient) *PaymentPublisher {
-	return &PaymentPublisher{awsSQSClient}
+func NewPaymentPublisher(awsSQSClient *AWSSQSClient, outboxRepository *repository.OutboxRepository) *PaymentPublisher {
+	return &PaymentPublisher{awsSQSClient, outboxRepository}
 }
 
-func (m *PaymentPublisher) PublishPayment(order *entities.Order, paymentMethod string) error {
+func (p *PaymentPublisher) PublishPayment(order *entities.Order, paymentMethod string) error {
 	fmt.Printf("Sending order %v to payment\n", order.ID)
 
-	queueName := m.awsSQSClient.config.PaymentQueueUrl
-	err := m.awsSQSClient.Publish(queueName, toPaymentMessageBody(order, paymentMethod))
+	queueUrl := p.awsSQSClient.config.PaymentQueueUrl
+	messageBody := toPaymentMessageBody(order, paymentMethod)
+	if _, err := p.outboxRepository.CreateOutbox(order.ID, messageBody, queueUrl); err != nil {
+		return fmt.Errorf("error creating outbox for order %v: %v", order.ID, err)
+	}
+
+	err := p.awsSQSClient.Publish(queueUrl, messageBody)
 	if err != nil {
 		return fmt.Errorf("error sending message to payment: %v", err)
+	}
+
+	if err := p.outboxRepository.DeleteOutbox(order.ID); err != nil {
+		return fmt.Errorf("error deleting outbox for order %v: %v", order.ID, err)
 	}
 
 	return nil

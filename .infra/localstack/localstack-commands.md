@@ -33,6 +33,7 @@ awslocal sts get-session-token
 
 awslocal sqs create-queue --queue-name order-payment-queue
 awslocal sns create-topic --name order-payment-events
+awslocal sqs delete-queue --queue-url https://localhost.localstack.cloud:4566/000000000000/order-payment-queue
 awslocal sns subscribe --topic-arn arn:aws:sns:us-east-1:000000000000:order-payment-events --protocol sqs --notification-endpoint arn:aws:sqs:us-east-1:000000000000:order-payment-queue
 
 awslocal sqs list-queues

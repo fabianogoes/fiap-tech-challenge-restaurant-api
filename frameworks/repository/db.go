@@ -44,6 +44,7 @@ func InitDB(config *entities.Config) (*gorm.DB, error) {
 		&dbo.OrderItem{},
 		&dbo.Payment{},
 		&dbo.Delivery{},
+		&dbo.Outbox{},
 	); err != nil {
 		log.Fatal("AutoMigrate error", err)
 		return nil, err

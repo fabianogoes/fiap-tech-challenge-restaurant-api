@@ -48,7 +48,7 @@ func main() {
 	}
 	fmt.Println("DB connected successfully")
 
-	awsSQSClient := messaging.NewAWSSQSClient(config)
+	sqsClient := messaging.NewAWSSQSClient(config)
 	attendantRepository := repository.NewAttendantRepository(db)
 	attendantUseCase := usecases.NewAttendantService(attendantRepository)
 	attendantHandler := rest.NewAttendantHandler(attendantUseCase)
@@ -68,8 +68,9 @@ func main() {
 	orderRepository := repository.NewOrderRepository(db, orderItemRepository)
 	deliveryClientAdapter := delivery.NewDeliveryClientAdapter()
 	deliveryRepository := repository.NewDeliveryRepository(db)
-	kitchenPublisher := messaging.NewKitchenPublisher(awsSQSClient)
-	paymentMessaging := messaging.NewPaymentPublisher(awsSQSClient)
+	outboxRepository := repository.NewOutboxRepository(db)
+	kitchenPublisher := messaging.NewKitchenPublisher(sqsClient, outboxRepository)
+	paymentMessaging := messaging.NewPaymentPublisher(sqsClient, outboxRepository)
 	orderUseCase := usecases.NewOrderService(
 		orderRepository,
 		customerRepository,
@@ -88,9 +89,10 @@ func main() {
 		productUseCase,
 	)
 
-	paymentReceiver := messaging.NewPaymentReceiver(orderUseCase, config, awsSQSClient)
-	kitchenReceiver := messaging.NewKitchenReceiver(orderUseCase, config, awsSQSClient)
-	cron := scheduler.InitCronScheduler(paymentReceiver, kitchenReceiver)
+	paymentReceiver := messaging.NewPaymentReceiver(orderUseCase, config, sqsClient)
+	kitchenReceiver := messaging.NewKitchenReceiver(orderUseCase, config, sqsClient)
+	outboxRetry := messaging.NewOutboxRetry(sqsClient, outboxRepository)
+	cron := scheduler.InitCronScheduler(paymentReceiver, kitchenReceiver, outboxRetry)
 	defer cron.Stop()
 
 	router, err := rest.NewRouter(

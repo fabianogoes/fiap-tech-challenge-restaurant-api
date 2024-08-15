@@ -48,11 +48,11 @@ func (r *KitchenReceiver) ReceiveKitchenCallback() {
 
 func (r *KitchenReceiver) handleCallback(order *entities.Order, kitchenStatus string) error {
 	status := entities.ToOrderStatus(kitchenStatus)
-	slog.Info(fmt.Sprintf("kitchen callback error getting order by id: %v - %v", order, status))
+	slog.Info(fmt.Sprintf("kitchen callback error getting order by id: %v - %v", order.ID, status))
 	if status == entities.OrderStatusKitchenReady {
 		_, err := r.OrderUseCase.ReadyForDeliveryOrder(order)
 		if err != nil {
-			slog.Error(fmt.Sprintf("kitchen callback error getting order by id: %v - %v", order, err))
+			slog.Error(fmt.Sprintf("kitchen callback error getting order by id: %v - %v", order.ID, err))
 			return err
 		}
 	}
