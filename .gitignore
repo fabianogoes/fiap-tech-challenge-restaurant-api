@@ -6,6 +6,7 @@
 bin/
 tmp/
 postgres/
+.infra/localstack/
 
 # exclude any development-specific files
 *.env
