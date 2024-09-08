@@ -9,7 +9,6 @@ import (
 	"os"
 
 	"github.com/fabianogoes/fiap-challenge/adapters/delivery"
-	"github.com/fabianogoes/fiap-challenge/adapters/payment"
 	"github.com/fabianogoes/fiap-challenge/domain/usecases"
 	"github.com/fabianogoes/fiap-challenge/frameworks/repository"
 
@@ -63,7 +62,6 @@ func main() {
 	productUseCase := usecases.NewProductService(productRepository)
 	productHandler := rest.NewProductHandler(productUseCase)
 
-	paymentClientAdapter := payment.NewPaymentClientAdapter(config)
 	paymentRepository := repository.NewPaymentRepository(db)
 	paymentUseCase := usecases.NewPaymentService(paymentRepository)
 	orderItemRepository := repository.NewOrderItemRepository(db)
@@ -72,17 +70,16 @@ func main() {
 	deliveryRepository := repository.NewDeliveryRepository(db)
 	outboxRepository := repository.NewOutboxRepository(db)
 	kitchenPublisher := messaging.NewKitchenPublisher(sqsClient, outboxRepository)
-	paymentMessaging := messaging.NewPaymentPublisher(sqsClient, outboxRepository)
+	paymentPublisher := messaging.NewPaymentPublisher(sqsClient, outboxRepository)
 	orderUseCase := usecases.NewOrderService(
 		orderRepository,
 		customerRepository,
 		attendantRepository,
 		paymentUseCase,
-		paymentClientAdapter,
 		deliveryClientAdapter,
 		deliveryRepository,
 		kitchenPublisher,
-		paymentMessaging,
+		paymentPublisher,
 	)
 	orderHandler := rest.NewOrderHandler(
 		orderUseCase,
