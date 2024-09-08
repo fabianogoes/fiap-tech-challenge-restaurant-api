@@ -32,6 +32,7 @@
 - [x] [GORM ORM library for Golang][2]
 - [x] [Slog](https://pkg.go.dev/log/slog) - Package slog provides structured logging, in which log records include a message, a severity level, and various other attributes expressed as key-value pairs. 
 - [x] [GoDotEnv](https://github.com/joho/godotenv) - A Go (golang) port of dotenv project (which loads env vars from a .env file).
+- [x] [Criptografia Simétrica AES](https://en.wikipedia.org/wiki/Advanced_Encryption_Standard)
 
 ## Desafios
 
@@ -135,9 +136,9 @@ http://localhost:8080/attendants
 
 ```shell
 docker login -u=fabianogoes
-docker build -t fabianogoes/restaurant-api:3.20240426.1 .
-docker tag fabianogoes/restaurant-api:3.20240426.1 fabianogoes/restaurant-api:3.20240426.1
-docker push fabianogoes/restaurant-api:3.20240426.1
+docker build -t fabianogoes/restaurant-api:latest .
+docker tag fabianogoes/restaurant-api:3.20240426.1 fabianogoes/restaurant-api:latest
+docker push fabianogoes/restaurant-api:latest
 ```
 
 ## Run Coverage

@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: restaurant-api
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: restaurant-api
@@ -64,6 +64,30 @@ spec:
                 secretKeyRef:
                   name: restaurant-secret
                   key: TOKEN_SECRET
+            - name: CRYPTO_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: restaurant-secret
+                  key: CRYPTO_KEY
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: restaurant-secret
+                  key: AWS_ACCESS_KEY_ID
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: restaurant-secret
+                  key: AWS_SECRET_ACCESS_KEY
+            - name: AWS_SESSION_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: restaurant-secret
+                  key: AWS_SESSION_TOKEN
+            - name: AWS_ENDPOINT
+              value: https://sqs.us-east-1.amazonaws.com
+            - name: AWS_REGION
+              value: us-east-1
             - name: DB_PORT
               value: "5432"
             - name: APP_NAME
@@ -73,9 +97,13 @@ spec:
             - name: APP_PORT
               value: ":8080"
             - name: API_VERSION
-              value: "4.0"
-            - name: PAYMENT_API_URL
-              value: "http://a22d56d187d3b4166aa01bbffcc23a7e-212615449.us-east-1.elb.amazonaws.com:8080"
-            - name: KITCHEN_API_URL
-              value: "http://a74ca961315474c7b9d6fb3c31020ebf-2145173620.us-east-1.elb.amazonaws.com:8080"
+              value: "5.0"
+            - name: PAYMENT_QUEUE_URL
+              value: "https://sqs.us-east-1.amazonaws.com/252506243013/order-payment-queue"
+            - name: PAYMENT_CALLBACK_QUEUE_URL
+              value: "https://sqs.us-east-1.amazonaws.com/252506243013/order-payment-callback-queue"
+            - name: KITCHEN_QUEUE_URL
+              value: "https://sqs.us-east-1.amazonaws.com/252506243013/order-kitchen-queue"
+            - name: KITCHEN_CALLBACK_QUEUE_URL
+              value: https://sqs.us-east-1.amazonaws.com/252506243013/order-kitchen-callback-queue
       restartPolicy: Always

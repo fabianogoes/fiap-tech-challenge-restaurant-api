@@ -3,7 +3,7 @@ swagger: "2.0"
 info:
   version: "2024-05-01T14:16:51Z"
   title: "restaurante-gateway"
-host: "4m5ipmqfdg.execute-api.us-east-1.amazonaws.com"
+host: "snak196xzh.execute-api.us-east-1.amazonaws.com"
 basePath: "/default"
 schemes:
 - "https"
@@ -18,13 +18,13 @@ paths:
           schema:
             $ref: "#/definitions/Empty"
       x-amazon-apigateway-integration:
-        type: "http"
         httpMethod: "GET"
-        uri: "http://a4463568e08fe4634ba67e9bcfd194fc-748495092.us-east-1.elb.amazonaws.com:8080/"
+        uri: "http://a1c47ab0f2718452696a3fab38b7253b-1009003842.us-east-1.elb.amazonaws.com:8080/"
         responses:
           default:
             statusCode: "200"
         passthroughBehavior: "when_no_match"
+        type: "http"
   /env:
     get:
       produces:
@@ -37,13 +37,13 @@ paths:
       security:
       - restaurant-gateway-auth: []
       x-amazon-apigateway-integration:
-        type: "http_proxy"
         httpMethod: "GET"
-        uri: "http://a4463568e08fe4634ba67e9bcfd194fc-748495092.us-east-1.elb.amazonaws.com:8080/env"
+        uri: "http://a1c47ab0f2718452696a3fab38b7253b-1009003842.us-east-1.elb.amazonaws.com:8080/env"
         responses:
           default:
             statusCode: "200"
         passthroughBehavior: "when_no_match"
+        type: "http_proxy"
   /health:
     get:
       produces:
@@ -54,13 +54,13 @@ paths:
           schema:
             $ref: "#/definitions/Empty"
       x-amazon-apigateway-integration:
-        type: "http"
         httpMethod: "GET"
-        uri: "http://a4463568e08fe4634ba67e9bcfd194fc-748495092.us-east-1.elb.amazonaws.com:8080/health"
+        uri: "http://a1c47ab0f2718452696a3fab38b7253b-1009003842.us-east-1.elb.amazonaws.com:8080/health"
         responses:
           default:
             statusCode: "200"
         passthroughBehavior: "when_no_match"
+        type: "http"
   /orders:
     post:
       produces:
@@ -73,13 +73,13 @@ paths:
       security:
       - restaurant-gateway-auth: []
       x-amazon-apigateway-integration:
-        type: "http_proxy"
         httpMethod: "POST"
-        uri: "http://a4463568e08fe4634ba67e9bcfd194fc-748495092.us-east-1.elb.amazonaws.com:8080/orders/"
+        uri: "http://a1c47ab0f2718452696a3fab38b7253b-1009003842.us-east-1.elb.amazonaws.com:8080/orders/"
         responses:
           default:
             statusCode: "200"
         passthroughBehavior: "when_no_match"
+        type: "http_proxy"
   /orders/{id}:
     get:
       produces:
@@ -101,9 +101,8 @@ paths:
       security:
       - restaurant-gateway-auth: []
       x-amazon-apigateway-integration:
-        type: "http_proxy"
         httpMethod: "GET"
-        uri: "http://a4463568e08fe4634ba67e9bcfd194fc-748495092.us-east-1.elb.amazonaws.com:8080/orders/{id}"
+        uri: "http://a1c47ab0f2718452696a3fab38b7253b-1009003842.us-east-1.elb.amazonaws.com:8080/orders/{id}"
         responses:
           default:
             statusCode: "200"
@@ -111,6 +110,7 @@ paths:
           integration.request.header.authorizationToken: "method.request.header.authorizationToken"
           integration.request.path.id: "method.request.path.id"
         passthroughBehavior: "when_no_templates"
+        type: "http_proxy"
   /orders/{id}/cancel:
     put:
       produces:
@@ -128,15 +128,15 @@ paths:
       security:
       - restaurant-gateway-auth: []
       x-amazon-apigateway-integration:
-        type: "http_proxy"
         httpMethod: "PUT"
-        uri: "http://a4463568e08fe4634ba67e9bcfd194fc-748495092.us-east-1.elb.amazonaws.com:8080/orders/{id}/cancel"
+        uri: "http://a1c47ab0f2718452696a3fab38b7253b-1009003842.us-east-1.elb.amazonaws.com:8080/orders/{id}/cancel"
         responses:
           default:
             statusCode: "200"
         requestParameters:
           integration.request.path.id: "method.request.path.id"
         passthroughBehavior: "when_no_match"
+        type: "http_proxy"
   /orders/{id}/confirmation:
     put:
       produces:
@@ -154,15 +154,15 @@ paths:
       security:
       - restaurant-gateway-auth: []
       x-amazon-apigateway-integration:
-        type: "http_proxy"
         httpMethod: "PUT"
-        uri: "http://a4463568e08fe4634ba67e9bcfd194fc-748495092.us-east-1.elb.amazonaws.com:8080/orders/{id}/confirmation"
+        uri: "http://a1c47ab0f2718452696a3fab38b7253b-1009003842.us-east-1.elb.amazonaws.com:8080/orders/{id}/confirmation"
         responses:
           default:
             statusCode: "200"
         requestParameters:
           integration.request.path.id: "method.request.path.id"
         passthroughBehavior: "when_no_match"
+        type: "http_proxy"
   /orders/{id}/delivered:
     put:
       produces:
@@ -180,15 +180,15 @@ paths:
       security:
       - restaurant-gateway-auth: []
       x-amazon-apigateway-integration:
-        type: "http_proxy"
         httpMethod: "PUT"
-        uri: "http://a4463568e08fe4634ba67e9bcfd194fc-748495092.us-east-1.elb.amazonaws.com:8080/orders/{id}/delivered"
+        uri: "http://a1c47ab0f2718452696a3fab38b7253b-1009003842.us-east-1.elb.amazonaws.com:8080/orders/{id}/delivered"
         responses:
           default:
             statusCode: "200"
         requestParameters:
           integration.request.path.id: "method.request.path.id"
         passthroughBehavior: "when_no_match"
+        type: "http_proxy"
   /orders/{id}/in-preparation:
     put:
       produces:
@@ -206,15 +206,15 @@ paths:
       security:
       - restaurant-gateway-auth: []
       x-amazon-apigateway-integration:
-        type: "http_proxy"
         httpMethod: "PUT"
-        uri: "http://a4463568e08fe4634ba67e9bcfd194fc-748495092.us-east-1.elb.amazonaws.com:8080/orders/{id}/in-preparation"
+        uri: "http://a1c47ab0f2718452696a3fab38b7253b-1009003842.us-east-1.elb.amazonaws.com:8080/orders/{id}/in-preparation"
         responses:
           default:
             statusCode: "200"
         requestParameters:
           integration.request.path.id: "method.request.path.id"
         passthroughBehavior: "when_no_match"
+        type: "http_proxy"
   /orders/{id}/item:
     post:
       produces:
@@ -232,15 +232,15 @@ paths:
       security:
       - restaurant-gateway-auth: []
       x-amazon-apigateway-integration:
-        type: "http_proxy"
         httpMethod: "POST"
-        uri: "http://a4463568e08fe4634ba67e9bcfd194fc-748495092.us-east-1.elb.amazonaws.com:8080/orders/{id}/item"
+        uri: "http://a1c47ab0f2718452696a3fab38b7253b-1009003842.us-east-1.elb.amazonaws.com:8080/orders/{id}/item"
         responses:
           default:
             statusCode: "200"
         requestParameters:
           integration.request.path.id: "method.request.path.id"
         passthroughBehavior: "when_no_match"
+        type: "http_proxy"
   /orders/{id}/item/{idItem}:
     delete:
       produces:
@@ -262,9 +262,8 @@ paths:
       security:
       - restaurant-gateway-auth: []
       x-amazon-apigateway-integration:
-        type: "http_proxy"
         httpMethod: "DELETE"
-        uri: "http://a4463568e08fe4634ba67e9bcfd194fc-748495092.us-east-1.elb.amazonaws.com:8080/orders/{id}/item/{idItem}"
+        uri: "http://a1c47ab0f2718452696a3fab38b7253b-1009003842.us-east-1.elb.amazonaws.com:8080/orders/{id}/item/{idItem}"
         responses:
           default:
             statusCode: "200"
@@ -272,6 +271,7 @@ paths:
           integration.request.path.idItem: "method.request.path.idItem"
           integration.request.path.id: "method.request.path.id"
         passthroughBehavior: "when_no_match"
+        type: "http_proxy"
   /orders/{id}/payment:
     put:
       produces:
@@ -289,15 +289,15 @@ paths:
       security:
       - restaurant-gateway-auth: []
       x-amazon-apigateway-integration:
-        type: "http_proxy"
         httpMethod: "PUT"
-        uri: "http://a4463568e08fe4634ba67e9bcfd194fc-748495092.us-east-1.elb.amazonaws.com:8080/orders/{id}/payment"
+        uri: "http://a1c47ab0f2718452696a3fab38b7253b-1009003842.us-east-1.elb.amazonaws.com:8080/orders/{id}/payment"
         responses:
           default:
             statusCode: "200"
         requestParameters:
           integration.request.path.id: "method.request.path.id"
         passthroughBehavior: "when_no_match"
+        type: "http_proxy"
   /orders/{id}/payment/webhook:
     put:
       produces:
@@ -315,15 +315,15 @@ paths:
       security:
       - restaurant-gateway-auth: []
       x-amazon-apigateway-integration:
-        type: "http_proxy"
         httpMethod: "PUT"
-        uri: "http://a4463568e08fe4634ba67e9bcfd194fc-748495092.us-east-1.elb.amazonaws.com:8080/orders/{id}/payment/webhook"
+        uri: "http://a1c47ab0f2718452696a3fab38b7253b-1009003842.us-east-1.elb.amazonaws.com:8080/orders/{id}/payment/webhook"
         responses:
           default:
             statusCode: "200"
         requestParameters:
           integration.request.path.id: "method.request.path.id"
         passthroughBehavior: "when_no_match"
+        type: "http_proxy"
   /orders/{id}/ready-for-delivery:
     put:
       produces:
@@ -341,15 +341,15 @@ paths:
       security:
       - restaurant-gateway-auth: []
       x-amazon-apigateway-integration:
-        type: "http_proxy"
         httpMethod: "PUT"
-        uri: "http://a4463568e08fe4634ba67e9bcfd194fc-748495092.us-east-1.elb.amazonaws.com:8080/orders/{id}/ready-for-delivery"
+        uri: "http://a1c47ab0f2718452696a3fab38b7253b-1009003842.us-east-1.elb.amazonaws.com:8080/orders/{id}/ready-for-delivery"
         responses:
           default:
             statusCode: "200"
         requestParameters:
           integration.request.path.id: "method.request.path.id"
         passthroughBehavior: "when_no_match"
+        type: "http_proxy"
   /orders/{id}/sent-for-delivery:
     put:
       produces:
@@ -367,15 +367,15 @@ paths:
       security:
       - restaurant-gateway-auth: []
       x-amazon-apigateway-integration:
-        type: "http_proxy"
         httpMethod: "PUT"
-        uri: "http://a4463568e08fe4634ba67e9bcfd194fc-748495092.us-east-1.elb.amazonaws.com:8080/orders/{id}/sent-for-delivery"
+        uri: "http://a1c47ab0f2718452696a3fab38b7253b-1009003842.us-east-1.elb.amazonaws.com:8080/orders/{id}/sent-for-delivery"
         responses:
           default:
             statusCode: "200"
         requestParameters:
           integration.request.path.id: "method.request.path.id"
         passthroughBehavior: "when_no_match"
+        type: "http_proxy"
   /sign-in:
     post:
       produces:
@@ -386,13 +386,13 @@ paths:
           schema:
             $ref: "#/definitions/Empty"
       x-amazon-apigateway-integration:
-        type: "http_proxy"
         httpMethod: "POST"
-        uri: "http://a4463568e08fe4634ba67e9bcfd194fc-748495092.us-east-1.elb.amazonaws.com:8080/customers/sign-in"
+        uri: "http://a1c47ab0f2718452696a3fab38b7253b-1009003842.us-east-1.elb.amazonaws.com:8080/customers/sign-in"
         responses:
           default:
             statusCode: "200"
         passthroughBehavior: "when_no_match"
+        type: "http_proxy"
 securityDefinitions:
   restaurant-gateway-auth:
     type: "apiKey"
@@ -400,10 +400,10 @@ securityDefinitions:
     in: "header"
     x-amazon-apigateway-authtype: "custom"
     x-amazon-apigateway-authorizer:
-      type: "request"
-      authorizerUri: "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:758397526889:function:fiap-tech-challenge-authorizer-lambda/invocations"
+      authorizerUri: "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:252506243013:function:fiap-tech-challenge-authorizer-lambda/invocations"
       authorizerResultTtlInSeconds: 0
       identitySource: "method.request.header.authorizationToken"
+      type: "request"
 definitions:
   Empty:
     type: "object"

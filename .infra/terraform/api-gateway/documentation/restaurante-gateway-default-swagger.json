@@ -4,7 +4,7 @@
     "version" : "2024-05-01T14:16:51Z",
     "title" : "restaurante-gateway"
   },
-  "host" : "4m5ipmqfdg.execute-api.us-east-1.amazonaws.com",
+  "host" : "snak196xzh.execute-api.us-east-1.amazonaws.com",
   "basePath" : "/default",
   "schemes" : [ "https" ],
   "paths" : {

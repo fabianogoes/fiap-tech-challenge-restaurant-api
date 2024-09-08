@@ -4,23 +4,26 @@ import (
 	"fmt"
 	"github.com/fabianogoes/fiap-challenge/domain/entities"
 	"github.com/fabianogoes/fiap-challenge/frameworks/repository/dbo"
+	"github.com/fabianogoes/fiap-challenge/shared"
 	"gorm.io/gorm"
 	"log"
 )
 
 type AttendantRepository struct {
-	db *gorm.DB
+	db     *gorm.DB
+	crypto *shared.Crypto
 }
 
-func NewAttendantRepository(db *gorm.DB) *AttendantRepository {
+func NewAttendantRepository(db *gorm.DB, crypto *shared.Crypto) *AttendantRepository {
 	return &AttendantRepository{
 		db,
+		crypto,
 	}
 }
 
 func (c *AttendantRepository) CreateAttendant(name string) (*entities.Attendant, error) {
 	attendant := &dbo.Attendant{
-		Name: name,
+		Name: c.crypto.EncryptAES(name),
 	}
 
 	var err error
@@ -33,11 +36,11 @@ func (c *AttendantRepository) CreateAttendant(name string) (*entities.Attendant,
 
 func (c *AttendantRepository) GetAttendantByName(name string) (*entities.Attendant, error) {
 	var result dbo.Attendant
-	if err := c.db.Where("name = ?", name).First(&result).Error; err != nil {
+	if err := c.db.Where("name = ?", c.crypto.EncryptAES(name)).First(&result).Error; err != nil {
 		return nil, fmt.Errorf("error to find attendant with name %s - %v", name, err)
 	}
 
-	return result.ToEntity(), nil
+	return result.ToEntity(c.crypto), nil
 }
 
 func (c *AttendantRepository) GetAttendantById(id uint) (*entities.Attendant, error) {
@@ -46,7 +49,7 @@ func (c *AttendantRepository) GetAttendantById(id uint) (*entities.Attendant, er
 		return nil, fmt.Errorf("error to find attendant with id %d - %v", id, err)
 	}
 
-	return result.ToEntity(), nil
+	return result.ToEntity(c.crypto), nil
 }
 
 func (c *AttendantRepository) GetAttendants() ([]*entities.Attendant, error) {
@@ -57,7 +60,7 @@ func (c *AttendantRepository) GetAttendants() ([]*entities.Attendant, error) {
 
 	var attendants []*entities.Attendant
 	for _, result := range results {
-		attendants = append(attendants, result.ToEntity())
+		attendants = append(attendants, result.ToEntity(c.crypto))
 	}
 
 	return attendants, nil
@@ -69,7 +72,7 @@ func (c *AttendantRepository) UpdateAttendant(attendant *entities.Attendant) (*e
 		return nil, err
 	}
 
-	result.Name = attendant.Name
+	result.Name = c.crypto.EncryptAES(attendant.Name)
 
 	if err := c.db.Save(&result).Error; err != nil {
 		return nil, err
@@ -86,13 +89,13 @@ func (c *AttendantRepository) DeleteAttendant(id uint) error {
 	return nil
 }
 
-func InitialDataAttendants(db *gorm.DB) {
+func InitialDataAttendants(db *gorm.DB, crypto *shared.Crypto) {
 	if count := db.Find(&[]*dbo.Attendant{}).RowsAffected; count == 0 {
 		log.Print("Inserting Attendants...")
-		db.Create(&dbo.Attendant{Name: "Miguel"})
-		db.Create(&dbo.Attendant{Name: "Sophia"})
-		db.Create(&dbo.Attendant{Name: "Alice"})
-		db.Create(&dbo.Attendant{Name: "Pedro"})
-		db.Create(&dbo.Attendant{Name: "Manuela"})
+		db.Create(&dbo.Attendant{Name: crypto.EncryptAES("Miguel")})
+		db.Create(&dbo.Attendant{Name: crypto.EncryptAES("Sophia")})
+		db.Create(&dbo.Attendant{Name: crypto.EncryptAES("Alice")})
+		db.Create(&dbo.Attendant{Name: crypto.EncryptAES("Pedro")})
+		db.Create(&dbo.Attendant{Name: crypto.EncryptAES("Manuela")})
 	}
 }

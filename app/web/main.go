@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/fabianogoes/fiap-challenge/adapters/messaging"
 	"github.com/fabianogoes/fiap-challenge/frameworks/scheduler"
+	"github.com/fabianogoes/fiap-challenge/shared"
 	"log/slog"
 	"os"
 
@@ -41,6 +42,7 @@ func main() {
 	var err error
 
 	config := entities.NewConfig()
+	crypto := shared.NewCrypto([]byte(config.CryptoKey))
 	db, err := repository.InitDB(config)
 	if err != nil {
 		fmt.Printf("error while initializing database %v", err)
@@ -49,11 +51,11 @@ func main() {
 	fmt.Println("DB connected successfully")
 
 	sqsClient := messaging.NewAWSSQSClient(config)
-	attendantRepository := repository.NewAttendantRepository(db)
+	attendantRepository := repository.NewAttendantRepository(db, crypto)
 	attendantUseCase := usecases.NewAttendantService(attendantRepository)
 	attendantHandler := rest.NewAttendantHandler(attendantUseCase)
 
-	customerRepository := repository.NewCustomerRepository(db)
+	customerRepository := repository.NewCustomerRepository(db, crypto)
 	customerUseCase := usecases.NewCustomerService(customerRepository)
 	customerHandler := rest.NewCustomerHandler(customerUseCase, config)
 

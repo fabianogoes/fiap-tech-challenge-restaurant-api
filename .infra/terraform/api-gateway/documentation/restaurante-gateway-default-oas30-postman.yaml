@@ -3,7 +3,7 @@ info:
   title: "restaurante-gateway"
   version: "2024-05-01T14:16:51Z"
 servers:
-- url: "https://4m5ipmqfdg.execute-api.us-east-1.amazonaws.com/{basePath}"
+- url: "https://snak196xzh.execute-api.us-east-1.amazonaws.com/{basePath}"
   variables:
     basePath:
       default: "default"
@@ -64,15 +64,6 @@ paths:
                 $ref: "#/components/schemas/Empty"
       security:
       - restaurant-gateway-auth: []
-  /sign-in:
-    post:
-      responses:
-        "200":
-          description: "200 response"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Empty"
   /env:
     get:
       responses:
@@ -84,9 +75,23 @@ paths:
                 $ref: "#/components/schemas/Empty"
       security:
       - restaurant-gateway-auth: []
-  /orders/{id}/ready-for-delivery:
-    put:
+  /sign-in:
+    post:
+      responses:
+        "200":
+          description: "200 response"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /orders/{id}/item/{idItem}:
+    delete:
       parameters:
+      - name: "idItem"
+        in: "path"
+        required: true
+        schema:
+          type: "string"
       - name: "id"
         in: "path"
         required: true
@@ -101,14 +106,9 @@ paths:
                 $ref: "#/components/schemas/Empty"
       security:
       - restaurant-gateway-auth: []
-  /orders/{id}/item/{idItem}:
-    delete:
+  /orders/{id}/ready-for-delivery:
+    put:
       parameters:
-      - name: "idItem"
-        in: "path"
-        required: true
-        schema:
-          type: "string"
       - name: "id"
         in: "path"
         required: true
@@ -149,17 +149,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Empty"
-  /orders:
-    post:
-      responses:
-        "200":
-          description: "200 response"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Empty"
-      security:
-      - restaurant-gateway-auth: []
   /orders/{id}/payment/webhook:
     put:
       parameters:
@@ -185,6 +174,17 @@ paths:
         required: true
         schema:
           type: "string"
+      responses:
+        "200":
+          description: "200 response"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+      security:
+      - restaurant-gateway-auth: []
+  /orders:
+    post:
       responses:
         "200":
           description: "200 response"

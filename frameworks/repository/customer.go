@@ -4,24 +4,29 @@ import (
 	"fmt"
 	"github.com/fabianogoes/fiap-challenge/domain/entities"
 	"github.com/fabianogoes/fiap-challenge/frameworks/repository/dbo"
+	"github.com/fabianogoes/fiap-challenge/shared"
 	"log"
 
 	"gorm.io/gorm"
 )
 
 type CustomerRepository struct {
-	db *gorm.DB
+	db     *gorm.DB
+	crypto *shared.Crypto
 }
 
-func NewCustomerRepository(db *gorm.DB) *CustomerRepository {
+func NewCustomerRepository(db *gorm.DB, crypto *shared.Crypto) *CustomerRepository {
 	return &CustomerRepository{
 		db,
+		crypto,
 	}
 }
 
 func (c *CustomerRepository) CreateCustomer(customer *entities.Customer) (*entities.Customer, error) {
 	var err error
 
+	customer.Name = c.crypto.EncryptAES(customer.Name)
+	customer.Email = c.crypto.EncryptAES(customer.Email)
 	if err = c.db.Create(customer).Error; err != nil {
 		return nil, err
 	}
@@ -36,7 +41,7 @@ func (c *CustomerRepository) GetCustomerByCPF(cpf string) (*entities.Customer, e
 		return nil, fmt.Errorf("error to find customer with cpf %s - %v", cpf, err)
 	}
 
-	return result.ToEntity(), nil
+	return result.ToEntity(c.crypto), nil
 }
 
 func (c *CustomerRepository) GetCustomerById(id uint) (*entities.Customer, error) {
@@ -45,7 +50,7 @@ func (c *CustomerRepository) GetCustomerById(id uint) (*entities.Customer, error
 		return nil, fmt.Errorf("error to find customer with id %d - %v", id, err)
 	}
 
-	return result.ToEntity(), nil
+	return result.ToEntity(c.crypto), nil
 }
 
 func (c *CustomerRepository) GetCustomers() ([]*entities.Customer, error) {
@@ -56,7 +61,7 @@ func (c *CustomerRepository) GetCustomers() ([]*entities.Customer, error) {
 
 	var customers []*entities.Customer
 	for _, result := range results {
-		customers = append(customers, result.ToEntity())
+		customers = append(customers, result.ToEntity(c.crypto))
 	}
 
 	return customers, nil
@@ -68,9 +73,9 @@ func (c *CustomerRepository) UpdateCustomer(customer *entities.Customer) (*entit
 		return nil, err
 	}
 
-	result.Name = customer.Name
-	result.Email = customer.Email
-	result.CPF = customer.CPF
+	result.Name = c.crypto.EncryptAES(customer.Name)
+	result.Email = c.crypto.EncryptAES(customer.Email)
+	result.CPF = c.crypto.EncryptAES(customer.CPF)
 
 	if err := c.db.Save(&result).Error; err != nil {
 		return nil, err
@@ -87,13 +92,33 @@ func (c *CustomerRepository) DeleteCustomer(id uint) error {
 	return nil
 }
 
-func InitialDataCustomers(db *gorm.DB) {
+func InitialDataCustomers(db *gorm.DB, crypto *shared.Crypto) {
 	if count := db.Find(&[]*dbo.Customer{}).RowsAffected; count == 0 {
 		log.Print("Inserting Customers...")
-		db.Create(&dbo.Customer{Name: "Bernardo", Email: "bernardo@gmail.com", CPF: "29381510040"})
-		db.Create(&dbo.Customer{Name: "Laura", Email: "laura@hotmail.com", CPF: "15204180001"})
-		db.Create(&dbo.Customer{Name: "Lucas", Email: "lucas@gmail.com", CPF: "43300921074"})
-		db.Create(&dbo.Customer{Name: "Maria Eduarda", Email: "meduarda@uol.com.br", CPF: "85752055016"})
-		db.Create(&dbo.Customer{Name: "Guilherme", Email: "guilherme@microsoft.com", CPF: "17148604001"})
+		db.Create(&dbo.Customer{
+			Name:  crypto.EncryptAES("Bernardo"),
+			Email: crypto.EncryptAES("bernardo@gmail.com"),
+			CPF:   "29381510040",
+		})
+		db.Create(&dbo.Customer{
+			Name:  crypto.EncryptAES("Laura"),
+			Email: crypto.EncryptAES("laura@hotmail.com"),
+			CPF:   "15204180001",
+		})
+		db.Create(&dbo.Customer{
+			Name:  crypto.EncryptAES("Lucas"),
+			Email: crypto.EncryptAES("lucas@gmail.com"),
+			CPF:   "43300921074",
+		})
+		db.Create(&dbo.Customer{
+			Name:  crypto.EncryptAES("Maria Eduarda"),
+			Email: crypto.EncryptAES("meduarda@uol.com.br"),
+			CPF:   "85752055016",
+		})
+		db.Create(&dbo.Customer{
+			Name:  crypto.EncryptAES("Guilherme"),
+			Email: crypto.EncryptAES("guilherme@microsoft.com"),
+			CPF:   "17148604001",
+		})
 	}
 }

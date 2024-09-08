@@ -2,6 +2,8 @@ package entities
 
 import (
 	"fmt"
+	"github.com/fabianogoes/fiap-challenge/shared"
+	"github.com/google/uuid"
 	"log/slog"
 	"os"
 	"strings"
@@ -19,6 +21,7 @@ type Config struct {
 	DBPort                  string
 	DBName                  string
 	APIVersion              string
+	CryptoKey               string
 	TokenSecret             string
 	PaymentApiUrl           string
 	KitchenApiUrl           string
@@ -43,6 +46,7 @@ func NewConfig() *Config {
 		DBUser:                  strings.TrimRight(os.Getenv("DB_USERNAME"), "\n\r"),
 		DBPassword:              strings.TrimRight(os.Getenv("DB_PASSWORD"), "\n\r"),
 		APIVersion:              strings.TrimRight(os.Getenv("API_VERSION"), "\n\r"),
+		CryptoKey:               strings.TrimRight(os.Getenv("CRYPTO_KEY"), "\n\r"),
 		TokenSecret:             strings.TrimRight(os.Getenv("TOKEN_SECRET"), "\n\r"),
 		PaymentApiUrl:           strings.TrimRight(os.Getenv("PAYMENT_API_URL"), "\n\r"),
 		KitchenApiUrl:           strings.TrimRight(os.Getenv("KITCHEN_API_URL"), "\n\r"),
@@ -79,7 +83,8 @@ func loadDefaultEnv() {
 	_ = os.Setenv("DB_USERNAME", "tech_challenge_usr")
 	_ = os.Setenv("DB_PASSWORD", "tech_challenge_pwd")
 	_ = os.Setenv("API_VERSION", "1.0")
-	_ = os.Setenv("TOKEN_SECRET", "123")
+	_ = os.Setenv("CRYPTO_KEY", strings.ReplaceAll(uuid.New().String(), "-", ""))
+	_ = os.Setenv("TOKEN_SECRET", strings.ReplaceAll(uuid.New().String(), "-", ""))
 	_ = os.Setenv("PAYMENT_API_URL", "http://localhost:8010")
 	_ = os.Setenv("KITCHEN_API_URL", "http://localhost:8020")
 	_ = os.Setenv("AWS_REGION", "us-east-1")
@@ -112,11 +117,12 @@ func printConfig(config *Config) {
 	fmt.Printf("App Port: %s\n", config.AppPort)
 	fmt.Printf("DB Host: %s\n", config.DBHost)
 	fmt.Printf("DB Port: %s\n", config.DBPort)
-	fmt.Printf("DB Name: %s\n", config.DBName)
-	fmt.Printf("DB User: %s\n", config.DBUser)
-	fmt.Printf("DB Password: %s\n", config.DBPassword)
+	fmt.Printf("DB Name: %s\n", shared.MaskSensitiveData(config.DBName))
+	fmt.Printf("DB User: %s\n", shared.MaskSensitiveData(config.DBUser))
+	fmt.Printf("DB Password: %s\n", shared.MaskSensitiveData(config.DBPassword))
 	fmt.Printf("API version: %s\n", config.APIVersion)
-	fmt.Printf("Token Secret: %s\n", config.TokenSecret)
+	fmt.Printf("CRYPTO_KEY: %s\n", shared.MaskSensitiveData(config.CryptoKey))
+	fmt.Printf("Token Secret: %s\n", shared.MaskSensitiveData(config.TokenSecret))
 	fmt.Printf("Payment API URL: %s\n", config.PaymentApiUrl)
 	fmt.Printf("Kitchen API URL: %s\n", config.KitchenApiUrl)
 	fmt.Printf("AWS Region: %s\n", config.AwsRegion)

@@ -4,7 +4,7 @@ resource "aws_eks_cluster" "tech_challenge" {
   version = 1.29
 
   vpc_config {
-    subnet_ids = ["${var.subnetA}", "${var.subnetB}"]
+    subnet_ids = ["${var.subnetA}", "${var.subnetB}", "${var.subnetC}"]
     security_group_ids = ["${var.sgId}"]
     endpoint_private_access = true
     endpoint_public_access  = true

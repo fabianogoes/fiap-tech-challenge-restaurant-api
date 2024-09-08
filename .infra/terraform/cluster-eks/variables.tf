@@ -16,6 +16,10 @@ variable "subnetB" {
     default = "subnet-0bc7e328b4f6d07a0"
 }
 
+variable "subnetC" {
+    default = "subnet-0bc7e328b4f6d07a2"
+}
+
 variable "sgId" {
     default = "sg-02d4aa982423a7f7c"
 }

@@ -2,10 +2,10 @@ package dbo
 
 import (
 	"github.com/fabianogoes/fiap-challenge/domain/entities"
+	"github.com/fabianogoes/fiap-challenge/shared"
 	"gorm.io/gorm"
 )
 
-// Customer is a Database Object for customer
 type Customer struct {
 	gorm.Model
 	Name  string
@@ -13,28 +13,13 @@ type Customer struct {
 	CPF   string `gorm:"unique"`
 }
 
-// ToEntity converts Customer DBO to entities.Customer
-func (c *Customer) ToEntity() *entities.Customer {
+func (c *Customer) ToEntity(crypto *shared.Crypto) *entities.Customer {
 	return &entities.Customer{
 		ID:        c.ID,
 		CreatedAt: c.CreatedAt,
 		UpdatedAt: c.UpdatedAt,
-		Name:      c.Name,
-		Email:     c.Email,
-		CPF:       c.CPF,
-	}
-}
-
-// ToDBO converts entities.Customer to Customer DBO
-func ToCustomerDBO(c *entities.Customer) *Customer {
-	return &Customer{
-		Model: gorm.Model{
-			ID:        c.ID,
-			CreatedAt: c.CreatedAt,
-			UpdatedAt: c.UpdatedAt,
-		},
-		Name:  c.Name,
-		Email: c.Email,
-		CPF:   c.CPF,
+		Name:      shared.MaskSensitiveData(crypto.DecryptAES(c.Name)),
+		Email:     shared.MaskSensitiveData(crypto.DecryptAES(c.Email)),
+		CPF:       shared.MaskSensitiveData(c.CPF),
 	}
 }
