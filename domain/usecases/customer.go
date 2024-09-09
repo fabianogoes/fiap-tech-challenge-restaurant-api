@@ -40,3 +40,12 @@ func (c *CustomerService) UpdateCustomer(customer *entities.Customer) (*entities
 func (c *CustomerService) DeleteCustomer(id uint) error {
 	return c.customerRepository.DeleteCustomer(id)
 }
+
+func (c *CustomerService) InactivationByCPF(cpf string) error {
+	customer, err := c.GetCustomerByCPF(cpf)
+	if err != nil {
+		return err
+	}
+
+	return c.DeleteCustomer(customer.ID)
+}

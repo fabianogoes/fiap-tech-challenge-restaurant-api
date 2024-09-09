@@ -21,10 +21,10 @@ func Test_Router(t *testing.T) {
 		customerRepository,
 		attendantRepository,
 		usecases.NewPaymentService(new(domain.PaymentRepositoryMock)),
-		new(domain.PaymentClientMock),
 		new(domain.DeliveryClientMock),
 		new(domain.DeliveryRepositoryMock),
-		new(domain.KitchenClientMock),
+		new(domain.KitchenPublisherMock),
+		new(domain.PaymentPublisherMock),
 	)
 	orderHandler := NewOrderHandler(
 		orderService,

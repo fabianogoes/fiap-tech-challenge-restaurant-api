@@ -72,8 +72,14 @@ func (o *Order) toOrderStatus() entities.OrderStatus {
 		return entities.OrderStatusPaymentError
 	case "PAYMENT_REVERSED":
 		return entities.OrderStatusPaymentReversed
-	case "IN_PREPARATION":
-		return entities.OrderStatusInPreparation
+	case "KITCHEN_WAITING":
+		return entities.OrderStatusKitchenWaiting
+	case "KITCHEN_PREPARATION":
+		return entities.OrderStatusKitchenPreparation
+	case "KITCHEN_READY":
+		return entities.OrderStatusKitchenReady
+	case "KITCHEN_CANCELED":
+		return entities.OrderStatusKitchenCanceled
 	case "READY_FOR_DELIVERY":
 		return entities.OrderStatusReadyForDelivery
 	case "SENT_FOR_DELIVERY":

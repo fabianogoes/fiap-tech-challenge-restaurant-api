@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/fabianogoes/fiap-challenge/domain/entities"
 	"github.com/fabianogoes/fiap-challenge/frameworks/repository/dbo"
+	"github.com/fabianogoes/fiap-challenge/shared"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"log"
@@ -44,13 +45,15 @@ func InitDB(config *entities.Config) (*gorm.DB, error) {
 		&dbo.OrderItem{},
 		&dbo.Payment{},
 		&dbo.Delivery{},
+		&dbo.Outbox{},
 	); err != nil {
-		log.Fatal("AutoMigrate error", err)
-		return nil, err
+		log.Print("AutoMigrate error", err)
+		//return nil, err
 	}
 
-	InitialDataAttendants(db)
-	InitialDataCustomers(db)
+	crypto := shared.NewCrypto([]byte(config.CryptoKey))
+	InitialDataAttendants(db, crypto)
+	InitialDataCustomers(db, crypto)
 	InitialDataProducts(db)
 
 	return db, nil

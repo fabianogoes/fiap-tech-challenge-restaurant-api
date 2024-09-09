@@ -139,24 +139,44 @@ func (r *DeliveryRepositoryMock) UpdateDelivery(delivery *entities.Delivery) (*e
 	return nil, args.Error(1)
 }
 
-type KitchenClientMock struct {
+type KitchenPublisherMock struct {
 	mock.Mock
 }
 
-func (c *KitchenClientMock) Preparation(order *entities.Order) error {
-	args := c.Called(order)
+func (k *KitchenPublisherMock) PublishKitchen(order *entities.Order) error {
+	args := k.Called(order)
 	if args.Get(0) != nil {
 		return args.Error(0)
 	}
 	return nil
 }
 
-func (c *KitchenClientMock) ReadyDelivery(orderID uint) error {
-	args := c.Called(orderID)
+type KitchenReceiverMock struct {
+	mock.Mock
+}
+
+func (k *KitchenReceiverMock) ReceiveKitchenCallback() {
+
+}
+
+type PaymentPublisherMock struct {
+	mock.Mock
+}
+
+func (m *PaymentPublisherMock) PublishPayment(order *entities.Order, paymentMethod string) error {
+	args := m.Called(order, paymentMethod)
 	if args.Get(0) != nil {
 		return args.Error(0)
 	}
 	return nil
+}
+
+type PaymentReceiverMock struct {
+	mock.Mock
+}
+
+func (m *PaymentReceiverMock) ReceivePaymentCallback() {
+
 }
 
 var orderIDSuccess = uint(1)
@@ -260,26 +280,6 @@ func (r *PaymentRepositoryMock) UpdatePayment(payment *entities.Payment) (*entit
 		return args.Get(0).(*entities.Payment), args.Error(1)
 	}
 	return nil, args.Error(1)
-}
-
-type PaymentClientMock struct {
-	mock.Mock
-}
-
-func (c *PaymentClientMock) Pay(order *entities.Order, paymentMethod string) error {
-	args := c.Called(order, paymentMethod)
-	if args.Get(0) != nil {
-		return args.Error(0)
-	}
-	return nil
-}
-
-func (c *PaymentClientMock) Reverse(order *entities.Order) error {
-	args := c.Called(order)
-	if args.Get(0) != nil {
-		return args.Error(0)
-	}
-	return nil
 }
 
 var productIDSuccess = uint(1)

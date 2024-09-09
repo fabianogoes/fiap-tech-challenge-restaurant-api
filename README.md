@@ -32,11 +32,47 @@
 - [x] [GORM ORM library for Golang][2]
 - [x] [Slog](https://pkg.go.dev/log/slog) - Package slog provides structured logging, in which log records include a message, a severity level, and various other attributes expressed as key-value pairs. 
 - [x] [GoDotEnv](https://github.com/joho/godotenv) - A Go (golang) port of dotenv project (which loads env vars from a .env file).
-- [ ] [gin-swagger](https://github.com/swaggo/gin-swagger) - gin middleware to automatically generate RESTful API documentation with Swagger 2.0.
-- [ ] [swag](https://github.com/swaggo/swag) - Swag converts Go annotations to Swagger Documentation 2.0
-- [ ] [CORS gin's middleware](https://github.com/gin-contrib/cors) - Gin middleware/handler to enable CORS support.
+- [x] [Criptografia Simétrica AES](https://en.wikipedia.org/wiki/Advanced_Encryption_Standard)
 
-## Development
+## Desafios
+
+- Implementação da Arquitetura Hexagonal
+- Implementação de Conteinerização usando Docker e Docker Compose
+- Implementação de Orquestração de Containers usando Kubernetes e AWS EKS
+- Implementação de CI/CD usando Github Actions
+- Implementação da Arquitetura de Microservices com comunicação Assincrôna usando mensageria
+- Implementação de API Gateway AWS Gateway com Autenticação e Autorização usando AWS Lambda
+- Implementação de Autenticação usando JWT
+- Implementação de qualidade de código usando SonarLint, SonarQube e SonarCloud
+- Implementação de Transações distruibuidas usando o Padrão SAGA  
+- Distribuição de processos usando AWS Lambda
+- Uso de IaaS(Infrastructure as a Service) usando Terraform
+
+## Motivações
+
+Boas práticas e padrões usados para resolver os desafios
+
+### Padrão SAGA
+
+Na implementação do padrão SAGA optei por usar a estratégia de Coreografia para fazer uso dos seguintes benefícios:
+
+1. **Desacoplamento e Autonomia dos Serviços**
+   Para que os serviços fiquem mais independentes uns dos outros e não dependam de um orquestrador central o que adicionaria um outro ponto de falha. A ideia é que cada serviço conhece apenas sua própria lógica e como reagir a eventos específicos, permitindo maior autonomia no desenvolvimento e evolução dos serviços.
+
+2. **Escalabilidade**
+    Como não há um ponto central de controle, o sistema pode escalar melhor horizontalmente, já que o aumento na carga de trabalho passa ser distribuído entre os serviços, sem sobrecarregar um único orquestrador.
+
+3. **Resiliência**
+    A falha de um serviço não impede necessariamente que outros serviços continuem a operar. Cada serviço foi projetado para lidar com falhas de maneira mais isolada, aumentando a resiliência geral do sistema.
+
+4. **Flexibilidade e Evolução do Sistema**
+   Adicionar, modificar ou remover serviços é mais fácil e menos impactante, pois não há necessidade de alterar um orquestrador central. Isso tornou a arquitetura mais adaptável a mudanças de requisitos de negócios ou novas funcionalidades. Cada serviço pode ser desenvolvido e implantado de forma independente, o que facilita a adoção de novas tecnologias ou padrões sem impactar o sistema como um todo.
+
+5. **Melhor Alinhamento com Arquiteturas Orientadas a Eventos**
+    A coreografia alinhou bem com arquiteturas orientadas a eventos, onde os eventos dirigem o fluxo das operações, facilitando a implementação de arquiteturas reativas e altamente responsivas.
+
+
+## Setup Development
 
 Dependencies
 
@@ -100,9 +136,9 @@ http://localhost:8080/attendants
 
 ```shell
 docker login -u=fabianogoes
-docker build -t fabianogoes/restaurant-api:3.20240426.1 .
-docker tag fabianogoes/restaurant-api:3.20240426.1 fabianogoes/restaurant-api:3.20240426.1
-docker push fabianogoes/restaurant-api:3.20240426.1
+docker build -t fabianogoes/restaurant-api:latest .
+docker tag fabianogoes/restaurant-api:latest fabianogoes/restaurant-api:latest
+docker push fabianogoes/restaurant-api:latest
 ```
 
 ## Run Coverage

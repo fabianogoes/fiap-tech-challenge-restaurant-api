@@ -264,7 +264,7 @@ func (h *OrderHandler) PaymentWebhook(c *gin.Context) {
 		})
 		return
 	}
-	fmt.Printf("Controller webhook OrderID: %d OK \n", orderID)
+	fmt.Printf("Controller webhook ID: %d OK \n", orderID)
 
 	order, err := h.OrderUseCase.GetOrderById(uint(orderID))
 	if err != nil {

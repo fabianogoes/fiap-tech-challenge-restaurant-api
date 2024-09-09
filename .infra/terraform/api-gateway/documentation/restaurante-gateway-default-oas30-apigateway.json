@@ -5,7 +5,7 @@
     "version" : "2024-05-01T14:16:51Z"
   },
   "servers" : [ {
-    "url" : "https://4m5ipmqfdg.execute-api.us-east-1.amazonaws.com/{basePath}",
+    "url" : "https://snak196xzh.execute-api.us-east-1.amazonaws.com/{basePath}",
     "variables" : {
       "basePath" : {
         "default" : "default"
@@ -40,7 +40,7 @@
         } ],
         "x-amazon-apigateway-integration" : {
           "httpMethod" : "PUT",
-          "uri" : "http://a4463568e08fe4634ba67e9bcfd194fc-748495092.us-east-1.elb.amazonaws.com:8080/orders/{id}/sent-for-delivery",
+          "uri" : "http://a1c47ab0f2718452696a3fab38b7253b-1009003842.us-east-1.elb.amazonaws.com:8080/orders/{id}/sent-for-delivery",
           "responses" : {
             "default" : {
               "statusCode" : "200"
@@ -81,7 +81,7 @@
         } ],
         "x-amazon-apigateway-integration" : {
           "httpMethod" : "PUT",
-          "uri" : "http://a4463568e08fe4634ba67e9bcfd194fc-748495092.us-east-1.elb.amazonaws.com:8080/orders/{id}/cancel",
+          "uri" : "http://a1c47ab0f2718452696a3fab38b7253b-1009003842.us-east-1.elb.amazonaws.com:8080/orders/{id}/cancel",
           "responses" : {
             "default" : {
               "statusCode" : "200"
@@ -129,7 +129,7 @@
         } ],
         "x-amazon-apigateway-integration" : {
           "httpMethod" : "GET",
-          "uri" : "http://a4463568e08fe4634ba67e9bcfd194fc-748495092.us-east-1.elb.amazonaws.com:8080/orders/{id}",
+          "uri" : "http://a1c47ab0f2718452696a3fab38b7253b-1009003842.us-east-1.elb.amazonaws.com:8080/orders/{id}",
           "responses" : {
             "default" : {
               "statusCode" : "200"
@@ -140,33 +140,6 @@
             "integration.request.path.id" : "method.request.path.id"
           },
           "passthroughBehavior" : "when_no_templates",
-          "type" : "http_proxy"
-        }
-      }
-    },
-    "/sign-in" : {
-      "post" : {
-        "responses" : {
-          "200" : {
-            "description" : "200 response",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/Empty"
-                }
-              }
-            }
-          }
-        },
-        "x-amazon-apigateway-integration" : {
-          "httpMethod" : "POST",
-          "uri" : "http://a4463568e08fe4634ba67e9bcfd194fc-748495092.us-east-1.elb.amazonaws.com:8080/customers/sign-in",
-          "responses" : {
-            "default" : {
-              "statusCode" : "200"
-            }
-          },
-          "passthroughBehavior" : "when_no_match",
           "type" : "http_proxy"
         }
       }
@@ -190,7 +163,7 @@
         } ],
         "x-amazon-apigateway-integration" : {
           "httpMethod" : "GET",
-          "uri" : "http://a4463568e08fe4634ba67e9bcfd194fc-748495092.us-east-1.elb.amazonaws.com:8080/env",
+          "uri" : "http://a1c47ab0f2718452696a3fab38b7253b-1009003842.us-east-1.elb.amazonaws.com:8080/env",
           "responses" : {
             "default" : {
               "statusCode" : "200"
@@ -201,16 +174,8 @@
         }
       }
     },
-    "/orders/{id}/ready-for-delivery" : {
-      "put" : {
-        "parameters" : [ {
-          "name" : "id",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        } ],
+    "/sign-in" : {
+      "post" : {
         "responses" : {
           "200" : {
             "description" : "200 response",
@@ -223,19 +188,13 @@
             }
           }
         },
-        "security" : [ {
-          "restaurant-gateway-auth" : [ ]
-        } ],
         "x-amazon-apigateway-integration" : {
-          "httpMethod" : "PUT",
-          "uri" : "http://a4463568e08fe4634ba67e9bcfd194fc-748495092.us-east-1.elb.amazonaws.com:8080/orders/{id}/ready-for-delivery",
+          "httpMethod" : "POST",
+          "uri" : "http://a1c47ab0f2718452696a3fab38b7253b-1009003842.us-east-1.elb.amazonaws.com:8080/customers/sign-in",
           "responses" : {
             "default" : {
               "statusCode" : "200"
             }
-          },
-          "requestParameters" : {
-            "integration.request.path.id" : "method.request.path.id"
           },
           "passthroughBehavior" : "when_no_match",
           "type" : "http_proxy"
@@ -276,7 +235,7 @@
         } ],
         "x-amazon-apigateway-integration" : {
           "httpMethod" : "DELETE",
-          "uri" : "http://a4463568e08fe4634ba67e9bcfd194fc-748495092.us-east-1.elb.amazonaws.com:8080/orders/{id}/item/{idItem}",
+          "uri" : "http://a1c47ab0f2718452696a3fab38b7253b-1009003842.us-east-1.elb.amazonaws.com:8080/orders/{id}/item/{idItem}",
           "responses" : {
             "default" : {
               "statusCode" : "200"
@@ -284,6 +243,47 @@
           },
           "requestParameters" : {
             "integration.request.path.idItem" : "method.request.path.idItem",
+            "integration.request.path.id" : "method.request.path.id"
+          },
+          "passthroughBehavior" : "when_no_match",
+          "type" : "http_proxy"
+        }
+      }
+    },
+    "/orders/{id}/ready-for-delivery" : {
+      "put" : {
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "200 response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Empty"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "restaurant-gateway-auth" : [ ]
+        } ],
+        "x-amazon-apigateway-integration" : {
+          "httpMethod" : "PUT",
+          "uri" : "http://a1c47ab0f2718452696a3fab38b7253b-1009003842.us-east-1.elb.amazonaws.com:8080/orders/{id}/ready-for-delivery",
+          "responses" : {
+            "default" : {
+              "statusCode" : "200"
+            }
+          },
+          "requestParameters" : {
             "integration.request.path.id" : "method.request.path.id"
           },
           "passthroughBehavior" : "when_no_match",
@@ -318,7 +318,7 @@
         } ],
         "x-amazon-apigateway-integration" : {
           "httpMethod" : "POST",
-          "uri" : "http://a4463568e08fe4634ba67e9bcfd194fc-748495092.us-east-1.elb.amazonaws.com:8080/orders/{id}/item",
+          "uri" : "http://a1c47ab0f2718452696a3fab38b7253b-1009003842.us-east-1.elb.amazonaws.com:8080/orders/{id}/item",
           "responses" : {
             "default" : {
               "statusCode" : "200"
@@ -348,7 +348,7 @@
         },
         "x-amazon-apigateway-integration" : {
           "httpMethod" : "GET",
-          "uri" : "http://a4463568e08fe4634ba67e9bcfd194fc-748495092.us-east-1.elb.amazonaws.com:8080/",
+          "uri" : "http://a1c47ab0f2718452696a3fab38b7253b-1009003842.us-east-1.elb.amazonaws.com:8080/",
           "responses" : {
             "default" : {
               "statusCode" : "200"
@@ -356,36 +356,6 @@
           },
           "passthroughBehavior" : "when_no_match",
           "type" : "http"
-        }
-      }
-    },
-    "/orders" : {
-      "post" : {
-        "responses" : {
-          "200" : {
-            "description" : "200 response",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/Empty"
-                }
-              }
-            }
-          }
-        },
-        "security" : [ {
-          "restaurant-gateway-auth" : [ ]
-        } ],
-        "x-amazon-apigateway-integration" : {
-          "httpMethod" : "POST",
-          "uri" : "http://a4463568e08fe4634ba67e9bcfd194fc-748495092.us-east-1.elb.amazonaws.com:8080/orders/",
-          "responses" : {
-            "default" : {
-              "statusCode" : "200"
-            }
-          },
-          "passthroughBehavior" : "when_no_match",
-          "type" : "http_proxy"
         }
       }
     },
@@ -416,7 +386,7 @@
         } ],
         "x-amazon-apigateway-integration" : {
           "httpMethod" : "PUT",
-          "uri" : "http://a4463568e08fe4634ba67e9bcfd194fc-748495092.us-east-1.elb.amazonaws.com:8080/orders/{id}/payment/webhook",
+          "uri" : "http://a1c47ab0f2718452696a3fab38b7253b-1009003842.us-east-1.elb.amazonaws.com:8080/orders/{id}/payment/webhook",
           "responses" : {
             "default" : {
               "statusCode" : "200"
@@ -457,7 +427,7 @@
         } ],
         "x-amazon-apigateway-integration" : {
           "httpMethod" : "PUT",
-          "uri" : "http://a4463568e08fe4634ba67e9bcfd194fc-748495092.us-east-1.elb.amazonaws.com:8080/orders/{id}/in-preparation",
+          "uri" : "http://a1c47ab0f2718452696a3fab38b7253b-1009003842.us-east-1.elb.amazonaws.com:8080/orders/{id}/in-preparation",
           "responses" : {
             "default" : {
               "statusCode" : "200"
@@ -465,6 +435,36 @@
           },
           "requestParameters" : {
             "integration.request.path.id" : "method.request.path.id"
+          },
+          "passthroughBehavior" : "when_no_match",
+          "type" : "http_proxy"
+        }
+      }
+    },
+    "/orders" : {
+      "post" : {
+        "responses" : {
+          "200" : {
+            "description" : "200 response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Empty"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "restaurant-gateway-auth" : [ ]
+        } ],
+        "x-amazon-apigateway-integration" : {
+          "httpMethod" : "POST",
+          "uri" : "http://a1c47ab0f2718452696a3fab38b7253b-1009003842.us-east-1.elb.amazonaws.com:8080/orders/",
+          "responses" : {
+            "default" : {
+              "statusCode" : "200"
+            }
           },
           "passthroughBehavior" : "when_no_match",
           "type" : "http_proxy"
@@ -487,7 +487,7 @@
         },
         "x-amazon-apigateway-integration" : {
           "httpMethod" : "GET",
-          "uri" : "http://a4463568e08fe4634ba67e9bcfd194fc-748495092.us-east-1.elb.amazonaws.com:8080/health",
+          "uri" : "http://a1c47ab0f2718452696a3fab38b7253b-1009003842.us-east-1.elb.amazonaws.com:8080/health",
           "responses" : {
             "default" : {
               "statusCode" : "200"
@@ -525,7 +525,7 @@
         } ],
         "x-amazon-apigateway-integration" : {
           "httpMethod" : "PUT",
-          "uri" : "http://a4463568e08fe4634ba67e9bcfd194fc-748495092.us-east-1.elb.amazonaws.com:8080/orders/{id}/payment",
+          "uri" : "http://a1c47ab0f2718452696a3fab38b7253b-1009003842.us-east-1.elb.amazonaws.com:8080/orders/{id}/payment",
           "responses" : {
             "default" : {
               "statusCode" : "200"
@@ -566,7 +566,7 @@
         } ],
         "x-amazon-apigateway-integration" : {
           "httpMethod" : "PUT",
-          "uri" : "http://a4463568e08fe4634ba67e9bcfd194fc-748495092.us-east-1.elb.amazonaws.com:8080/orders/{id}/confirmation",
+          "uri" : "http://a1c47ab0f2718452696a3fab38b7253b-1009003842.us-east-1.elb.amazonaws.com:8080/orders/{id}/confirmation",
           "responses" : {
             "default" : {
               "statusCode" : "200"
@@ -607,7 +607,7 @@
         } ],
         "x-amazon-apigateway-integration" : {
           "httpMethod" : "PUT",
-          "uri" : "http://a4463568e08fe4634ba67e9bcfd194fc-748495092.us-east-1.elb.amazonaws.com:8080/orders/{id}/delivered",
+          "uri" : "http://a1c47ab0f2718452696a3fab38b7253b-1009003842.us-east-1.elb.amazonaws.com:8080/orders/{id}/delivered",
           "responses" : {
             "default" : {
               "statusCode" : "200"
@@ -636,7 +636,7 @@
         "in" : "header",
         "x-amazon-apigateway-authtype" : "custom",
         "x-amazon-apigateway-authorizer" : {
-          "authorizerUri" : "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:758397526889:function:fiap-tech-challenge-authorizer-lambda/invocations",
+          "authorizerUri" : "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:252506243013:function:fiap-tech-challenge-authorizer-lambda/invocations",
           "authorizerResultTtlInSeconds" : 0,
           "identitySource" : "method.request.header.authorizationToken",
           "type" : "request"

@@ -2,7 +2,7 @@ resource "aws_eks_node_group" "eks_node_group" {
     cluster_name = aws_eks_cluster.tech_challenge.name
     node_group_name = var.nodeName
     node_role_arn = "arn:aws:iam::${var.account_id}:role/LabRole"
-    subnet_ids = ["${var.subnetA}", "${var.subnetB}"]
+    subnet_ids = "${var.subnetA}", "${var.subnetB}", "${var.subnetC}"]
     disk_size = 20
     instance_types = ["t3.micro"]
     capacity_type = "ON_DEMAND"

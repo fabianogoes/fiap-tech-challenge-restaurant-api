@@ -2,12 +2,13 @@ package main
 
 import (
 	"fmt"
+	"github.com/fabianogoes/fiap-challenge/adapters/messaging"
+	"github.com/fabianogoes/fiap-challenge/frameworks/scheduler"
+	"github.com/fabianogoes/fiap-challenge/shared"
 	"log/slog"
 	"os"
 
 	"github.com/fabianogoes/fiap-challenge/adapters/delivery"
-	"github.com/fabianogoes/fiap-challenge/adapters/kitchen"
-	"github.com/fabianogoes/fiap-challenge/adapters/payment"
 	"github.com/fabianogoes/fiap-challenge/domain/usecases"
 	"github.com/fabianogoes/fiap-challenge/frameworks/repository"
 
@@ -40,6 +41,7 @@ func main() {
 	var err error
 
 	config := entities.NewConfig()
+	crypto := shared.NewCrypto([]byte(config.CryptoKey))
 	db, err := repository.InitDB(config)
 	if err != nil {
 		fmt.Printf("error while initializing database %v", err)
@@ -47,11 +49,14 @@ func main() {
 	}
 	fmt.Println("DB connected successfully")
 
-	attendantRepository := repository.NewAttendantRepository(db)
+	sqsClient := messaging.NewAWSSQSClient(config)
+	sqsClient.Init()
+
+	attendantRepository := repository.NewAttendantRepository(db, crypto)
 	attendantUseCase := usecases.NewAttendantService(attendantRepository)
 	attendantHandler := rest.NewAttendantHandler(attendantUseCase)
 
-	customerRepository := repository.NewCustomerRepository(db)
+	customerRepository := repository.NewCustomerRepository(db, crypto)
 	customerUseCase := usecases.NewCustomerService(customerRepository)
 	customerHandler := rest.NewCustomerHandler(customerUseCase, config)
 
@@ -59,23 +64,24 @@ func main() {
 	productUseCase := usecases.NewProductService(productRepository)
 	productHandler := rest.NewProductHandler(productUseCase)
 
-	paymentClientAdapter := payment.NewPaymentClientAdapter(config)
 	paymentRepository := repository.NewPaymentRepository(db)
 	paymentUseCase := usecases.NewPaymentService(paymentRepository)
 	orderItemRepository := repository.NewOrderItemRepository(db)
 	orderRepository := repository.NewOrderRepository(db, orderItemRepository)
 	deliveryClientAdapter := delivery.NewDeliveryClientAdapter()
 	deliveryRepository := repository.NewDeliveryRepository(db)
-	kitchenClientAdapter := kitchen.NewKitchenClientAdapter(config)
+	outboxRepository := repository.NewOutboxRepository(db)
+	kitchenPublisher := messaging.NewKitchenPublisher(sqsClient, outboxRepository)
+	paymentPublisher := messaging.NewPaymentPublisher(sqsClient, outboxRepository)
 	orderUseCase := usecases.NewOrderService(
 		orderRepository,
 		customerRepository,
 		attendantRepository,
 		paymentUseCase,
-		paymentClientAdapter,
 		deliveryClientAdapter,
 		deliveryRepository,
-		kitchenClientAdapter,
+		kitchenPublisher,
+		paymentPublisher,
 	)
 	orderHandler := rest.NewOrderHandler(
 		orderUseCase,
@@ -83,6 +89,12 @@ func main() {
 		attendantUseCase,
 		productUseCase,
 	)
+
+	paymentReceiver := messaging.NewPaymentReceiver(orderUseCase, config, sqsClient)
+	kitchenReceiver := messaging.NewKitchenReceiver(orderUseCase, config, sqsClient)
+	outboxRetry := messaging.NewOutboxRetry(sqsClient, outboxRepository)
+	cron := scheduler.InitCronScheduler(paymentReceiver, kitchenReceiver, outboxRetry)
+	defer cron.Stop()
 
 	router, err := rest.NewRouter(
 		customerHandler,

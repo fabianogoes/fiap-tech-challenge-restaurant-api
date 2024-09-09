@@ -11,6 +11,7 @@ type CustomerUseCasePort interface {
 	GetCustomers() ([]*entities.Customer, error)
 	UpdateCustomer(customer *entities.Customer) (*entities.Customer, error)
 	DeleteCustomer(id uint) error
+	InactivationByCPF(cpf string) error
 }
 
 // Secondary ports to Customer

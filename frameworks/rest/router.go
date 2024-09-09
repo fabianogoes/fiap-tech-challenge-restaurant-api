@@ -16,6 +16,11 @@ func NewRouter(
 ) (*Router, error) {
 	router := gin.Default()
 
+	//router.Use(func(c *gin.Context) {
+	//	c.Header("X-Content-Type-Options", "nosniff")
+	//	c.Next()
+	//})
+
 	router.GET("/", Welcome)
 	router.GET("/health", Health)
 	router.GET("/env", Environment)
@@ -25,6 +30,7 @@ func NewRouter(
 		customers.GET("/", customerHandler.GetCustomers)
 		customers.GET("/:id", customerHandler.GetCustomer)
 		customers.GET("/cpf/:cpf", customerHandler.GetCustomerByCPF)
+		customers.POST("/inactivation/:cpf", customerHandler.InactivationByCPF)
 		customers.POST("/", customerHandler.CreateCustomer)
 		customers.PUT("/:id", customerHandler.UpdateCustomer)
 		customers.DELETE("/:id", customerHandler.DeleteCustomer)

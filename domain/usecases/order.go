@@ -2,6 +2,7 @@ package usecases
 
 import (
 	"fmt"
+	"log/slog"
 
 	"github.com/fabianogoes/fiap-challenge/domain/entities"
 	"github.com/fabianogoes/fiap-challenge/domain/ports"
@@ -17,10 +18,10 @@ type OrderService struct {
 	customerRepository  ports.CustomerRepositoryPort
 	attendantRepository ports.AttendantRepositoryPort
 	paymentUseCase      ports.PaymentUseCasePort
-	paymentClient       ports.PaymentClientPort
 	deliveryClient      ports.DeliveryClientPort
 	deliveryRepository  ports.DeliveryRepositoryPort
-	kitchenClient       ports.KitchenClientPort
+	kitchenPublisher    ports.KitchenPublisherPort
+	paymentPublisher    ports.PaymentPublisherPort
 }
 
 func NewOrderService(
@@ -28,20 +29,20 @@ func NewOrderService(
 	customerRepo ports.CustomerRepositoryPort,
 	attendantRepo ports.AttendantRepositoryPort,
 	paymentUC ports.PaymentUseCasePort,
-	paymentClient ports.PaymentClientPort,
 	deliveryClient ports.DeliveryClientPort,
 	deliveryRepo ports.DeliveryRepositoryPort,
-	kitchenClient ports.KitchenClientPort,
+	kitchenPublisher ports.KitchenPublisherPort,
+	paymentPublisher ports.PaymentPublisherPort,
 ) *OrderService {
 	return &OrderService{
 		orderRepository:     orderRepo,
 		customerRepository:  customerRepo,
 		attendantRepository: attendantRepo,
 		paymentUseCase:      paymentUC,
-		paymentClient:       paymentClient,
 		deliveryClient:      deliveryClient,
 		deliveryRepository:  deliveryRepo,
-		kitchenClient:       kitchenClient,
+		kitchenPublisher:    kitchenPublisher,
+		paymentPublisher:    paymentPublisher,
 	}
 }
 
@@ -88,21 +89,22 @@ func (os *OrderService) RemoveItemFromOrder(order *entities.Order, idItem uint) 
 		return nil, fmt.Errorf("it is not possible to REMOVE ITEM the order: %d with status in [SentForDelivery, Delivered]", order.ID)
 	}
 
-	if order.Payment.Status == entities.PaymentStatusPaid {
-		payment, _ := os.paymentUseCase.GetPaymentById(order.Payment.ID)
-		if err := os.paymentClient.Reverse(order); err != nil {
-			order.Status = entities.OrderStatusPaymentError
-			payment.Status = entities.PaymentStatusError
-		} else {
-			payment.Status = entities.PaymentStatusReversed
-			_, err = os.paymentUseCase.UpdatePayment(payment)
-			if err != nil {
-				return nil, err
-			}
-
-			order.Payment = payment
-		}
-	}
+	// TODO
+	//if order.Payment.Status == entities.PaymentStatusPaid {
+	//	payment, _ := os.paymentUseCase.GetPaymentById(order.Payment.ID)
+	//	if err := os.paymentClient.Reverse(order); err != nil {
+	//		order.Status = entities.OrderStatusPaymentError
+	//		payment.Status = entities.PaymentStatusError
+	//	} else {
+	//		payment.Status = entities.PaymentStatusReversed
+	//		_, err = os.paymentUseCase.UpdatePayment(payment)
+	//		if err != nil {
+	//			return nil, err
+	//		}
+	//
+	//		order.Payment = payment
+	//	}
+	//}
 
 	err = os.orderRepository.RemoveItemFromOrder(idItem)
 	if err != nil {
@@ -131,23 +133,28 @@ func (os *OrderService) PaymentOrder(order *entities.Order, paymentMethod string
 		return nil, fmt.Errorf("it is not possible to PAY the order: %d without CONFIRMED", order.ID)
 	}
 
-	if err := os.paymentClient.Pay(order, paymentMethod); err != nil {
+	if err := os.paymentPublisher.PublishPayment(order, paymentMethod); err != nil {
+		slog.Error(err.Error())
 		order.Status = entities.OrderStatusPaymentError
 	} else {
 		order.Status = entities.OrderStatusPaymentSent
+		order.Payment.Method = entities.ToPaymentMethod(paymentMethod)
+		if _, err := os.paymentUseCase.UpdatePayment(order.Payment); err != nil {
+			return nil, err
+		}
 	}
 
 	return os.orderRepository.UpdateOrder(order)
 }
 
 func (os *OrderService) PaymentOrderConfirmed(order *entities.Order, paymentMethod string) (*entities.Order, error) {
-	fmt.Printf("PaymentOrderConfirmed Order %d paid by method %s\n", order.ID, paymentMethod)
+	fmt.Printf("PaymentOrderConfirmed Order %d paid by method %s \n", order.ID, paymentMethod)
 	if len(order.Items) == 0 {
 		return nil, fmt.Errorf(NotPossibleWithoutItems, "PAY", order.ID)
 	}
 
-	if order.Status != entities.OrderStatusPaymentSent {
-		return nil, fmt.Errorf("it is not possible to PAY the order: %d without PAYMENT_SENT", order.ID)
+	if (order.Status != entities.OrderStatusPaymentError) && (order.Status != entities.OrderStatusPaymentSent) {
+		return nil, fmt.Errorf("it is not possible to PAY the order: %d without PAYMENT_SENT or PAYMENT_ERROR", order.ID)
 	}
 
 	payment, err := os.paymentUseCase.GetPaymentById(order.Payment.ID)
@@ -165,7 +172,6 @@ func (os *OrderService) PaymentOrderConfirmed(order *entities.Order, paymentMeth
 		return nil, fmt.Errorf("error while updating payment id %v - %v", payment.ID, err)
 	}
 
-	fmt.Printf("payment updated %v\n", payment)
 	order.Payment = payment
 	return os.orderRepository.UpdateOrder(order)
 }
@@ -236,12 +242,12 @@ func (os *OrderService) InPreparationOrder(order *entities.Order) (*entities.Ord
 		return nil, fmt.Errorf(NotPossibleWithoutPayment, "PREPARE", order.ID)
 	}
 
-	err := os.kitchenClient.Preparation(order)
+	err := os.kitchenPublisher.PublishKitchen(order)
 	if err != nil {
 		return nil, err
 	}
 
-	order.Status = entities.OrderStatusInPreparation
+	order.Status = entities.OrderStatusKitchenPreparation
 	return os.orderRepository.UpdateOrder(order)
 }
 
@@ -254,13 +260,8 @@ func (os *OrderService) ReadyForDeliveryOrder(order *entities.Order) (*entities.
 		return nil, fmt.Errorf(NotPossibleWithoutPayment, "DELIVERY", order.ID)
 	}
 
-	if order.Status != entities.OrderStatusInPreparation {
+	if order.Status != entities.OrderStatusKitchenPreparation {
 		return nil, fmt.Errorf("it is not possible to DELIVERY the order: %d without PREPARE", order.ID)
-	}
-
-	err := os.kitchenClient.ReadyDelivery(order.ID)
-	if err != nil {
-		return nil, err
 	}
 
 	order.Status = entities.OrderStatusReadyForDelivery
@@ -300,22 +301,23 @@ func (os *OrderService) CancelOrder(order *entities.Order) (*entities.Order, err
 		return nil, fmt.Errorf("it is not possible to cancel the order: %d with status in [SentForDelivery, Delivered]", order.ID)
 	}
 
-	if order.Payment.Status == entities.PaymentStatusPaid {
-		payment, _ := os.paymentUseCase.GetPaymentById(order.Payment.ID)
-		if err := os.paymentClient.Reverse(order); err != nil {
-			order.Status = entities.OrderStatusPaymentError
-			payment.Status = entities.PaymentStatusError
-			return nil, err
-		} else {
-			payment.Status = entities.PaymentStatusReversed
-			_, err = os.paymentUseCase.UpdatePayment(payment)
-			if err != nil {
-				return nil, err
-			}
-
-			order.Payment = payment
-		}
-	}
+	// TODO
+	//if order.Payment.Status == entities.PaymentStatusPaid {
+	//	payment, _ := os.paymentUseCase.GetPaymentById(order.Payment.ID)
+	//	if err := os.paymentClient.Reverse(order); err != nil {
+	//		order.Status = entities.OrderStatusPaymentError
+	//		payment.Status = entities.PaymentStatusError
+	//		return nil, err
+	//	} else {
+	//		payment.Status = entities.PaymentStatusReversed
+	//		_, err = os.paymentUseCase.UpdatePayment(payment)
+	//		if err != nil {
+	//			return nil, err
+	//		}
+	//
+	//		order.Payment = payment
+	//	}
+	//}
 
 	order.Status = entities.OrderStatusCanceled
 	return os.orderRepository.UpdateOrder(order)

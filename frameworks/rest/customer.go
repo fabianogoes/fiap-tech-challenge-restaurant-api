@@ -136,6 +136,23 @@ func (h *CustomerHandler) UpdateCustomer(c *gin.Context) {
 	})
 }
 
+func (h *CustomerHandler) InactivationByCPF(c *gin.Context) {
+	cpf := c.Param("cpf")
+
+	err := h.UseCase.InactivationByCPF(cpf)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+	}
+
+	response := fmt.Sprintf("Customer %s Inactivated successfully", cpf)
+
+	c.JSON(http.StatusAccepted, gin.H{
+		"message": response,
+	})
+}
+
 func (h *CustomerHandler) DeleteCustomer(c *gin.Context) {
 	var err error
 	id, err := strconv.Atoi(c.Param("id"))
