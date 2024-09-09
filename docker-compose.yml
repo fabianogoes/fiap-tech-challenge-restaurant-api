@@ -16,43 +16,142 @@ services:
     networks:
       - restaurant-network
 
-  api:
-    build:
-      context: .
-    container_name: restaurant-api
+  mongo:
+    container_name: mongo
+    image: mongo:4.4.6
     restart: always
     environment:
-      APP_NAME: "${APP_NAME:-restaurant-api}"
-      APP_ENV: "${APP_ENV:-development}"
-      HTTP_URL: "${HTTP_URL:-127.0.0.1}"
-      HTTP_PORT: "${HTTP_PORT:-:8080}"
-      DB_CONNECTION: "${DB_CONNECTION:-postgres}"
-      DB_HOST: "${DB_HOST:-localhost}"
-      DB_PORT: "${DB_PORT:-5432}"
-      DB_DATABASE: "${DB_DATABASE:-restaurant_db}"
-      DB_USERNAME: "${DB_USERNAME:-usr}"
-      DB_PASSWORD: "${DB_PASSWORD:-pwd}"
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: pass
     ports:
-      - "8080:8080"
+      - "27017:27017"
+    networks:
+      - restaurant-network
+
+  mongo-express:
+    container_name: mongo_express
+    image: mongo-express
+    restart: always
+    ports:
+      - "8081:8081"
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: pass
+      ME_CONFIG_BASICAUTH_USERNAME: user
+      ME_CONFIG_BASICAUTH_PASSWORD: pass
+      ME_CONFIG_OPTIONS_EDITORTHEME: ambiance
+      ME_CONFIG_MONGODB_URL: mongodb://root:pass@mongo:27017/
     depends_on:
-      - postgres
+      - mongo
     networks:
       - restaurant-network
 
   localstack:
-    container_name: "${LOCALSTACK_DOCKER_NAME:-localstack-main}"
+    container_name: "${LOCALSTACK_DOCKER_NAME-localstack}"
     image: localstack/localstack
     ports:
       - "127.0.0.1:4566:4566"            # LocalStack Gateway
       - "127.0.0.1:4510-4559:4510-4559"  # external services port range
     environment:
-      # LocalStack configuration: https://docs.localstack.cloud/references/configuration/
       - DEFAULT_REGION=us-east-1
-      - SERVICES=${SERVICES-}
-      - DEBUG=${DEBUG-}
-      - DATA_DIR=/tmp/localstack/data
+      - SERVICES=sqs
+      - DEBUG=${DEBUG:-1}
+      - LOCALSTACK_HOST=localstack
+      - SQS-DEFAULT_QUEUES=order-payment-queue,order-payment-callback-queue,order-kitchen-queue,order-kitchen-callback-queue
     volumes:
+      - "${LOCALSTACK_VOLUME_DIR:-./volume}:/var/lib/localstack"
       - "/var/run/docker.sock:/var/run/docker.sock"
+    networks:
+      - restaurant-network
+
+  restaurant-api:
+#    build:
+#      context: .
+    container_name: restaurant-api
+    image: fabianogoes/restaurant-api
+    restart: always
+    environment:
+      APP_NAME: "restaurant-api"
+      APP_ENV: "development"
+      APP_PORT: ":8080"
+      DB_HOST: "postgres"
+      DB_PORT: "5432"
+      DB_DATABASE: "restaurant_db"
+      DB_USERNAME: "tech_challenge_usr"
+      DB_PASSWORD: "tech_challenge_pwd"
+      API_VERSION: "5.0"
+      CRYPTO_KEY: "598440ae66b24a60a2b5bd8ac56e2659"
+      TOKEN_SECRET: "123440ae-66b2-4a60-a2b5-bd8ac56e2890"
+      AWS_ENDPOINT: "http://localstack:4566"
+      AWS_REGION: "us-east-1"
+      AWS_ACCESS_KEY_ID: "123"
+      AWS_SECRET_ACCESS_KEY": "xyz"
+      AWS_SESSION_TOKEN: "abc"
+      PAYMENT_QUEUE_URL: "https://localstack.localstack.cloud:4566/000000000000/order-payment-queue"
+      PAYMENT_CALLBACK_QUEUE_URL: "https://localstack.localstack.cloud:4566/000000000000/order-payment-callback-queue"
+      KITCHEN_QUEUE_URL: "https://localstack.localstack.cloud:4566/000000000000/order-kitchen-queue"
+      KITCHEN_CALLBACK_QUEUE_URL: "https://localstack.localstack.cloud:4566/000000000000/order-kitchen-callback-queue"
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+      - localstack
+    networks:
+      - restaurant-network
+
+  payment-api:
+    container_name: payment-api
+    image: fabianogoes/payment-api
+    restart: always
+    environment:
+      APP_NAME: "payment-api"
+      APP_ENV: "development"
+      APP_PORT: ":8010"
+      DB_URI: "mongodb://root:pass@mongo:27017/"
+      DB_NAME: "tech_challenge_payment_db"
+      API_VERSION: "5.0"
+      AWS_ENDPOINT: "http://localstack:4566"
+      AWS_REGION: "us-east-1"
+      AWS_ACCESS_KEY_ID: "123"
+      AWS_SECRET_ACCESS_KEY": "xyz"
+      AWS_SESSION_TOKEN: "abc"
+      PAYMENT_QUEUE_URL: "https://localstack.localstack.cloud:4566/000000000000/order-payment-queue"
+      PAYMENT_CALLBACK_QUEUE_URL: "https://localstack.localstack.cloud:4566/000000000000/order-payment-callback-queue"
+    ports:
+      - "8010:8010"
+    depends_on:
+      - mongo
+      - localstack
+      - restaurant-api
+    networks:
+      - restaurant-network
+
+  kitchen-api:
+    container_name: kitchen-api
+    image: fabianogoes/kitchen-api
+    restart: always
+    environment:
+      APP_NAME: "kitchen-api"
+      APP_ENV: "development"
+      APP_PORT: ":8020"
+      DB_URI: "mongodb://root:pass@mongo:27017/"
+      DB_NAME: "tech_challenge_kitchen_db"
+      API_VERSION: "5.0"
+      AWS_ENDPOINT: "http://localstack:4566"
+      AWS_REGION: "us-east-1"
+      AWS_ACCESS_KEY_ID: "123"
+      AWS_SECRET_ACCESS_KEY": "xyz"
+      AWS_SESSION_TOKEN: "abc"
+      KITCHEN_QUEUE_URL: "https://localstack.localstack.cloud:4566/000000000000/order-kitchen-queue"
+      KITCHEN_CALLBACK_QUEUE_URL: "https://localstack.localstack.cloud:4566/000000000000/order-kitchen-callback-queue"
+    ports:
+      - "8020:8020"
+    depends_on:
+      - mongo
+      - localstack
+      - restaurant-api
+    networks:
+      - restaurant-network
 
 networks:
   restaurant-network:

@@ -137,7 +137,7 @@ http://localhost:8080/attendants
 ```shell
 docker login -u=fabianogoes
 docker build -t fabianogoes/restaurant-api:latest .
-docker tag fabianogoes/restaurant-api:3.20240426.1 fabianogoes/restaurant-api:latest
+docker tag fabianogoes/restaurant-api:latest fabianogoes/restaurant-api:latest
 docker push fabianogoes/restaurant-api:latest
 ```
 

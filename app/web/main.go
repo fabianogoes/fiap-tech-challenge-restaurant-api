@@ -50,6 +50,8 @@ func main() {
 	fmt.Println("DB connected successfully")
 
 	sqsClient := messaging.NewAWSSQSClient(config)
+	sqsClient.Init()
+
 	attendantRepository := repository.NewAttendantRepository(db, crypto)
 	attendantUseCase := usecases.NewAttendantService(attendantRepository)
 	attendantHandler := rest.NewAttendantHandler(attendantUseCase)

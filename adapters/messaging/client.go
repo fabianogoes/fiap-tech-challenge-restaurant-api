@@ -7,6 +7,7 @@ import (
 	"github.com/aws/aws-sdk-go/service/sqs"
 	"github.com/fabianogoes/fiap-challenge/domain/entities"
 	"log/slog"
+	"path"
 )
 
 type AWSSQSClient struct {
@@ -67,4 +68,40 @@ func (c *AWSSQSClient) ReceiveParams(queueURL string) *sqs.ReceiveMessageInput {
 		QueueUrl:            aws.String(queueURL),
 		WaitTimeSeconds:     aws.Int64(5),
 	}
+}
+
+func (c *AWSSQSClient) CreateQueue(queueName string) {
+	slog.Info(fmt.Sprintf("creating queue - %v", queueName))
+	input := &sqs.CreateQueueInput{
+		QueueName: aws.String(queueName),
+	}
+	out, err := c.sqsClient.CreateQueue(input)
+	if err != nil {
+		slog.Error(fmt.Sprintf("error create queue - %v", err))
+	}
+
+	slog.Info(fmt.Sprintf("Created queue - %v", *out.QueueUrl))
+}
+
+func (c *AWSSQSClient) Init() {
+	if c.config.Environment != "production" {
+		c.CreateQueue(extractName(c.config.PaymentQueueUrl))
+		c.CreateQueue(extractName(c.config.PaymentCallbackQueueUrl))
+		c.CreateQueue(extractName(c.config.KitchenQueueUrl))
+		c.CreateQueue(extractName(c.config.KitchenCallbackQueueUrl))
+
+		slog.Info("Listing all queues...")
+		queues, err := c.sqsClient.ListQueues(&sqs.ListQueuesInput{})
+		if err != nil {
+			slog.Error(fmt.Sprintf("error listing queues - %v", err))
+		}
+
+		for _, queue := range queues.QueueUrls {
+			slog.Info(fmt.Sprintf("Listing queue - %v", *queue))
+		}
+	}
+}
+
+func extractName(url string) string {
+	return path.Base(url)
 }

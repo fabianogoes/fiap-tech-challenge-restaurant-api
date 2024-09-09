@@ -21,4 +21,5 @@ db/
 *.terraform.lock.hcl
 *terraform.tfstate
 *terraform-provider*
+/volume/*
 /.infra/terraform/rds-postgres/.terraform/providers/registry.terraform.io/hashicorp/aws/5.65.0/linux_amd64/LICENSE.txt
