@@ -77,3 +77,13 @@ func TestCustomerService_DeleteCustomer(t *testing.T) {
 	err := service.DeleteCustomer(domain.CustomerSuccess.ID)
 	assert.NoError(t, err)
 }
+
+func TestCustomerService_InactivationByCPF(t *testing.T) {
+	repository := new(domain.CustomerRepositoryMock)
+	repository.On("GetCustomerByCPF", mock.Anything).Return(domain.CustomerSuccess, nil)
+	repository.On("DeleteCustomer", mock.Anything).Return(nil)
+
+	service := NewCustomerService(repository)
+	err := service.InactivationByCPF("123")
+	assert.NoError(t, err)
+}
