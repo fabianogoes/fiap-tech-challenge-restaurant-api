@@ -20,6 +20,6 @@ func (c *Customer) ToEntity(crypto *shared.Crypto) *entities.Customer {
 		UpdatedAt: c.UpdatedAt,
 		Name:      shared.MaskSensitiveData(crypto.DecryptAES(c.Name)),
 		Email:     shared.MaskSensitiveData(crypto.DecryptAES(c.Email)),
-		CPF:       shared.MaskSensitiveData(c.CPF),
+		CPF:       c.CPF,
 	}
 }

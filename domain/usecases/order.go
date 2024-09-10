@@ -89,23 +89,6 @@ func (os *OrderService) RemoveItemFromOrder(order *entities.Order, idItem uint) 
 		return nil, fmt.Errorf("it is not possible to REMOVE ITEM the order: %d with status in [SentForDelivery, Delivered]", order.ID)
 	}
 
-	// TODO
-	//if order.Payment.Status == entities.PaymentStatusPaid {
-	//	payment, _ := os.paymentUseCase.GetPaymentById(order.Payment.ID)
-	//	if err := os.paymentClient.Reverse(order); err != nil {
-	//		order.Status = entities.OrderStatusPaymentError
-	//		payment.Status = entities.PaymentStatusError
-	//	} else {
-	//		payment.Status = entities.PaymentStatusReversed
-	//		_, err = os.paymentUseCase.UpdatePayment(payment)
-	//		if err != nil {
-	//			return nil, err
-	//		}
-	//
-	//		order.Payment = payment
-	//	}
-	//}
-
 	err = os.orderRepository.RemoveItemFromOrder(idItem)
 	if err != nil {
 		return nil, err
@@ -300,24 +283,6 @@ func (os *OrderService) CancelOrder(order *entities.Order) (*entities.Order, err
 	if order.Status == entities.OrderStatusSentForDelivery || order.Status == entities.OrderStatusDelivered {
 		return nil, fmt.Errorf("it is not possible to cancel the order: %d with status in [SentForDelivery, Delivered]", order.ID)
 	}
-
-	// TODO
-	//if order.Payment.Status == entities.PaymentStatusPaid {
-	//	payment, _ := os.paymentUseCase.GetPaymentById(order.Payment.ID)
-	//	if err := os.paymentClient.Reverse(order); err != nil {
-	//		order.Status = entities.OrderStatusPaymentError
-	//		payment.Status = entities.PaymentStatusError
-	//		return nil, err
-	//	} else {
-	//		payment.Status = entities.PaymentStatusReversed
-	//		_, err = os.paymentUseCase.UpdatePayment(payment)
-	//		if err != nil {
-	//			return nil, err
-	//		}
-	//
-	//		order.Payment = payment
-	//	}
-	//}
 
 	order.Status = entities.OrderStatusCanceled
 	return os.orderRepository.UpdateOrder(order)
