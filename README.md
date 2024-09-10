@@ -44,7 +44,7 @@
 - Implementação de API Gateway AWS Gateway com Autenticação e Autorização usando AWS Lambda
 - Implementação de Autenticação usando JWT
 - Implementação de qualidade de código usando SonarLint, SonarQube e SonarCloud
-- Implementação de Transações distruibuidas usando o Padrão SAGA  
+- Implementação de Transações distribuídas usando o Padrão SAGA  
 - Distribuição de processos usando AWS Lambda
 - Uso de IaaS(Infrastructure as a Service) usando Terraform
 
