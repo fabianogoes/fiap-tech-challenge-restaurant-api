@@ -609,47 +609,6 @@
 			"name": "Payment",
 			"item": [
 				{
-					"name": "Health",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
-					"protocolProfileBehavior": {
-						"followRedirects": true,
-						"disableUrlEncoding": false,
-						"disableCookies": false
-					},
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "User-Agent",
-								"value": "insomnia/2023.5.8"
-							}
-						],
-						"url": {
-							"raw": "http://localhost:8010/health",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8010",
-							"path": [
-								"health"
-							]
-						}
-					},
-					"response": []
-				},
-				{
 					"name": "Env",
 					"event": [
 						{
@@ -859,47 +818,6 @@
 			"name": "Kitchen",
 			"item": [
 				{
-					"name": "Health",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
-					"protocolProfileBehavior": {
-						"followRedirects": true,
-						"disableUrlEncoding": false,
-						"disableCookies": false
-					},
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "User-Agent",
-								"value": "insomnia/2023.5.8"
-							}
-						],
-						"url": {
-							"raw": "http://localhost:8020/health",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8020",
-							"path": [
-								"health"
-							]
-						}
-					},
-					"response": []
-				},
-				{
 					"name": "Env",
 					"event": [
 						{
@@ -1092,45 +1010,7 @@
 			]
 		},
 		{
-			"name": "Welcome",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							""
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
-				}
-			],
-			"protocolProfileBehavior": {
-				"followRedirects": true,
-				"disableUrlEncoding": false,
-				"disableCookies": false
-			},
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "User-Agent",
-						"value": "insomnia/2023.5.8"
-					}
-				],
-				"url": {
-					"raw": "http://localhost:8080",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080"
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Health",
+			"name": "Health restaurant-api",
 			"event": [
 				{
 					"listen": "test",
@@ -1163,6 +1043,88 @@
 						"localhost"
 					],
 					"port": "8080",
+					"path": [
+						"health"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Health payment-api",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"followRedirects": true,
+				"disableUrlEncoding": false,
+				"disableCookies": false
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "User-Agent",
+						"value": "insomnia/2023.5.8"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8010/health",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8010",
+					"path": [
+						"health"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Health kitchen-api",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"followRedirects": true,
+				"disableUrlEncoding": false,
+				"disableCookies": false
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "User-Agent",
+						"value": "insomnia/2023.5.8"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8020/health",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8020",
 					"path": [
 						"health"
 					]
