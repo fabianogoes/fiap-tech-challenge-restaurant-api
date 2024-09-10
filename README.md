@@ -44,7 +44,7 @@
 - Implementação de API Gateway AWS Gateway com Autenticação e Autorização usando AWS Lambda
 - Implementação de Autenticação usando JWT
 - Implementação de qualidade de código usando SonarLint, SonarQube e SonarCloud
-- Implementação de Transações distruibuidas usando o Padrão SAGA  
+- Implementação de Transações distribuídas usando o Padrão SAGA  
 - Distribuição de processos usando AWS Lambda
 - Uso de IaaS(Infrastructure as a Service) usando Terraform
 
@@ -52,12 +52,12 @@
 
 Boas práticas e padrões usados para resolver os desafios
 
-### Padrão SAGA
+### Justificativa do Padrão SAGA com Coreografia
 
 Na implementação do padrão SAGA optei por usar a estratégia de Coreografia para fazer uso dos seguintes benefícios:
 
 1. **Desacoplamento e Autonomia dos Serviços**
-   Para que os serviços fiquem mais independentes uns dos outros e não dependam de um orquestrador central o que adicionaria um outro ponto de falha. A ideia é que cada serviço conhece apenas sua própria lógica e como reagir a eventos específicos, permitindo maior autonomia no desenvolvimento e evolução dos serviços.
+   Para que os serviços fiquem mais independentes uns dos outros e não dependam de um orquestrador central o que adicionaria outro ponto de falha. A ideia é que cada serviço conhece apenas sua própria lógica e como reagir a eventos específicos, permitindo maior autonomia no desenvolvimento e evolução dos serviços.
 
 2. **Escalabilidade**
     Como não há um ponto central de controle, o sistema pode escalar melhor horizontalmente, já que o aumento na carga de trabalho passa ser distribuído entre os serviços, sem sobrecarregar um único orquestrador.
@@ -71,6 +71,28 @@ Na implementação do padrão SAGA optei por usar a estratégia de Coreografia p
 5. **Melhor Alinhamento com Arquiteturas Orientadas a Eventos**
     A coreografia alinhou bem com arquiteturas orientadas a eventos, onde os eventos dirigem o fluxo das operações, facilitando a implementação de arquiteturas reativas e altamente responsivas.
 
+
+## Instruções para rodar a aplicação local, usando `docker-compose`
+
+> Pré-requisitos: Ter docker, docker-compose e postman
+
+1. Usando um terminal/powershell no diretório raiz da aplicação rodar `docker-compose up` 
+2. Importar no Postman a [collection](./.utils/FIAP-Tech-Challenge.postman_collection.json)
+3. Verificar se os serviços estão UP executando os endpoints: 
+   1. `Health restaurant-api`
+   2. `Health payment-api`
+   3. `Health kitchen-api`
+4. Executar os endpoints na sequencia para criar o fluxo de pedidos:
+   1. `Orders/Start New Order`
+   2. `Orders/Add Item`
+   3. `Orders/Confirmation Order`
+   4. `Orders/Send Order to Payment`
+   5. `Payment/Paid by Order Id`
+   6. `Kitchen/Ready`
+   7. `Orders/Sent for Delivery Order`
+   8. `Orders/Delivered Order`
+
+---
 
 ## Setup Development
 
@@ -92,7 +114,7 @@ cd fiap-tech-challenge-restaurant-api
 go mod tidy
 ````
 
-### Running
+### Running to development
 
 ```shell
 docker-compose up -d postgres && go run app/web/main.go
